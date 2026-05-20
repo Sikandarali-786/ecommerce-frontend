@@ -1,5 +1,9 @@
+import MainLayout from './layouts/MainLayout';
+
 const App = () => {
-  return <h1>Ecommerce Frontend</h1>;
-}
+  return (
+    <MainLayout />
+  );
+};
 
 export default App;
