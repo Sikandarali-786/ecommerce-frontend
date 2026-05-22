@@ -2,7 +2,7 @@ import axiosInstance from './axios';
 import { API_ENDPOINTS } from './endpoints';
 import type { ProductsResponse, SingleProductResponse, Product } from '../types';
 
-interface CreateProductData {
+export interface CreateProductData {
   title: string;
   description: string;
   price: number;
@@ -11,7 +11,7 @@ interface CreateProductData {
   category: string;
 }
 
-interface UpdateProductData extends Partial<CreateProductData> {}
+export interface UpdateProductData extends Partial<CreateProductData> {}
 
 interface ProductResponse {
   success: boolean;

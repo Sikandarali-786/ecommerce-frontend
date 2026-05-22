@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import App from '../App';
+import MainLayout from '../layouts/MainLayout';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AdminRoute from '../components/AdminRoute';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -23,7 +23,7 @@ const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <MainLayout />,
     children: [
       // Public routes
       {
