@@ -4,16 +4,16 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FiShoppingCart, FiCreditCard, FiTruck, FiLock } from 'react-icons/fi';
 import { useCart } from '../../hooks/useCart';
+import { useCreateOrder } from '../../hooks/useOrders';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import { checkoutSchema, type CheckoutFormData } from '../../schemas/checkout.schema';
-import type { Category } from '../../types';
-import toast from 'react-hot-toast';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useCart();
-  const [isProcessing, setIsProcessing] = useState(false);
+  const createOrderMutation = useCreateOrder();
+  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'Card'>('COD');
 
   const {
     register,
@@ -55,24 +55,30 @@ const CheckoutPage = () => {
   const tax = total * 0.1; // 10% tax
   const grandTotal = total + shippingCost + tax;
 
-  const onSubmit = async (data: CheckoutFormData) => {
-    setIsProcessing(true);
-    try {
-      // Simulate order processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Order placed successfully!');
-      console.log('Order data:', { ...data, items, total: grandTotal });
-      
-      // In a real app, you would send this to your backend
-      // await createOrder({ ...data, items, total: grandTotal });
-      
-      navigate('/order-success');
-    } catch (error) {
-      toast.error('Failed to process order. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
+  const onSubmit = async (formData: CheckoutFormData) => {
+    const orderData = {
+      items: items.map(item => ({
+        product: item.product._id,
+        quantity: item.quantity,
+      })),
+      shippingInfo: {
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        country: formData.country,
+        zipCode: formData.zipCode,
+      },
+      paymentMethod,
+      subtotal: total,
+      shippingCost,
+      tax,
+      total: grandTotal,
+    };
+
+    createOrderMutation.mutate(orderData);
   };
 
   return (
@@ -234,91 +240,47 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* Payment Information */}
+              {/* Payment Method */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 <div className="flex items-center space-x-2 mb-6">
                   <FiCreditCard className="text-blue-600" size={24} />
-                  <h2 className="text-xl font-bold text-gray-900">Payment Information</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Payment Method</h2>
                 </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Card Number *
-                    </label>
+                <div className="space-y-3">
+                  <label className="flex items-center space-x-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
                     <input
-                      {...register('cardNumber')}
-                      type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.cardNumber ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="1234 5678 9012 3456"
-                      maxLength={19}
+                      type="radio"
+                      name="paymentMethod"
+                      value="COD"
+                      checked={paymentMethod === 'COD'}
+                      onChange={() => setPaymentMethod('COD')}
+                      className="w-4 h-4 text-blue-600"
                     />
-                    {errors.cardNumber && (
-                      <p className="mt-1 text-sm text-red-600">{errors.cardNumber.message}</p>
-                    )}
-                  </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Cash on Delivery (COD)</p>
+                      <p className="text-sm text-gray-600">Pay when you receive your order</p>
+                    </div>
+                  </label>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Cardholder Name *
-                    </label>
+                  <label className="flex items-center space-x-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors opacity-50">
                     <input
-                      {...register('cardName')}
-                      type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.cardName ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="John Doe"
+                      type="radio"
+                      name="paymentMethod"
+                      value="Card"
+                      disabled
+                      className="w-4 h-4 text-blue-600"
                     />
-                    {errors.cardName && (
-                      <p className="mt-1 text-sm text-red-600">{errors.cardName.message}</p>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Expiry Date *
-                      </label>
-                      <input
-                        {...register('expiryDate')}
-                        type="text"
-                        className={`w-full px-3 py-2 border ${
-                          errors.expiryDate ? 'border-red-500' : 'border-gray-300'
-                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                        placeholder="MM/YY"
-                        maxLength={5}
-                      />
-                      {errors.expiryDate && (
-                        <p className="mt-1 text-sm text-red-600">{errors.expiryDate.message}</p>
-                      )}
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900">Credit/Debit Card</p>
+                      <p className="text-sm text-gray-600">Coming soon</p>
                     </div>
+                  </label>
+                </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        CVV *
-                      </label>
-                      <input
-                        {...register('cvv')}
-                        type="text"
-                        className={`w-full px-3 py-2 border ${
-                          errors.cvv ? 'border-red-500' : 'border-gray-300'
-                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                        placeholder="123"
-                        maxLength={4}
-                      />
-                      {errors.cvv && (
-                        <p className="mt-1 text-sm text-red-600">{errors.cvv.message}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
-                    <FiLock className="text-blue-600" />
-                    <span>Your payment information is secure and encrypted</span>
-                  </div>
+                <div className="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg mt-4">
+                  <FiLock className="text-blue-600" />
+                  <span>Your order information is secure</span>
                 </div>
               </div>
             </div>
@@ -331,7 +293,6 @@ const CheckoutPage = () => {
                 {/* Order Items */}
                 <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                   {items.map((item) => {
-                    const category = item.product.category as Category;
                     const imageUrl = item.product.images?.[0] || 'https://via.placeholder.com/80x80';
 
                     return (
@@ -392,10 +353,10 @@ const CheckoutPage = () => {
                 {/* Place Order Button */}
                 <button
                   type="submit"
-                  disabled={isProcessing}
+                  disabled={createOrderMutation.isPending}
                   className="w-full mt-6 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                  {isProcessing ? 'Processing...' : `Place Order - $${grandTotal.toFixed(2)}`}
+                  {createOrderMutation.isPending ? 'Processing...' : `Place Order - $${grandTotal.toFixed(2)}`}
                 </button>
 
                 <p className="text-xs text-gray-500 text-center mt-4">

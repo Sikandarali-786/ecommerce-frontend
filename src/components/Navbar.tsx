@@ -66,6 +66,13 @@ const Navbar = () => {
                   <span>Cart</span>
                 </Link>
 
+                <Link
+                  to="/orders"
+                  className="text-gray-700 hover:text-blue-600 transition-colors"
+                >
+                  Orders
+                </Link>
+
                 {admin && (
                   <Link
                     to="/admin"
@@ -153,6 +160,14 @@ const Navbar = () => {
                   >
                     <FiShoppingCart size={20} />
                     <span>Cart</span>
+                  </Link>
+
+                  <Link
+                    to="/orders"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-700 hover:text-blue-600 transition-colors"
+                  >
+                    Orders
                   </Link>
 
                   {admin && (

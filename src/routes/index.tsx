@@ -14,6 +14,8 @@ const ProductDetailPage = lazy(() => import('../pages/products/ProductDetailPage
 const CartPage = lazy(() => import('../pages/cart/CartPage'));
 const WishlistPage = lazy(() => import('../pages/wishlist/WishlistPage'));
 const CheckoutPage = lazy(() => import('../pages/checkout/CheckoutPage'));
+const OrderSuccessPage = lazy(() => import('../pages/order/OrderSuccessPage'));
+const OrdersPage = lazy(() => import('../pages/order/OrdersPage'));
 const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
@@ -96,6 +98,26 @@ export const router = createBrowserRouter([
           <SuspenseWrapper>
             <ProtectedRoute>
               <CheckoutPage />
+            </ProtectedRoute>
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'order-success/:orderId',
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute>
+              <OrderSuccessPage />
+            </ProtectedRoute>
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'orders',
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute>
+              <OrdersPage />
             </ProtectedRoute>
           </SuspenseWrapper>
         ),

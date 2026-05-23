@@ -44,4 +44,12 @@ export const API_ENDPOINTS = {
     REMOVE: (productId: string) => `/wishlist/remove/${productId}`,
     CLEAR: '/wishlist/clear',
   },
+
+  // Order endpoints
+  ORDER: {
+    CREATE: '/orders/create',
+    MY_ORDERS: '/orders/my-orders',
+    GET_BY_ID: (id: string) => `/orders/${id}`,
+    CANCEL: (id: string) => `/orders/${id}/cancel`,
+  },
 } as const;
