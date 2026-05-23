@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiShoppingCart } from 'react-icons/fi';
+import { useAddToCart } from '../hooks/useCart';
 import type { Product, Category } from '../types';
 
 interface ProductCardProps {
@@ -9,6 +10,12 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   const category = product.category as Category;
   const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300x300?text=No+Image';
+  const addToCartMutation = useAddToCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCartMutation.mutate({ productId: product._id, quantity: 1 });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -73,11 +80,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Add to Cart Button */}
         <button
-          disabled={product.stock === 0}
+          onClick={handleAddToCart}
+          disabled={product.stock === 0 || addToCartMutation.isPending}
           className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
         >
           <FiShoppingCart size={18} />
-          <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+          <span>
+            {addToCartMutation.isPending
+              ? 'Adding...'
+              : product.stock === 0
+              ? 'Out of Stock'
+              : 'Add to Cart'}
+          </span>
         </button>
       </div>
     </div>

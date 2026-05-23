@@ -27,4 +27,13 @@ export const API_ENDPOINTS = {
     UPDATE: (id: string) => `/product/${id}`,
     DELETE: (id: string) => `/product/${id}`,
   },
+
+  // Cart endpoints
+  CART: {
+    GET: '/cart',
+    ADD: '/cart/add',
+    UPDATE: '/cart/update',
+    REMOVE: (productId: string) => `/cart/remove/${productId}`,
+    CLEAR: '/cart/clear',
+  },
 } as const;
