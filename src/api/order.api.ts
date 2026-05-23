@@ -22,7 +22,7 @@ export interface ShippingInfo {
 
 export interface Order {
   _id: string;
-  user: string;
+  user: string | { _id: string; name: string; email: string };
   items: OrderItem[];
   shippingInfo: ShippingInfo;
   paymentMethod: 'COD' | 'Card' | 'PayPal';
@@ -99,6 +99,42 @@ export const getOrderById = async (id: string): Promise<OrderResponse> => {
 export const cancelOrder = async (id: string): Promise<OrderResponse> => {
   const response = await axiosInstance.put<OrderResponse>(
     API_ENDPOINTS.ORDER.CANCEL(id)
+  );
+  return response.data;
+};
+
+export interface AdminOrdersResponse {
+  success: boolean;
+  orders: Order[];
+  totalOrders: number;
+  totalRevenue: number;
+}
+
+export interface UpdateOrderStatusData {
+  orderStatus?: Order['orderStatus'];
+  paymentStatus?: Order['paymentStatus'];
+}
+
+/**
+ * Get all orders (admin only)
+ */
+export const getAllOrdersAdmin = async (): Promise<AdminOrdersResponse> => {
+  const response = await axiosInstance.get<AdminOrdersResponse>(
+    API_ENDPOINTS.ORDER.ADMIN_GET_ALL
+  );
+  return response.data;
+};
+
+/**
+ * Update order status (admin only)
+ */
+export const updateOrderStatusAdmin = async (
+  id: string,
+  data: UpdateOrderStatusData
+): Promise<OrderResponse> => {
+  const response = await axiosInstance.put<OrderResponse>(
+    API_ENDPOINTS.ORDER.ADMIN_UPDATE_STATUS(id),
+    data
   );
   return response.data;
 };

@@ -38,9 +38,14 @@ axiosInstance.interceptors.response.use(
         window.location.href = '/login';
       }
 
-      // Handle 403 Forbidden - insufficient permissions
+      // Handle 403 Forbidden - blocked account or insufficient permissions
       if (error.response.status === 403) {
-        console.error('Access denied');
+        const message = error.response.data?.message as string | undefined;
+        if (message?.toLowerCase().includes('blocked')) {
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(error);

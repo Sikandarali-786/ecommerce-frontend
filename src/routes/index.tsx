@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import MainLayout from '../layouts/MainLayout';
+import AdminLayout from '../layouts/AdminLayout';
 import ProtectedRoute from '../components/ProtectedRoute';
 import AdminRoute from '../components/AdminRoute';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -16,12 +17,23 @@ const WishlistPage = lazy(() => import('../pages/wishlist/WishlistPage'));
 const CheckoutPage = lazy(() => import('../pages/checkout/CheckoutPage'));
 const OrderSuccessPage = lazy(() => import('../pages/order/OrderSuccessPage'));
 const OrdersPage = lazy(() => import('../pages/order/OrdersPage'));
-const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
+const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
+const AdminProductsPage = lazy(() => import('../pages/admin/AdminProductsPage'));
+const AdminCategoriesPage = lazy(() => import('../pages/admin/AdminCategoriesPage'));
+const AdminOrdersPage = lazy(() => import('../pages/admin/AdminOrdersPage'));
+const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
+const AdminPlaceholderPage = lazy(() => import('../pages/admin/AdminPlaceholderPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 // Wrapper component for Suspense
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
+);
+
+const adminSuspense = (element: React.ReactNode) => (
+  <SuspenseWrapper>
+    <AdminRoute>{element}</AdminRoute>
+  </SuspenseWrapper>
 );
 
 export const router = createBrowserRouter([
@@ -123,24 +135,60 @@ export const router = createBrowserRouter([
         ),
       },
 
-      // Admin routes (require admin role)
-      {
-        path: 'admin',
-        element: (
-          <SuspenseWrapper>
-            <AdminRoute>
-              <AdminDashboard />
-            </AdminRoute>
-          </SuspenseWrapper>
-        ),
-      },
-
       // 404 Not Found
       {
         path: '*',
         element: (
           <SuspenseWrapper>
             <NotFoundPage />
+          </SuspenseWrapper>
+        ),
+      },
+    ],
+  },
+
+  // Admin panel — separate layout with sidebar (no store navbar/footer)
+  {
+    path: '/admin',
+    element: adminSuspense(<AdminLayout />),
+    children: [
+      {
+        index: true,
+        element: (
+          <SuspenseWrapper>
+            <AdminDashboardPage />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'categories',
+        element: (
+          <SuspenseWrapper>
+            <AdminCategoriesPage />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'products',
+        element: (
+          <SuspenseWrapper>
+            <AdminProductsPage />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'orders',
+        element: (
+          <SuspenseWrapper>
+            <AdminOrdersPage />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'users',
+        element: (
+          <SuspenseWrapper>
+            <AdminUsersPage />
           </SuspenseWrapper>
         ),
       },

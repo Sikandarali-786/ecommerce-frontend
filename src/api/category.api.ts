@@ -33,3 +33,33 @@ export const createCategory = async (data: CreateCategoryData): Promise<CreateCa
   );
   return response.data;
 };
+
+interface CategoryMutationResponse {
+  success: boolean;
+  message: string;
+  category?: Category;
+}
+
+/**
+ * Update a category (admin only)
+ */
+export const updateCategory = async (
+  id: string,
+  data: CreateCategoryData
+): Promise<CategoryMutationResponse> => {
+  const response = await axiosInstance.put<CategoryMutationResponse>(
+    API_ENDPOINTS.CATEGORY.UPDATE(id),
+    data
+  );
+  return response.data;
+};
+
+/**
+ * Delete a category (admin only)
+ */
+export const deleteCategory = async (id: string): Promise<CategoryMutationResponse> => {
+  const response = await axiosInstance.delete<CategoryMutationResponse>(
+    API_ENDPOINTS.CATEGORY.DELETE(id)
+  );
+  return response.data;
+};

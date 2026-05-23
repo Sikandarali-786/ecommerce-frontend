@@ -11,12 +11,20 @@ export const API_ENDPOINTS = {
   USER: {
     PROFILE: '/user/profile',
     ADMIN: '/user/admin',
+    ADMIN_STATS: '/user/admin/stats',
+    ADMIN_USERS: '/user/admin/users',
+    ADMIN_USER_BY_ID: (id: string) => `/user/admin/users/${id}`,
+    ADMIN_UPDATE_ROLE: (id: string) => `/user/admin/users/${id}/role`,
+    ADMIN_TOGGLE_STATUS: (id: string) => `/user/admin/users/${id}/toggle-status`,
+    ADMIN_DELETE_USER: (id: string) => `/user/admin/users/${id}`,
   },
 
   // Category endpoints
   CATEGORY: {
     GET_ALL: '/categories',
     CREATE: '/categories/create',
+    UPDATE: (id: string) => `/categories/${id}`,
+    DELETE: (id: string) => `/categories/${id}`,
   },
 
   // Product endpoints
@@ -51,5 +59,8 @@ export const API_ENDPOINTS = {
     MY_ORDERS: '/orders/my-orders',
     GET_BY_ID: (id: string) => `/orders/${id}`,
     CANCEL: (id: string) => `/orders/${id}/cancel`,
+    // Admin endpoints
+    ADMIN_GET_ALL: '/orders',
+    ADMIN_UPDATE_STATUS: (id: string) => `/orders/${id}/status`,
   },
 } as const;
