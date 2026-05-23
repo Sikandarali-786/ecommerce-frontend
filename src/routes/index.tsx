@@ -12,6 +12,7 @@ const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
 const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
 const ProductDetailPage = lazy(() => import('../pages/products/ProductDetailPage'));
 const CartPage = lazy(() => import('../pages/cart/CartPage'));
+const WishlistPage = lazy(() => import('../pages/wishlist/WishlistPage'));
 const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
@@ -74,6 +75,16 @@ export const router = createBrowserRouter([
           <SuspenseWrapper>
             <ProtectedRoute>
               <CartPage />
+            </ProtectedRoute>
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'wishlist',
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute>
+              <WishlistPage />
             </ProtectedRoute>
           </SuspenseWrapper>
         ),

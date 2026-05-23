@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiUser, FiLogOut, FiMenu, FiX } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiLogOut, FiMenu, FiX, FiHeart } from 'react-icons/fi';
 import { MdAdminPanelSettings } from 'react-icons/md';
 import { useState } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
@@ -50,6 +50,14 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {authenticated ? (
               <>
+                <Link
+                  to="/wishlist"
+                  className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-1"
+                >
+                  <FiHeart size={20} />
+                  <span>Wishlist</span>
+                </Link>
+
                 <Link
                   to="/cart"
                   className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-1"
@@ -129,6 +137,15 @@ const Navbar = () => {
 
               {authenticated ? (
                 <>
+                  <Link
+                    to="/wishlist"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-2"
+                  >
+                    <FiHeart size={20} />
+                    <span>Wishlist</span>
+                  </Link>
+
                   <Link
                     to="/cart"
                     onClick={() => setIsMobileMenuOpen(false)}

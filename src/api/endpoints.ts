@@ -36,4 +36,12 @@ export const API_ENDPOINTS = {
     REMOVE: (productId: string) => `/cart/remove/${productId}`,
     CLEAR: '/cart/clear',
   },
+
+  // Wishlist endpoints
+  WISHLIST: {
+    GET: '/wishlist',
+    ADD: '/wishlist/add',
+    REMOVE: (productId: string) => `/wishlist/remove/${productId}`,
+    CLEAR: '/wishlist/clear',
+  },
 } as const;

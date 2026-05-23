@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { FiShoppingCart } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { useAddToCart } from '../hooks/useCart';
+import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../hooks/useWishlist';
 import type { Product, Category } from '../types';
 
 interface ProductCardProps {
@@ -11,14 +12,42 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const category = product.category as Category;
   const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300x300?text=No+Image';
   const addToCartMutation = useAddToCart();
+  const addToWishlistMutation = useAddToWishlist();
+  const removeFromWishlistMutation = useRemoveFromWishlist();
+  const isInWishlist = useIsInWishlist(product._id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCartMutation.mutate({ productId: product._id, quantity: 1 });
   };
 
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (isInWishlist) {
+      removeFromWishlistMutation.mutate(product._id);
+    } else {
+      addToWishlistMutation.mutate({ productId: product._id });
+    }
+  };
+
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative">
+      {/* Wishlist Button */}
+      <button
+        onClick={handleToggleWishlist}
+        disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
+        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
+          isInWishlist
+            ? 'bg-red-500 text-white hover:bg-red-600'
+            : 'bg-white text-gray-600 hover:bg-gray-100'
+        } shadow-md disabled:opacity-50`}
+      >
+        <FiHeart
+          size={20}
+          fill={isInWishlist ? 'currentColor' : 'none'}
+        />
+      </button>
+
       <Link to={`/products/${product._id}`}>
         <div className="relative h-64 overflow-hidden bg-gray-100">
           <img
@@ -37,7 +66,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </div>
           )}
           {product.stock > 0 && product.stock <= 5 && (
-            <div className="absolute top-2 right-2 bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded">
+            <div className="absolute top-2 left-2 bg-orange-500 text-white text-xs font-semibold px-2 py-1 rounded">
               Only {product.stock} left
             </div>
           )}
