@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiArrowLeft, FiPackage, FiTag } from 'react-icons/fi';
 import { useProduct } from '../../hooks/useProducts';
+import { useAddToCart } from '../../hooks/useCart';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import type { Category } from '../../types';
 import { useState } from 'react';
@@ -9,7 +10,13 @@ const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data, isLoading, isError, error } = useProduct(id!);
+  const addToCartMutation = useAddToCart();
   const [selectedImage, setSelectedImage] = useState(0);
+
+  const handleAddToCart = () => {
+    if (!data?.product) return;
+    addToCartMutation.mutate({ productId: data.product._id, quantity: 1 });
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -156,11 +163,18 @@ const ProductDetailPage = () => {
               {/* Add to Cart Button */}
               <div className="mt-auto">
                 <button
-                  disabled={product.stock === 0}
+                  onClick={handleAddToCart}
+                  disabled={product.stock === 0 || addToCartMutation.isPending}
                   className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-3 text-lg font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                   <FiShoppingCart size={24} />
-                  <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                  <span>
+                    {addToCartMutation.isPending
+                      ? 'Adding...'
+                      : product.stock === 0
+                      ? 'Out of Stock'
+                      : 'Add to Cart'}
+                  </span>
                 </button>
               </div>
             </div>

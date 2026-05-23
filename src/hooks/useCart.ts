@@ -1,7 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { getCart, addToCart, updateCartItem, removeFromCart, clearCart } from '../api';
 import type { AddToCartData, UpdateCartItemData } from '../api';
 import toast from 'react-hot-toast';
+import { isAuthenticated } from '../utils/auth';
 
 // Query keys
 export const cartKeys = {
@@ -16,6 +18,7 @@ export const useCart = () => {
   return useQuery({
     queryKey: cartKeys.detail(),
     queryFn: getCart,
+    enabled: isAuthenticated(), // Only fetch if user is logged in
     retry: 1,
   });
 };
@@ -25,15 +28,25 @@ export const useCart = () => {
  */
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (data: AddToCartData) => addToCart(data),
-    onSuccess: (data) => {
+    mutationFn: (data: AddToCartData) => {
+      if (!isAuthenticated()) {
+        toast.error('Please login to add items to cart');
+        navigate('/login');
+        throw new Error('Not authenticated');
+      }
+      return addToCart(data);
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartKeys.detail() });
-      toast.success(data.message || 'Item added to cart');
+      toast.success('Item added to cart');
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Failed to add item to cart');
+      if (error.message !== 'Not authenticated') {
+        toast.error(error.response?.data?.message || 'Failed to add item to cart');
+      }
     },
   });
 };
@@ -46,9 +59,9 @@ export const useUpdateCartItem = () => {
 
   return useMutation({
     mutationFn: (data: UpdateCartItemData) => updateCartItem(data),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartKeys.detail() });
-      toast.success(data.message || 'Cart updated');
+      toast.success('Cart updated');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to update cart');
@@ -64,9 +77,9 @@ export const useRemoveFromCart = () => {
 
   return useMutation({
     mutationFn: (productId: string) => removeFromCart(productId),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartKeys.detail() });
-      toast.success(data.message || 'Item removed from cart');
+      toast.success('Item removed from cart');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to remove item');
@@ -82,9 +95,9 @@ export const useClearCart = () => {
 
   return useMutation({
     mutationFn: clearCart,
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartKeys.detail() });
-      toast.success(data.message || 'Cart cleared');
+      toast.success('Cart cleared');
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to clear cart');
