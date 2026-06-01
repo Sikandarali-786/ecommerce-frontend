@@ -5,6 +5,7 @@ import { useAddToCart } from '../../hooks/useCart';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import type { Category } from '../../types';
+import { getImageUrl } from '../../utils/image';
 
 const WishlistPage = () => {
   const { data, isLoading, isError } = useWishlist();

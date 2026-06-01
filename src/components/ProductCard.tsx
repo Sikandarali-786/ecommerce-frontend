@@ -3,6 +3,7 @@ import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { useAddToCart } from '../hooks/useCart';
 import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../hooks/useWishlist';
 import type { Product, Category } from '../types';
+import { getImageUrl } from '../utils/image';
 
 interface ProductCardProps {
   product: Product;
@@ -10,7 +11,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const category = product.category as Category;
-  const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300x300?text=No+Image';
+  const imageUrl = getImageUrl(product.images?.[0]);
   const addToCartMutation = useAddToCart();
   const addToWishlistMutation = useAddToWishlist();
   const removeFromWishlistMutation = useRemoveFromWishlist();

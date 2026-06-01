@@ -1,283 +1,198 @@
-import { useMemo, useState } from 'react';
-import { FiUsers, FiShield, FiUserX, FiUserCheck, FiTrash2 } from 'react-icons/fi';
-import {
-  useAllUsers,
-  useToggleUserStatus,
-  useUpdateUserRole,
-  useDeleteUser,
-} from '../../hooks/useAdmin';
+import { useState } from 'react';
+import { FiSearch, FiUsers, FiShield, FiUser, FiLock, FiUnlock, FiTrash2 } from 'react-icons/fi';
+import { useAllUsers, useUpdateUserRole, useToggleUserStatus, useDeleteUser } from '../../hooks/useAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import EmptyState from '../../components/EmptyState';
-import { getUser } from '../../utils/auth';
 import type { User } from '../../api/admin.api';
 
-type StatusFilter = 'all' | 'active' | 'blocked';
-type RoleFilter = 'all' | 'user' | 'admin';
-
 const AdminUsersPage = () => {
-  const currentUser = getUser();
   const { data, isLoading } = useAllUsers();
-  const toggleStatus = useToggleUserStatus();
-  const updateRole = useUpdateUserRole();
-  const deleteUser = useDeleteUser();
+  const updateRoleMutation = useUpdateUserRole();
+  const toggleStatusMutation = useToggleUserStatus();
+  const deleteUserMutation = useDeleteUser();
 
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [roleFilter, setRoleFilter] = useState<RoleFilter>('all');
+  const [filterRole, setFilterRole] = useState<'all' | 'user' | 'admin'>('all');
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const users = data?.users ?? [];
+  const users: User[] = data?.users || [];
 
-  const filteredUsers = useMemo(() => {
-    let result = [...users];
+  const filtered = users.filter((u) => {
+    const matchSearch =
+      u.name.toLowerCase().includes(search.toLowerCase()) ||
+      u.email.toLowerCase().includes(search.toLowerCase());
+    const matchRole = filterRole === 'all' || u.role === filterRole;
+    return matchSearch && matchRole;
+  });
 
-    if (statusFilter === 'active') {
-      result = result.filter((u) => !u.isBlocked);
-    } else if (statusFilter === 'blocked') {
-      result = result.filter((u) => u.isBlocked);
-    }
-
-    if (roleFilter !== 'all') {
-      result = result.filter((u) => u.role === roleFilter);
-    }
-
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (u) =>
-          u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)
-      );
-    }
-
-    return result.sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-  }, [users, search, statusFilter, roleFilter]);
-
-  const isSelf = (userId: string) => currentUser?._id === userId;
-
-  const handleToggleBlock = (user: User) => {
-    if (isSelf(user._id)) return;
-    const action = user.isBlocked ? 'unblock' : 'block';
-    if (
-      window.confirm(
-        `Are you sure you want to ${action} ${user.name} (${user.email})?`
-      )
-    ) {
-      toggleStatus.mutate(user._id);
-    }
-  };
-
-  const handleRoleChange = (user: User, role: 'user' | 'admin') => {
-    if (isSelf(user._id) || user.role === role) return;
-    if (
-      window.confirm(`Change ${user.name}'s role to "${role}"?`)
-    ) {
-      updateRole.mutate({ id: user._id, role });
-    }
-  };
-
-  const handleDelete = (user: User) => {
-    if (isSelf(user._id)) return;
-    if (
-      window.confirm(
-        `Delete user "${user.name}" permanently? This cannot be undone.`
-      )
-    ) {
-      deleteUser.mutate(user._id);
-    }
-  };
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   return (
-    <div className="p-6 lg:p-8">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+    <div>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Manage Users</h1>
-          <p className="text-gray-600 mt-1">
-            Block, unblock, change roles, and manage accounts
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Users</h1>
+          <p className="text-gray-500 text-sm mt-1">{users.length} total users</p>
         </div>
-        <span className="bg-white px-4 py-2 rounded-lg shadow-sm text-sm self-start">
-          <strong>{data?.totalUsers ?? 0}</strong> total users
-        </span>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex flex-col md:flex-row gap-4">
-        <input
-          type="search"
-          placeholder="Search by name or email..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-        />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none md:w-40"
-        >
-          <option value="all">All status</option>
-          <option value="active">Active</option>
-          <option value="blocked">Blocked</option>
-        </select>
-        <select
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value as RoleFilter)}
-          className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none md:w-36"
-        >
-          <option value="all">All roles</option>
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-
-      {filteredUsers.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md">
-          <EmptyState
-            icon={<FiUsers className="text-gray-400" />}
-            title="No users found"
-            description={
-              users.length === 0
-                ? 'Registered users will appear here.'
-                : 'Try adjusting your search or filters.'
-            }
+      {/* Filters */}
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
-      ) : (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <select
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value as typeof filterRole)}
+          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="all">All Roles</option>
+          <option value="user">Users</option>
+          <option value="admin">Admins</option>
+        </select>
+      </div>
+
+      {/* Users Table */}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        {filtered.length === 0 ? (
+          <div className="p-12 text-center">
+            <FiUsers className="mx-auto text-gray-300 mb-3" size={48} />
+            <p className="text-gray-500">No users found</p>
+          </div>
+        ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    User
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Role
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Joined
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredUsers.map((user) => {
-                  const self = isSelf(user._id);
-                  const isPending =
-                    (toggleStatus.isPending &&
-                      toggleStatus.variables === user._id) ||
-                    (updateRole.isPending &&
-                      updateRole.variables?.id === user._id) ||
-                    (deleteUser.isPending && deleteUser.variables === user._id);
-
-                  return (
-                    <tr
-                      key={user._id}
-                      className={`hover:bg-gray-50 ${user.isBlocked ? 'bg-red-50/30' : ''}`}
-                    >
-                      <td className="px-4 py-4">
-                        <p className="text-sm font-medium text-gray-900">
-                          {user.name}
-                          {self && (
-                            <span className="ml-2 text-xs text-blue-600 font-normal">
-                              (You)
-                            </span>
-                          )}
-                        </p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
-                      </td>
-                      <td className="px-4 py-4">
-                        {self ? (
-                          <span className="inline-flex items-center gap-1 text-sm text-gray-700 capitalize">
-                            <FiShield size={14} />
-                            {user.role}
-                          </span>
-                        ) : (
-                          <select
-                            value={user.role}
-                            onChange={(e) =>
-                              handleRoleChange(
-                                user,
-                                e.target.value as 'user' | 'admin'
-                              )
-                            }
-                            disabled={isPending}
-                            className="text-sm border border-gray-300 rounded-lg px-2 py-1.5 capitalize focus:ring-2 focus:ring-blue-500 outline-none disabled:opacity-50"
-                          >
-                            <option value="user">user</option>
-                            <option value="admin">admin</option>
-                          </select>
-                        )}
-                      </td>
-                      <td className="px-4 py-4">
-                        <span
-                          className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${
-                            user.isBlocked
-                              ? 'bg-red-100 text-red-800'
-                              : 'bg-green-100 text-green-800'
+                {filtered.map((user) => (
+                  <tr key={user._id} className={`hover:bg-gray-50 ${user.isBlocked ? 'opacity-60' : ''}`}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{user.name}</p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold ${
+                        user.role === 'admin'
+                          ? 'bg-purple-100 text-purple-800'
+                          : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {user.role === 'admin' ? <FiShield size={12} /> : <FiUser size={12} />}
+                        <span className="capitalize">{user.role}</span>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        user.isBlocked
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-green-100 text-green-800'
+                      }`}>
+                        {user.isBlocked ? 'Blocked' : 'Active'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center space-x-2">
+                        {/* Toggle Role */}
+                        <button
+                          onClick={() =>
+                            updateRoleMutation.mutate({
+                              id: user._id,
+                              role: user.role === 'admin' ? 'user' : 'admin',
+                            })
+                          }
+                          disabled={updateRoleMutation.isPending}
+                          title={user.role === 'admin' ? 'Demote to User' : 'Promote to Admin'}
+                          className={`p-2 rounded-lg transition-colors ${
+                            user.role === 'admin'
+                              ? 'text-purple-600 hover:bg-purple-50'
+                              : 'text-gray-600 hover:bg-gray-100'
                           }`}
                         >
-                          {user.isBlocked ? 'Blocked' : 'Active'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-4 text-sm text-gray-500 whitespace-nowrap">
-                        {new Date(user.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          {!self && (
-                            <>
-                              <button
-                                type="button"
-                                onClick={() => handleToggleBlock(user)}
-                                disabled={isPending}
-                                title={
-                                  user.isBlocked ? 'Unblock user' : 'Block user'
-                                }
-                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-50 ${
-                                  user.isBlocked
-                                    ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
-                                }`}
-                              >
-                                {user.isBlocked ? (
-                                  <>
-                                    <FiUserCheck size={14} />
-                                    Unblock
-                                  </>
-                                ) : (
-                                  <>
-                                    <FiUserX size={14} />
-                                    Block
-                                  </>
-                                )}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleDelete(user)}
-                                disabled={isPending}
-                                title="Delete user"
-                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
-                              >
-                                <FiTrash2 size={18} />
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                          {user.role === 'admin' ? <FiShield size={16} /> : <FiUser size={16} />}
+                        </button>
+
+                        {/* Block/Unblock */}
+                        <button
+                          onClick={() => toggleStatusMutation.mutate(user._id)}
+                          disabled={toggleStatusMutation.isPending}
+                          title={user.isBlocked ? 'Unblock User' : 'Block User'}
+                          className={`p-2 rounded-lg transition-colors ${
+                            user.isBlocked
+                              ? 'text-green-600 hover:bg-green-50'
+                              : 'text-orange-600 hover:bg-orange-50'
+                          }`}
+                        >
+                          {user.isBlocked ? <FiUnlock size={16} /> : <FiLock size={16} />}
+                        </button>
+
+                        {/* Delete */}
+                        <button
+                          onClick={() => setDeleteConfirm(user._id)}
+                          title="Delete User"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
+          </div>
+        )}
+      </div>
+
+      {/* Delete Confirm */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Delete User</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to permanently delete this user? This cannot be undone.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  deleteUserMutation.mutate(deleteConfirm);
+                  setDeleteConfirm(null);
+                }}
+                disabled={deleteUserMutation.isPending}
+                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400"
+              >
+                {deleteUserMutation.isPending ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         </div>
       )}

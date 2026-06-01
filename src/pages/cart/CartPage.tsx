@@ -4,6 +4,7 @@ import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from '../
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import type { Category } from '../../types';
+import { getImageUrl } from '../../utils/image';
 
 const CartPage = () => {
   const { data, isLoading, isError } = useCart();
@@ -89,7 +90,7 @@ const CartPage = () => {
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => {
               const category = item.product.category as Category;
-              const imageUrl = item.product.images?.[0] || 'https://via.placeholder.com/150x150?text=No+Image';
+              const imageUrl = getImageUrl(item.product.images?.[0]);
 
               return (
                 <div

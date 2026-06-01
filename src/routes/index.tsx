@@ -22,7 +22,6 @@ const AdminProductsPage = lazy(() => import('../pages/admin/AdminProductsPage'))
 const AdminCategoriesPage = lazy(() => import('../pages/admin/AdminCategoriesPage'));
 const AdminOrdersPage = lazy(() => import('../pages/admin/AdminOrdersPage'));
 const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
-const AdminPlaceholderPage = lazy(() => import('../pages/admin/AdminPlaceholderPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 // Wrapper component for Suspense
@@ -30,67 +29,37 @@ const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>
 );
 
-const adminSuspense = (element: React.ReactNode) => (
-  <SuspenseWrapper>
-    <AdminRoute>{element}</AdminRoute>
-  </SuspenseWrapper>
-);
-
 export const router = createBrowserRouter([
+  // ─── Public / User routes (with Navbar + Footer) ───────────────────────────
   {
     path: '/',
     element: <MainLayout />,
     children: [
-      // Public routes
       {
         index: true,
-        element: (
-          <SuspenseWrapper>
-            <HomePage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><HomePage /></SuspenseWrapper>,
       },
       {
         path: 'login',
-        element: (
-          <SuspenseWrapper>
-            <LoginPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><LoginPage /></SuspenseWrapper>,
       },
       {
         path: 'register',
-        element: (
-          <SuspenseWrapper>
-            <RegisterPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><RegisterPage /></SuspenseWrapper>,
       },
       {
         path: 'products',
-        element: (
-          <SuspenseWrapper>
-            <ProductsPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><ProductsPage /></SuspenseWrapper>,
       },
       {
         path: 'products/:id',
-        element: (
-          <SuspenseWrapper>
-            <ProductDetailPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><ProductDetailPage /></SuspenseWrapper>,
       },
-
-      // Protected routes (require authentication)
       {
         path: 'cart',
         element: (
           <SuspenseWrapper>
-            <ProtectedRoute>
-              <CartPage />
-            </ProtectedRoute>
+            <ProtectedRoute><CartPage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
@@ -98,9 +67,7 @@ export const router = createBrowserRouter([
         path: 'wishlist',
         element: (
           <SuspenseWrapper>
-            <ProtectedRoute>
-              <WishlistPage />
-            </ProtectedRoute>
+            <ProtectedRoute><WishlistPage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
@@ -108,9 +75,7 @@ export const router = createBrowserRouter([
         path: 'checkout',
         element: (
           <SuspenseWrapper>
-            <ProtectedRoute>
-              <CheckoutPage />
-            </ProtectedRoute>
+            <ProtectedRoute><CheckoutPage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
@@ -118,9 +83,7 @@ export const router = createBrowserRouter([
         path: 'order-success/:orderId',
         element: (
           <SuspenseWrapper>
-            <ProtectedRoute>
-              <OrderSuccessPage />
-            </ProtectedRoute>
+            <ProtectedRoute><OrderSuccessPage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
@@ -128,69 +91,47 @@ export const router = createBrowserRouter([
         path: 'orders',
         element: (
           <SuspenseWrapper>
-            <ProtectedRoute>
-              <OrdersPage />
-            </ProtectedRoute>
+            <ProtectedRoute><OrdersPage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },
-
-      // 404 Not Found
       {
         path: '*',
-        element: (
-          <SuspenseWrapper>
-            <NotFoundPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><NotFoundPage /></SuspenseWrapper>,
       },
     ],
   },
 
-  // Admin panel — separate layout with sidebar (no store navbar/footer)
+  // ─── Admin panel (sidebar layout, no store navbar/footer) ──────────────────
   {
     path: '/admin',
-    element: adminSuspense(<AdminLayout />),
+    element: (
+      <SuspenseWrapper>
+        <AdminRoute>
+          <AdminLayout />
+        </AdminRoute>
+      </SuspenseWrapper>
+    ),
     children: [
       {
         index: true,
-        element: (
-          <SuspenseWrapper>
-            <AdminDashboardPage />
-          </SuspenseWrapper>
-        ),
-      },
-      {
-        path: 'categories',
-        element: (
-          <SuspenseWrapper>
-            <AdminCategoriesPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper>,
       },
       {
         path: 'products',
-        element: (
-          <SuspenseWrapper>
-            <AdminProductsPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><AdminProductsPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'categories',
+        element: <SuspenseWrapper><AdminCategoriesPage /></SuspenseWrapper>,
       },
       {
         path: 'orders',
-        element: (
-          <SuspenseWrapper>
-            <AdminOrdersPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><AdminOrdersPage /></SuspenseWrapper>,
       },
       {
         path: 'users',
-        element: (
-          <SuspenseWrapper>
-            <AdminUsersPage />
-          </SuspenseWrapper>
-        ),
+        element: <SuspenseWrapper><AdminUsersPage /></SuspenseWrapper>,
       },
     ],
   },
