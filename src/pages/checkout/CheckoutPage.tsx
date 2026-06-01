@@ -8,6 +8,7 @@ import { useCreateOrder } from '../../hooks/useOrders';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import { checkoutSchema, type CheckoutFormData } from '../../schemas/checkout.schema';
+import { getImageUrl } from '../../utils/image';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -293,7 +294,7 @@ const CheckoutPage = () => {
                 {/* Order Items */}
                 <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                   {items.map((item) => {
-                    const imageUrl = item.product.images?.[0] || 'https://via.placeholder.com/80x80';
+                    const imageUrl = getImageUrl(item.product.images?.[0]);
 
                     return (
                       <div key={item._id} className="flex space-x-3">
@@ -302,7 +303,7 @@ const CheckoutPage = () => {
                           alt={item.product.title}
                           className="w-16 h-16 object-cover rounded"
                           onError={(e) => {
-                            e.currentTarget.src = 'https://via.placeholder.com/80x80';
+                            e.currentTarget.src = 'https://placehold.co/80x80?text=No+Img';
                           }}
                         />
                         <div className="flex-1">

@@ -5,6 +5,7 @@ import { useAddToCart } from '../../hooks/useCart';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import type { Category } from '../../types';
 import { useState } from 'react';
+import { getImageUrl } from '../../utils/image';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,9 +45,10 @@ const ProductDetailPage = () => {
 
   const product = data.product;
   const category = product.category as Category;
-  const images = product.images && product.images.length > 0 
-    ? product.images 
-    : ['https://via.placeholder.com/600x600?text=No+Image'];
+  // Map stored paths → full displayable URLs
+  const images = product.images?.length
+    ? product.images.map((img) => getImageUrl(img))
+    : [getImageUrl(null)];
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -72,7 +74,7 @@ const ProductDetailPage = () => {
                     alt={product.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.src = 'https://via.placeholder.com/600x600?text=No+Image';
+                      e.currentTarget.src = 'https://placehold.co/600x600?text=No+Image';
                     }}
                   />
                 </div>
@@ -101,7 +103,7 @@ const ProductDetailPage = () => {
                         alt={`${product.title} ${index + 1}`}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.currentTarget.src = 'https://via.placeholder.com/150x150?text=No+Image';
+                          e.currentTarget.src = 'https://placehold.co/150x150?text=No+Image';
                         }}
                       />
                     </button>

@@ -104,7 +104,7 @@ const CartPage = () => {
                       alt={item.product.title}
                       className="w-full sm:w-32 h-32 object-cover rounded-lg"
                       onError={(e) => {
-                        e.currentTarget.src = 'https://via.placeholder.com/150x150?text=No+Image';
+                        e.currentTarget.src = 'https://placehold.co/150x150?text=No+Image';
                       }}
                     />
                   </Link>

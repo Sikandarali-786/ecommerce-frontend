@@ -88,7 +88,7 @@ const WishlistPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => {
             const category = product.category as Category;
-            const imageUrl = product.images?.[0] || 'https://via.placeholder.com/300x300?text=No+Image';
+            const imageUrl = getImageUrl(product.images?.[0]);
 
             return (
               <div
