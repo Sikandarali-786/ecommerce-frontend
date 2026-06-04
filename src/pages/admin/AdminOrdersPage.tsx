@@ -45,11 +45,12 @@ const AdminOrdersPage = () => {
   const orders: Order[] = data?.orders || [];
 
   const filtered = orders.filter((o) => {
+    const userName  = typeof o.user === 'object' ? (o.user?.name ?? '') : '';
+    const userEmail = typeof o.user === 'object' ? (o.user?.email ?? '') : '';
     const matchSearch =
       o._id.toLowerCase().includes(search.toLowerCase()) ||
-      (typeof o.user === 'object' &&
-        (o.user.name.toLowerCase().includes(search.toLowerCase()) ||
-          o.user.email.toLowerCase().includes(search.toLowerCase())));
+      userName.toLowerCase().includes(search.toLowerCase()) ||
+      userEmail.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'all' || o.orderStatus === filterStatus;
     return matchSearch && matchStatus;
   });
@@ -122,10 +123,10 @@ const AdminOrdersPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-sm font-medium text-gray-900">
-                        {typeof order.user === 'object' ? order.user.name : 'N/A'}
+                        {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {typeof order.user === 'object' ? order.user.email : ''}
+                        {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
                       </p>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-700">{order.items.length}</td>
@@ -184,10 +185,10 @@ const AdminOrdersPage = () => {
               <div>
                 <h3 className="text-sm font-semibold text-gray-500 uppercase mb-2">Customer</h3>
                 <p className="font-medium text-gray-900">
-                  {typeof selectedOrder.user === 'object' ? selectedOrder.user.name : 'N/A'}
+                  {typeof selectedOrder.user === 'object' ? (selectedOrder.user?.name ?? 'N/A') : 'N/A'}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {typeof selectedOrder.user === 'object' ? selectedOrder.user.email : ''}
+                  {typeof selectedOrder.user === 'object' ? (selectedOrder.user?.email ?? '—') : '—'}
                 </p>
               </div>
 

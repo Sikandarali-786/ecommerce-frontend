@@ -23,6 +23,7 @@ const AdminCategoriesPage = lazy(() => import('../pages/admin/AdminCategoriesPag
 const AdminOrdersPage = lazy(() => import('../pages/admin/AdminOrdersPage'));
 const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
+const ProfilePage = lazy(() => import('../pages/profile/ProfilePage'));
 
 // Wrapper component for Suspense
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -92,6 +93,14 @@ export const router = createBrowserRouter([
         element: (
           <SuspenseWrapper>
             <ProtectedRoute><OrdersPage /></ProtectedRoute>
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'profile',
+        element: (
+          <SuspenseWrapper>
+            <ProtectedRoute><ProfilePage /></ProtectedRoute>
           </SuspenseWrapper>
         ),
       },

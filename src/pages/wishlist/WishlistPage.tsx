@@ -1,48 +1,59 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiHeart, FiShoppingCart, FiTrash2 } from 'react-icons/fi';
 import { useWishlist, useRemoveFromWishlist, useClearWishlist } from '../../hooks/useWishlist';
 import { useAddToCart } from '../../hooks/useCart';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
+import ConfirmModal from '../../components/ConfirmModal';
 import type { Category } from '../../types';
 import { getImageUrl } from '../../utils/image';
 
 const WishlistPage = () => {
   const { data, isLoading, isError } = useWishlist();
-  const removeFromWishlistMutation = useRemoveFromWishlist();
-  const clearWishlistMutation = useClearWishlist();
-  const addToCartMutation = useAddToCart();
+  const removeFromWishlistMutation   = useRemoveFromWishlist();
+  const clearWishlistMutation        = useClearWishlist();
+  const addToCartMutation            = useAddToCart();
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  const [clearModalOpen, setClearModalOpen]   = useState(false);
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
+  const [removeProductId, setRemoveProductId] = useState<string | null>(null);
+
+  if (isLoading) return <LoadingSpinner />;
 
   if (isError) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-red-600 mb-2">Error Loading Wishlist</h2>
-          <p className="text-gray-600">Please try again later</p>
+          <p className="text-gray-500">Please try again later.</p>
         </div>
       </div>
     );
   }
 
-  const wishlist = data?.wishlist;
-  const products = wishlist?.products || [];
+  const products = data?.wishlist?.products ?? [];
 
-  const handleRemoveItem = (productId: string) => {
-    removeFromWishlistMutation.mutate(productId);
+  const openRemoveModal = (productId: string) => {
+    setRemoveProductId(productId);
+    setRemoveModalOpen(true);
   };
 
-  const handleClearWishlist = () => {
-    if (window.confirm('Are you sure you want to clear your wishlist?')) {
-      clearWishlistMutation.mutate();
+  const confirmRemove = () => {
+    if (removeProductId) {
+      removeFromWishlistMutation.mutate(removeProductId, {
+        onSettled: () => {
+          setRemoveModalOpen(false);
+          setRemoveProductId(null);
+        },
+      });
     }
   };
 
-  const handleAddToCart = (productId: string) => {
-    addToCartMutation.mutate({ productId, quantity: 1 });
+  const confirmClear = () => {
+    clearWishlistMutation.mutate(undefined, {
+      onSettled: () => setClearModalOpen(false),
+    });
   };
 
   if (products.length === 0) {
@@ -51,11 +62,11 @@ const WishlistPage = () => {
         <EmptyState
           icon={<FiHeart />}
           title="Your wishlist is empty"
-          description="Save your favorite products to your wishlist"
+          description="Save your favourite products here and add them to your cart when you're ready."
           action={
             <Link
               to="/products"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
             >
               Browse Products
             </Link>
@@ -68,46 +79,48 @@ const WishlistPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Wishlist</h1>
-            <p className="text-gray-600">{products.length} item(s) in your wishlist</p>
+            <h1 className="text-3xl font-bold text-gray-900">My Wishlist</h1>
+            <p className="text-gray-500 mt-1">
+              {products.length} item{products.length !== 1 ? 's' : ''} saved
+            </p>
           </div>
           <button
-            onClick={handleClearWishlist}
+            onClick={() => setClearModalOpen(true)}
             disabled={clearWishlistMutation.isPending}
-            className="text-red-600 hover:text-red-700 font-medium flex items-center space-x-2 disabled:opacity-50"
+            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50 transition-colors"
           >
-            <FiTrash2 size={18} />
-            <span>Clear Wishlist</span>
+            <FiTrash2 size={16} />
+            Clear Wishlist
           </button>
         </div>
 
-        {/* Wishlist Items Grid */}
+        {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => {
+          {products.map(product => {
             const category = product.category as Category;
             const imageUrl = getImageUrl(product.images?.[0]);
 
             return (
               <div
                 key={product._id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200"
               >
+                {/* Image */}
                 <Link to={`/products/${product._id}`}>
-                  <div className="relative h-64 overflow-hidden bg-gray-100">
+                  <div className="relative h-56 overflow-hidden bg-gray-100">
                     <img
                       src={imageUrl}
                       alt={product.title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://via.placeholder.com/300x300?text=No+Image';
-                      }}
+                      onError={e => { e.currentTarget.src = 'https://placehold.co/300x300?text=No+Image'; }}
                     />
                     {product.stock === 0 && (
-                      <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-                        <span className="text-white text-lg font-semibold bg-red-600 px-4 py-2 rounded-lg">
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm bg-red-600 px-3 py-1.5 rounded-lg">
                           Out of Stock
                         </span>
                       </div>
@@ -116,43 +129,42 @@ const WishlistPage = () => {
                 </Link>
 
                 <div className="p-4">
-                  {/* Category Badge */}
+                  {/* Category */}
                   {category && (
-                    <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full mb-2">
+                    <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
                       {category.name}
                     </span>
                   )}
 
-                  {/* Product Title */}
+                  {/* Title */}
                   <Link to={`/products/${product._id}`}>
-                    <h3 className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 mb-2 min-h-[3.5rem]">
+                    <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 mt-2 mb-1 min-h-[2.5rem]">
                       {product.title}
                     </h3>
                   </Link>
 
                   {/* Price */}
-                  <div className="mb-3">
-                    <span className="text-2xl font-bold text-gray-900">
-                      ${product.price.toFixed(2)}
-                    </span>
-                  </div>
+                  <p className="text-xl font-bold text-gray-900 mb-4">
+                    ${product.price.toFixed(2)}
+                  </p>
 
                   {/* Actions */}
-                  <div className="flex space-x-2">
+                  <div className="flex gap-2">
                     <button
-                      onClick={() => handleAddToCart(product._id)}
+                      onClick={() => addToCartMutation.mutate({ productId: product._id, quantity: 1 })}
                       disabled={product.stock === 0 || addToCartMutation.isPending}
-                      className="flex-1 bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1 text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      <FiShoppingCart size={16} />
-                      <span>{product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}</span>
+                      <FiShoppingCart size={15} />
+                      {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
                     </button>
                     <button
-                      onClick={() => handleRemoveItem(product._id)}
+                      onClick={() => openRemoveModal(product._id)}
                       disabled={removeFromWishlistMutation.isPending}
-                      className="p-2 border border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                      title="Remove from wishlist"
+                      className="w-9 h-9 flex items-center justify-center border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 flex-shrink-0"
                     >
-                      <FiTrash2 size={18} />
+                      <FiTrash2 size={16} />
                     </button>
                   </div>
                 </div>
@@ -161,6 +173,27 @@ const WishlistPage = () => {
           })}
         </div>
       </div>
+
+      {/* ── Modals ───────────────────────────────────────────────────────── */}
+      <ConfirmModal
+        isOpen={clearModalOpen}
+        title="Clear your wishlist?"
+        message="All saved items will be removed. You can always re-add them later."
+        confirmLabel="Yes, clear it"
+        isLoading={clearWishlistMutation.isPending}
+        onConfirm={confirmClear}
+        onCancel={() => setClearModalOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={removeModalOpen}
+        title="Remove from wishlist?"
+        message="This item will be removed from your saved list."
+        confirmLabel="Remove"
+        isLoading={removeFromWishlistMutation.isPending}
+        onConfirm={confirmRemove}
+        onCancel={() => { setRemoveModalOpen(false); setRemoveProductId(null); }}
+      />
     </div>
   );
 };

@@ -1,8 +1,13 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FiShoppingCart, FiArrowLeft, FiPackage, FiTag } from 'react-icons/fi';
-import { useProduct } from '../../hooks/useProducts';
+import {
+  FiShoppingCart, FiArrowLeft, FiPackage, FiTag,
+  FiMinus, FiPlus, FiHeart,
+} from 'react-icons/fi';
+import { useProduct, useProducts } from '../../hooks/useProducts';
 import { useAddToCart } from '../../hooks/useCart';
+import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../../hooks/useWishlist';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import ProductCard from '../../components/ProductCard';
 import type { Category } from '../../types';
 import { useState } from 'react';
 import { getImageUrl } from '../../utils/image';
@@ -10,101 +15,135 @@ import { getImageUrl } from '../../utils/image';
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const { data, isLoading, isError, error } = useProduct(id!);
-  const addToCartMutation = useAddToCart();
+  const { data: allProductsData } = useProducts();
+
+  const addToCartMutation     = useAddToCart();
+  const addToWishlistMutation = useAddToWishlist();
+  const removeFromWishlistMutation = useRemoveFromWishlist();
+  const isInWishlist = useIsInWishlist(id!);
+
   const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    if (!data?.product) return;
-    addToCartMutation.mutate({ productId: data.product._id, quantity: 1 });
-  };
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  /* ── Loading / Error states ─────────────────────────────────────────────── */
+  if (isLoading) return <LoadingSpinner />;
 
   if (isError || !data?.product) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-2">Product Not Found</h2>
-          <p className="text-gray-600 mb-4">
-            {error instanceof Error ? error.message : 'The product you are looking for does not exist.'}
+          <div className="text-6xl mb-4">😕</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
+          <p className="text-gray-500 mb-6">
+            {error instanceof Error ? error.message : 'This product does not exist or has been removed.'}
           </p>
           <Link
             to="/products"
-            className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-medium"
           >
-            <FiArrowLeft />
-            <span>Back to Products</span>
+            <FiArrowLeft size={16} />
+            Back to Products
           </Link>
         </div>
       </div>
     );
   }
 
-  const product = data.product;
+  const product  = data.product;
   const category = product.category as Category;
-  // Map stored paths → full displayable URLs
-  const images = product.images?.length
-    ? product.images.map((img) => getImageUrl(img))
+  const images   = product.images?.length
+    ? product.images.map(img => getImageUrl(img))
     : [getImageUrl(null)];
+
+  const maxQty = product.stock;
+
+  const handleDecrease = () => setQuantity(q => Math.max(1, q - 1));
+  const handleIncrease = () => setQuantity(q => Math.min(maxQty, q + 1));
+
+  const handleAddToCart = () => {
+    if (!data?.product) return;
+    addToCartMutation.mutate({ productId: product._id, quantity });
+  };
+
+  const handleToggleWishlist = () => {
+    if (isInWishlist) {
+      removeFromWishlistMutation.mutate(product._id);
+    } else {
+      addToWishlistMutation.mutate({ productId: product._id });
+    }
+  };
+
+  /* ── Related products — same category, exclude current ─────────────────── */
+  const related = (allProductsData?.products ?? [])
+    .filter(p => {
+      const cat = p.category as Category;
+      return p._id !== product._id && cat?._id === category?._id;
+    })
+    .slice(0, 4);
+
+  /* ── Stock indicator text + colour ─────────────────────────────────────── */
+  const stockLabel = product.stock === 0
+    ? { text: 'Out of Stock',       color: 'text-red-600 bg-red-50 border-red-200'    }
+    : product.stock <= 5
+    ? { text: `Only ${product.stock} left`, color: 'text-orange-600 bg-orange-50 border-orange-200' }
+    : { text: 'In Stock',           color: 'text-green-700 bg-green-50 border-green-200' };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Back Button */}
+
+        {/* ── Back button ─────────────────────────────────────────────── */}
         <button
-          onClick={() => navigate('/products')}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-6 transition-colors text-sm font-medium"
         >
-          <FiArrowLeft size={20} />
-          <span>Back to Products</span>
+          <FiArrowLeft size={18} />
+          Back
         </button>
 
-        {/* Product Details */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 lg:p-8">
-            {/* Product Images */}
-            <div className="space-y-4">
-              <div className="relative">
-                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
-                  <img
-                    src={images[selectedImage]}
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://placehold.co/600x600?text=No+Image';
-                    }}
-                  />
-                </div>
+        {/* ── Main product card ────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
+
+            {/* ── Left: images ──────────────────────────────────────────── */}
+            <div className="p-6 lg:p-8 bg-gray-50 flex flex-col gap-4">
+              {/* Main image */}
+              <div className="relative aspect-square rounded-xl overflow-hidden bg-white border border-gray-100">
+                <img
+                  src={images[selectedImage]}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                  onError={e => { e.currentTarget.src = 'https://placehold.co/600x600?text=No+Image'; }}
+                />
                 {product.stock === 0 && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-                    <span className="text-white text-2xl font-semibold">Out of Stock</span>
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
+                    <span className="text-white text-xl font-bold bg-red-600 px-5 py-2 rounded-lg">
+                      Out of Stock
+                    </span>
                   </div>
                 )}
               </div>
-              
-              {/* Image Thumbnails */}
+
+              {/* Thumbnails */}
               {images.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {images.map((image, index) => (
+                <div className="grid grid-cols-5 gap-2">
+                  {images.map((img, idx) => (
                     <button
-                      key={index}
-                      onClick={() => setSelectedImage(index)}
+                      key={idx}
+                      onClick={() => setSelectedImage(idx)}
                       className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                        selectedImage === index
-                          ? 'border-blue-600 ring-2 ring-blue-200'
-                          : 'border-gray-200 hover:border-gray-300'
+                        selectedImage === idx
+                          ? 'border-blue-600 ring-2 ring-blue-100'
+                          : 'border-gray-200 hover:border-gray-400'
                       }`}
                     >
                       <img
-                        src={image}
-                        alt={`${product.title} ${index + 1}`}
+                        src={img}
+                        alt={`${product.title} ${idx + 1}`}
                         className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = 'https://placehold.co/150x150?text=No+Image';
-                        }}
+                        onError={e => { e.currentTarget.src = 'https://placehold.co/100x100?text=No'; }}
                       />
                     </button>
                   ))}
@@ -112,103 +151,158 @@ const ProductDetailPage = () => {
               )}
             </div>
 
-            {/* Product Info */}
-            <div className="flex flex-col">
-              {/* Category Badge */}
+            {/* ── Right: info ───────────────────────────────────────────── */}
+            <div className="p-6 lg:p-8 flex flex-col">
+
+              {/* Category badge */}
               {category && (
-                <div className="flex items-center space-x-2 mb-4">
-                  <FiTag className="text-blue-600" />
-                  <span className="inline-block px-3 py-1 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full">
+                <div className="flex items-center gap-2 mb-3">
+                  <FiTag size={14} className="text-blue-600" />
+                  <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">
                     {category.name}
                   </span>
                 </div>
               )}
 
-              {/* Product Title */}
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              {/* Title */}
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight">
                 {product.title}
               </h1>
 
               {/* Price */}
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">
+              <div className="flex items-baseline gap-3 mb-4">
+                <span className="text-3xl font-bold text-gray-900">
                   ${product.price.toFixed(2)}
                 </span>
               </div>
 
-              {/* Stock Info */}
-              <div className="flex items-center space-x-2 mb-6">
-                <FiPackage className="text-gray-600" />
-                <span className="text-gray-700">
-                  {product.stock > 0 ? (
-                    <>
-                      <span className={`font-semibold ${product.stock <= 5 ? 'text-orange-600' : 'text-green-600'}`}>
-                        {product.stock}
-                      </span>{' '}
-                      in stock
-                      {product.stock <= 5 && <span className="text-orange-600 ml-2">(Low stock!)</span>}
-                    </>
-                  ) : (
-                    <span className="font-semibold text-red-600">Out of stock</span>
-                  )}
-                </span>
-              </div>
+              {/* Stock badge */}
+              <span className={`inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full text-sm font-semibold border mb-6 ${stockLabel.color}`}>
+                <FiPackage size={14} />
+                {stockLabel.text}
+              </span>
 
               {/* Description */}
               <div className="mb-8">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">Description</h2>
-                <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+                <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  Description
+                </h2>
+                <p className="text-gray-700 leading-relaxed whitespace-pre-line text-sm">
                   {product.description}
                 </p>
               </div>
 
-              {/* Add to Cart Button */}
-              <div className="mt-auto">
+              {/* Quantity selector */}
+              {product.stock > 0 && (
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Quantity
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={handleDecrease}
+                      disabled={quantity <= 1}
+                      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <FiMinus size={15} />
+                    </button>
+                    <span className="w-12 text-center text-base font-bold text-gray-900">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={handleIncrease}
+                      disabled={quantity >= maxQty}
+                      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <FiPlus size={15} />
+                    </button>
+                    <span className="text-sm text-gray-400">
+                      / {product.stock} available
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="mt-auto flex gap-3">
                 <button
                   onClick={handleAddToCart}
                   disabled={product.stock === 0 || addToCartMutation.isPending}
-                  className="w-full bg-blue-600 text-white py-4 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-3 text-lg font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-semibold text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                  <FiShoppingCart size={24} />
-                  <span>
-                    {addToCartMutation.isPending
-                      ? 'Adding...'
-                      : product.stock === 0
-                      ? 'Out of Stock'
-                      : 'Add to Cart'}
-                  </span>
+                  <FiShoppingCart size={20} />
+                  {addToCartMutation.isPending ? 'Adding…' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </button>
+
+                <button
+                  onClick={handleToggleWishlist}
+                  disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
+                  title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                  className={`w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all disabled:opacity-50 ${
+                    isInWishlist
+                      ? 'bg-red-500 border-red-500 text-white hover:bg-red-600'
+                      : 'border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500'
+                  }`}
+                >
+                  <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
                 </button>
               </div>
+
+              {/* Delivery note */}
+              {product.stock > 0 && (
+                <p className="mt-4 text-xs text-gray-400 text-center">
+                  🚚 Free shipping on orders over $100
+                </p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Additional Product Info */}
-        <div className="mt-8 bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Product Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border-b pb-3">
-              <span className="text-gray-600">Product ID:</span>
-              <span className="ml-2 font-semibold text-gray-900">{product._id}</span>
+        {/* ── Product specs table (clean, no raw IDs) ──────────────────── */}
+        <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Product Details</h2>
+          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+            <div className="flex justify-between py-2 border-b border-gray-100">
+              <dt className="text-sm text-gray-500">Category</dt>
+              <dd className="text-sm font-semibold text-gray-900">{category?.name || '—'}</dd>
             </div>
-            <div className="border-b pb-3">
-              <span className="text-gray-600">Category:</span>
-              <span className="ml-2 font-semibold text-gray-900">
-                {category?.name || 'N/A'}
-              </span>
-            </div>
-            <div className="border-b pb-3">
-              <span className="text-gray-600">Availability:</span>
-              <span className={`ml-2 font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+            <div className="flex justify-between py-2 border-b border-gray-100">
+              <dt className="text-sm text-gray-500">Availability</dt>
+              <dd className={`text-sm font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-              </span>
+              </dd>
             </div>
-            <div className="border-b pb-3">
-              <span className="text-gray-600">Stock Quantity:</span>
-              <span className="ml-2 font-semibold text-gray-900">{product.stock}</span>
+            <div className="flex justify-between py-2 border-b border-gray-100">
+              <dt className="text-sm text-gray-500">Price</dt>
+              <dd className="text-sm font-semibold text-gray-900">${product.price.toFixed(2)}</dd>
+            </div>
+            <div className="flex justify-between py-2 border-b border-gray-100">
+              <dt className="text-sm text-gray-500">Condition</dt>
+              <dd className="text-sm font-semibold text-gray-900">Brand New</dd>
+            </div>
+          </dl>
+        </div>
+
+        {/* ── Related products ─────────────────────────────────────────── */}
+        {related.length > 0 && (
+          <div className="mt-12">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">Related Products</h2>
+              <Link
+                to="/products"
+                className="text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+              >
+                View all →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {related.map(p => (
+                <ProductCard key={p._id} product={p} />
+              ))}
             </div>
           </div>
-        </div>
+        )}
+
       </div>
     </div>
   );

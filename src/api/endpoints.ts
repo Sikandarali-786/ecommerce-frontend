@@ -10,6 +10,8 @@ export const API_ENDPOINTS = {
   // User endpoints
   USER: {
     PROFILE: '/user/profile',
+    UPDATE_PROFILE: '/user/profile',
+    CHANGE_PASSWORD: '/user/change-password',
     ADMIN: '/user/admin',
     ADMIN_STATS: '/user/admin/stats',
     ADMIN_USERS: '/user/admin/users',

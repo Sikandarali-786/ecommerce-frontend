@@ -150,7 +150,7 @@ interface OrderCardProps {
 }
 
 const OrderCard = ({ order, onCancel, getStatusColor, getStatusIcon, isCancelling }: OrderCardProps) => {
-  const canCancel = order.orderStatus === 'Processing' || order.orderStatus === 'Confirmed';
+  const canCancel = order.orderStatus === 'Processing';
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">

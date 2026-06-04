@@ -46,8 +46,11 @@ const AdminDashboardPage = () => {
     },
     {
       title: 'Total Revenue',
-      value: `$${stats?.totalRevenue.toFixed(2) || '0.00'}`,
-      icon: <FiDollarSign size={32} />,
+      value: `${(stats?.totalRevenue ?? 0).toLocaleString('en-PK', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+      icon: <span className="text-2xl font-bold">PKR</span>,
       color: 'bg-orange-500',
       link: '/admin/orders',
     },
@@ -170,10 +173,10 @@ const AdminDashboardPage = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {typeof order.user === 'object' ? order.user.name : 'N/A'}
+                          {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {typeof order.user === 'object' ? order.user.email : 'N/A'}
+                          {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">

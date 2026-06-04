@@ -7,7 +7,17 @@ interface UserProfileResponse {
   user: User;
 }
 
-interface AdminResponse {
+interface UpdateProfileData {
+  name?: string;
+  email?: string;
+}
+
+interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface MessageResponse {
   success: boolean;
   message: string;
 }
@@ -23,11 +33,23 @@ export const getUserProfile = async (): Promise<UserProfileResponse> => {
 };
 
 /**
- * Access admin panel (admin only)
+ * Update profile (name / email)
  */
-export const getAdminAccess = async (): Promise<AdminResponse> => {
-  const response = await axiosInstance.get<AdminResponse>(
-    API_ENDPOINTS.USER.ADMIN
+export const updateUserProfile = async (data: UpdateProfileData): Promise<UserProfileResponse> => {
+  const response = await axiosInstance.put<UserProfileResponse>(
+    API_ENDPOINTS.USER.UPDATE_PROFILE,
+    data
+  );
+  return response.data;
+};
+
+/**
+ * Change password
+ */
+export const changeUserPassword = async (data: ChangePasswordData): Promise<MessageResponse> => {
+  const response = await axiosInstance.put<MessageResponse>(
+    API_ENDPOINTS.USER.CHANGE_PASSWORD,
+    data
   );
   return response.data;
 };
