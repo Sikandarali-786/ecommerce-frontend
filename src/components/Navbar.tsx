@@ -1,29 +1,42 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
-  FiPackage, FiChevronDown, FiSettings,
+  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser,
 } from 'react-icons/fi';
-import { MdAdminPanelSettings } from 'react-icons/md';
+import { MdAdminPanelSettings, MdPhone, MdEmail } from 'react-icons/md';
 import { useState, useRef, useEffect } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
+import logoImg from '../assets/images/logo.jpeg';
+
+// Nav categories matching the brand (motorcycle / auto-parts store)
+const NAV_LINKS = [
+  { label: '2026 Model Tanks', path: '/products', badge: null },
+  { label: 'Wheel',            path: '/products', badge: null },
+  { label: 'CD 70 Tanks',      path: '/products', badge: 'Hot' },
+  { label: 'CG 125 Tanks',     path: '/products', badge: 'Trending' },
+  { label: 'LED & Lighting',   path: '/products', badge: null },
+  { label: 'Helmet & Gadgets', path: '/products', badge: null },
+  { label: 'Silencer',         path: '/products', badge: null },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const authenticated = isAuthenticated();
   const admin = isAdmin();
   const user = getUser();
 
-  // Cart item count badge
   const { data: cartData } = useCart();
   const cartCount = cartData?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
-  // Close user dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
@@ -34,11 +47,16 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileOpen(false);
     setIsUserMenuOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (searchOpen && searchRef.current) {
+      searchRef.current.focus();
+    }
+  }, [searchOpen]);
 
   const handleLogout = () => {
     logout();
@@ -46,138 +64,162 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
   const isActive = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
-
-  const navLinkClass = (path: string) =>
-    `text-sm font-medium transition-colors relative after:absolute after:bottom-[-2px] after:left-0 after:h-[2px] after:rounded-full after:transition-all ${
-      isActive(path)
-        ? 'text-indigo-600 after:w-full after:bg-indigo-600'
-        : 'text-slate-600 hover:text-indigo-600 after:w-0 hover:after:w-full after:bg-indigo-600'
-    }`;
 
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U';
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-50 border-b border-slate-100">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-
-          {/* ── Logo ─────────────────────────────────────────── */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-lg flex items-center justify-center">
-              <FiShoppingCart className="text-white" size={16} />
-            </div>
-            <span className="text-xl font-800 bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
-              ShopHub
-            </span>
-          </Link>
-
-          {/* ── Desktop nav links ─────────────────────────────── */}
-          <div className="hidden md:flex items-center gap-8">
-            <Link to="/" className={navLinkClass('/')}>Home</Link>
-            <Link to="/products" className={navLinkClass('/products')}>Products</Link>
-            {authenticated && (
-              <>
-                <Link to="/orders" className={navLinkClass('/orders')}>Orders</Link>
-              </>
-            )}
+    <header className="sticky top-0 z-50 shadow-md">
+      {/* ── Top info bar ──────────────────────────────────────────────── */}
+      <div className="bg-[#8B0000] text-white text-xs py-4 px-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-5">
+            <a href="tel:03048405899"
+              className="flex items-center gap-1.5 hover:text-red-200 transition-colors"
+            >
+              <MdPhone size={13} />
+              <span>03048405899</span>
+            </a>
+            <a
+              href="mailto:rehanqureshi@gmail.com"
+              className="flex items-center gap-1.5 hover:text-red-200 transition-colors"
+            >
+              <MdEmail size={13} />
+              <span>rehanqureshi@gmail.com</span>
+            </a>
           </div>
+          <span className="hidden sm:block text-red-200 text-[11px]">
+            Pakistan's #1 Motorcycle Parts Store
+          </span>
+        </div>
+      </div>
 
-          {/* ── Desktop actions ───────────────────────────────── */}
-          <div className="hidden md:flex items-center gap-3">
-            {authenticated ? (
-              <>
-                {/* Wishlist */}
+      {/* ── Main navbar ───────────────────────────────────────────────── */}
+      <div className="bg-white border-b border-slate-200">
+        <nav className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center h-[70px]">
+            {/* ── Logo ─────────────────────────────────────────────── */}
+            <Link to="/" className="flex items-center flex-shrink-0 mr-6">
+              <img
+                src={logoImg}
+                alt="Imtiaz Bikerz Studio"
+                className="h-14 w-auto object-contain rounded-sm"
+              />
+            </Link>
+
+            {/* ── Desktop nav links ──────────────────────────────────── */}
+            <div className="hidden lg:flex items-center gap-1 flex-1">
+              {NAV_LINKS.map(link => (
                 <Link
-                  to="/wishlist"
-                  title="Wishlist"
-                  className={`p-2 rounded-lg transition-colors ${
-                    isActive('/wishlist')
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-slate-500 hover:text-indigo-600 hover:bg-slate-50'
+                  key={link.label}
+                  to={link.path}
+                  className={`relative flex items-center gap-1.5 px-3 py-2 text-10 font-semibold whitespace-nowrap transition-colors rounded-md ${
+                    isActive(link.path)
+                      ? 'text-[#8B0000]'
+                      : 'text-slate-700 hover:text-[#8B0000]'
                   }`}
                 >
-                  <FiHeart size={20} />
-                </Link>
-
-                {/* Cart with badge */}
-                <Link
-                  to="/cart"
-                  title="Cart"
-                  className={`relative p-2 rounded-lg transition-colors ${
-                    isActive('/cart')
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-slate-500 hover:text-indigo-600 hover:bg-slate-50'
-                  }`}
-                >
-                  <FiShoppingCart size={20} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-indigo-600 text-white text-[10px] font-700 rounded-full flex items-center justify-center px-1 leading-none">
-                      {cartCount > 99 ? '99+' : cartCount}
+                  {link.label}
+                  {link.badge && (
+                    <span
+                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none text-white ${
+                        link.badge === 'Hot' ? 'bg-red-500' : 'bg-green-500'
+                      }`}
+                    >
+                      {link.badge}
                     </span>
                   )}
                 </Link>
+              ))}
+            </div>
 
-                {/* Admin link */}
-                {admin && (
-                  <Link
-                    to="/admin"
-                    title="Admin Panel"
-                    className="p-2 rounded-lg text-slate-500 hover:text-indigo-600 hover:bg-slate-50 transition-colors"
+            {/* ── Desktop right actions ──────────────────────────────── */}
+            <div className="hidden md:flex items-center gap-1 ml-2">
+
+              {/* Search */}
+              <div className="relative">
+                {searchOpen ? (
+                  <form onSubmit={handleSearch} className="flex items-center">
+                    <input
+                      ref={searchRef}
+                      type="text"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                      placeholder="Search products..."
+                      className="border border-slate-300 rounded-lg text-sm px-3 py-1.5 w-44 focus:outline-none focus:border-[#8B0000] focus:ring-1 focus:ring-[#8B0000]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
+                      className="ml-1 p-1.5 text-slate-400 hover:text-slate-600"
+                    >
+                      <FiX size={16} />
+                    </button>
+                  </form>
+                ) : (
+                  <button
+                    onClick={() => setSearchOpen(true)}
+                    className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50"
+                    title="Search"
                   >
-                    <MdAdminPanelSettings size={22} />
-                  </Link>
+                    <FiSearch size={20} />
+                  </button>
                 )}
+              </div>
 
-                {/* User dropdown */}
+              {/* User / Auth */}
+              {authenticated ? (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(v => !v)}
-                    className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    title="Account"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-700 flex-shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                       {initials}
                     </div>
-                    <span className="text-sm font-600 text-slate-700 max-w-[100px] truncate">
-                      {user?.name}
-                    </span>
                     <FiChevronDown
-                      size={14}
+                      size={13}
                       className={`text-slate-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
 
-                  {/* Dropdown menu */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-100 py-1 z-50">
-                      <div className="px-3 py-2 border-b border-slate-100">
-                        <p className="text-xs font-600 text-slate-900 truncate">{user?.name}</p>
+                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-slate-100 py-1 z-50">
+                      <div className="px-3 py-2.5 border-b border-slate-100">
+                        <p className="text-sm font-semibold text-slate-900 truncate">{user?.name}</p>
                         <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                       </div>
                       <Link
                         to="/orders"
                         className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                       >
-                        <FiPackage size={15} />
-                        My Orders
+                        <FiPackage size={15} /> My Orders
                       </Link>
                       <Link
                         to="/profile"
                         className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                       >
-                        <FiSettings size={15} />
-                        Account Settings
+                        <FiSettings size={15} /> Account Settings
                       </Link>
                       {admin && (
                         <Link
                           to="/admin"
                           className="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
                         >
-                          <MdAdminPanelSettings size={15} />
-                          Admin Panel
+                          <MdAdminPanelSettings size={15} /> Admin Panel
                         </Link>
                       )}
                       <div className="border-t border-slate-100 mt-1">
@@ -185,122 +227,182 @@ const Navbar = () => {
                           onClick={handleLogout}
                           className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
                         >
-                          <FiLogOut size={15} />
-                          Logout
+                          <FiLogOut size={15} /> Logout
                         </button>
                       </div>
                     </div>
                   )}
                 </div>
-              </>
-            ) : (
-              <>
+              ) : (
                 <Link
                   to="/login"
-                  className="text-sm font-600 text-slate-600 hover:text-indigo-600 transition-colors"
+                  className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50"
+                  title="Login"
                 >
-                  Login
+                  <FiUser size={20} />
                 </Link>
-                <Link
-                  to="/register"
-                  className="text-sm font-600 text-white bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg transition-colors"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
+              )}
 
-          {/* ── Mobile: cart badge + menu toggle ─────────────── */}
-          <div className="md:hidden flex items-center gap-2">
-            {authenticated && (
-              <Link to="/cart" className="relative p-2 text-slate-600">
-                <FiShoppingCart size={22} />
+              {/* Wishlist */}
+              {authenticated && (
+                <Link
+                  to="/wishlist"
+                  title="Wishlist"
+                  className={`p-2 rounded-lg transition-colors ${
+                    isActive('/wishlist')
+                      ? 'text-[#8B0000] bg-red-50'
+                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                  }`}
+                >
+                  <FiHeart size={20} />
+                </Link>
+              )}
+
+              {/* Cart */}
+              <Link
+                to="/cart"
+                title="Cart"
+                className={`relative p-2 rounded-lg transition-colors ${
+                  isActive('/cart')
+                    ? 'text-[#8B0000] bg-red-50'
+                    : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                }`}
+              >
+                <FiShoppingCart size={20} />
                 {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] bg-indigo-600 text-white text-[9px] font-700 rounded-full flex items-center justify-center px-1">
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                     {cartCount > 99 ? '99+' : cartCount}
                   </span>
                 )}
               </Link>
-            )}
-            <button
-              onClick={() => setIsMobileOpen(v => !v)}
-              className="p-2 text-slate-600 hover:text-indigo-600 transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isMobileOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-            </button>
+
+              {/* Admin shortcut */}
+              {admin && (
+                <Link
+                  to="/admin"
+                  title="Admin Panel"
+                  className="p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors"
+                >
+                  <MdAdminPanelSettings size={22} />
+                </Link>
+              )}
+            </div>
+
+            {/* ── Mobile: cart + hamburger ───────────────────────────── */}
+            <div className="md:hidden flex items-center gap-2">
+              <Link to="/cart" className="relative p-2 text-slate-700">
+                <FiShoppingCart size={22} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
+                    {cartCount > 99 ? '99+' : cartCount}
+                  </span>
+                )}
+              </Link>
+              <button
+                onClick={() => setIsMobileOpen(v => !v)}
+                className="p-2 text-slate-700 hover:text-[#8B0000] transition-colors"
+                aria-label="Toggle menu"
+              >
+                {isMobileOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+              </button>
+            </div>
           </div>
-        </div>
+        </nav>
+      </div>
 
-        {/* ── Mobile menu ───────────────────────────────────────── */}
-        {isMobileOpen && (
-          <div className="md:hidden border-t border-slate-100 py-4 space-y-1">
-            <MobileLink to="/" label="Home" icon={<FiShoppingCart size={17} />} active={isActive('/')} />
-            <MobileLink to="/products" label="Products" icon={<FiPackage size={17} />} active={isActive('/products')} />
+      {/* ── Mobile menu ───────────────────────────────────────────────── */}
+      {isMobileOpen && (
+        <div className="md:hidden bg-white border-t border-slate-200 py-3 space-y-1 shadow-lg">
+          {/* Mobile search */}
+          <form onSubmit={handleSearch} className="px-4 mb-3">
+            <div className="flex items-center border border-slate-300 rounded-lg overflow-hidden">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search products..."
+                className="flex-1 text-sm px-3 py-2 focus:outline-none"
+              />
+              <button type="submit" className="px-3 py-2 bg-[#8B0000] text-white">
+                <FiSearch size={15} />
+              </button>
+            </div>
+          </form>
 
+          {NAV_LINKS.map(link => (
+            <Link
+              key={link.label}
+              to={link.path}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                isActive(link.path)
+                  ? 'text-[#8B0000] bg-red-50'
+                  : 'text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              {link.label}
+              {link.badge && (
+                <span
+                  className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none text-white ${
+                    link.badge === 'Hot' ? 'bg-red-500' : 'bg-green-500'
+                  }`}
+                >
+                  {link.badge}
+                </span>
+              )}
+            </Link>
+          ))}
+
+          <div className="border-t border-slate-100 pt-2 mt-2">
             {authenticated ? (
               <>
-                <MobileLink to="/wishlist" label="Wishlist" icon={<FiHeart size={17} />} active={isActive('/wishlist')} />
-                <MobileLink to="/orders" label="My Orders" icon={<FiPackage size={17} />} active={isActive('/orders')} />
+                <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                  <FiHeart size={17} /> Wishlist
+                </Link>
+                <Link to="/orders" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                  <FiPackage size={17} /> My Orders
+                </Link>
                 {admin && (
-                  <MobileLink to="/admin" label="Admin Panel" icon={<MdAdminPanelSettings size={17} />} active={isActive('/admin')} />
+                  <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                    <MdAdminPanelSettings size={17} /> Admin Panel
+                  </Link>
                 )}
-                <div className="pt-3 mt-3 border-t border-slate-100">
-                  <div className="flex items-center gap-3 px-3 py-2 mb-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xs font-700">
-                      {initials}
-                    </div>
-                    <div>
-                      <p className="text-sm font-600 text-slate-900">{user?.name}</p>
-                      <p className="text-xs text-slate-500">{user?.email}</p>
-                    </div>
+                <div className="px-4 py-2 flex items-center gap-3 border-t border-slate-100 mt-1">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold">
+                    {initials}
                   </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors text-sm font-500"
-                  >
-                    <FiLogOut size={17} />
-                    Logout
-                  </button>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">{user?.name}</p>
+                    <p className="text-xs text-slate-500">{user?.email}</p>
+                  </div>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
+                >
+                  <FiLogOut size={17} /> Logout
+                </button>
               </>
             ) : (
-              <div className="pt-3 mt-3 border-t border-slate-100 flex flex-col gap-2">
+              <div className="flex flex-col gap-2 px-4 pt-1">
                 <Link
                   to="/login"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-600 text-indigo-600 border border-indigo-200 hover:bg-indigo-50 transition-colors"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-[#8B0000] border border-red-200 hover:bg-red-50 transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-600 text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-white bg-[#8B0000] hover:bg-red-900 transition-colors"
                 >
                   Get Started
                 </Link>
               </div>
             )}
           </div>
-        )}
-      </nav>
+        </div>
+      )}
     </header>
   );
 };
-
-// Mobile nav item helper
-const MobileLink = ({
-  to, label, icon, active,
-}: { to: string; label: string; icon: React.ReactNode; active: boolean }) => (
-  <Link
-    to={to}
-    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-500 transition-colors ${
-      active ? 'bg-indigo-50 text-indigo-600' : 'text-slate-700 hover:bg-slate-50'
-    }`}
-  >
-    {icon}
-    {label}
-  </Link>
-);
 
 export default Navbar;
