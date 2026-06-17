@@ -1,5 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
+import { useCategories } from '../../hooks/useCategories';
 import ProductCard from '../../components/ProductCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import SearchBar from '../../components/SearchBar';
@@ -8,6 +10,9 @@ import type { Product, Category } from '../../types';
 
 const ProductsPage = () => {
   const { data, isLoading, isError, error } = useProducts();
+  const { data: categoriesData } = useCategories();
+  const [searchParams] = useSearchParams();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     category: '',
@@ -16,13 +21,42 @@ const ProductsPage = () => {
     sortBy: '',
   });
 
-  // Filter and sort products
+  // ── Pre-apply category filter from URL query param (?category=slug) ────────
+  useEffect(() => {
+    const slugFromUrl = searchParams.get('category') ?? '';
+    const searchFromUrl = searchParams.get('search') ?? '';
+
+    if (searchFromUrl) {
+      setSearchQuery(searchFromUrl);
+    }
+
+    if (slugFromUrl && categoriesData?.categories) {
+      // Resolve slug → _id so the existing filter logic works unchanged
+      const matched = categoriesData.categories.find(
+        c => c.slug === slugFromUrl
+      );
+      setFilters(prev => ({
+        ...prev,
+        category: matched?._id ?? '',
+      }));
+    } else if (!slugFromUrl) {
+      // Clear category filter when URL has no category param
+      setFilters(prev => ({ ...prev, category: '' }));
+    }
+  }, [searchParams, categoriesData]);
+
+  // ── Current category name for the page heading ────────────────────────────
+  const activeCategoryName = useMemo(() => {
+    if (!filters.category || !categoriesData?.categories) return '';
+    return categoriesData.categories.find(c => c._id === filters.category)?.name ?? '';
+  }, [filters.category, categoriesData]);
+
+  // ── Filter & sort products ────────────────────────────────────────────────
   const filteredProducts = useMemo(() => {
     if (!data?.products) return [];
 
     let filtered = [...data.products];
 
-    // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -32,7 +66,6 @@ const ProductsPage = () => {
       );
     }
 
-    // Category filter
     if (filters.category) {
       filtered = filtered.filter((product) => {
         const category = product.category as Category;
@@ -40,40 +73,26 @@ const ProductsPage = () => {
       });
     }
 
-    // Price range filter
     if (filters.minPrice) {
-      const minPrice = parseFloat(filters.minPrice);
-      filtered = filtered.filter((product) => product.price >= minPrice);
+      filtered = filtered.filter((p) => p.price >= parseFloat(filters.minPrice));
     }
     if (filters.maxPrice) {
-      const maxPrice = parseFloat(filters.maxPrice);
-      filtered = filtered.filter((product) => product.price <= maxPrice);
+      filtered = filtered.filter((p) => p.price <= parseFloat(filters.maxPrice));
     }
 
-    // Sort
     if (filters.sortBy) {
       switch (filters.sortBy) {
-        case 'price-asc':
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case 'price-desc':
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        case 'name-asc':
-          filtered.sort((a, b) => a.title.localeCompare(b.title));
-          break;
-        case 'name-desc':
-          filtered.sort((a, b) => b.title.localeCompare(a.title));
-          break;
+        case 'price-asc':  filtered.sort((a, b) => a.price - b.price); break;
+        case 'price-desc': filtered.sort((a, b) => b.price - a.price); break;
+        case 'name-asc':   filtered.sort((a, b) => a.title.localeCompare(b.title)); break;
+        case 'name-desc':  filtered.sort((a, b) => b.title.localeCompare(a.title)); break;
       }
     }
 
     return filtered;
   }, [data?.products, searchQuery, filters]);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  if (isLoading) return <LoadingSpinner />;
 
   if (isError) {
     return (
@@ -88,16 +107,19 @@ const ProductsPage = () => {
     );
   }
 
-  const totalProducts = data?.products?.length || 0;
+  const totalProducts = data?.products?.length ?? 0;
   const displayedProducts = filteredProducts.length;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">All Products</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            {activeCategoryName ? activeCategoryName : 'All Products'}
+          </h1>
+          <p className="text-gray-500 text-sm">
             {displayedProducts === totalProducts
               ? `Showing all ${totalProducts} products`
               : `Showing ${displayedProducts} of ${totalProducts} products`}
@@ -118,17 +140,17 @@ const ProductsPage = () => {
           {/* Products Grid */}
           <div className="lg:col-span-3">
             {filteredProducts.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-md p-12 text-center">
+              <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-slate-100">
                 <p className="text-xl text-gray-600 mb-2">No products found</p>
-                <p className="text-gray-500">
+                <p className="text-gray-400 text-sm">
                   {searchQuery || filters.category || filters.minPrice || filters.maxPrice
                     ? 'Try adjusting your filters or search query'
-                    : 'No products available at the moment'}
+                    : 'No products available in this category yet'}
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
+                {filteredProducts.map((product: Product) => (
                   <ProductCard key={product._id} product={product} />
                 ))}
               </div>

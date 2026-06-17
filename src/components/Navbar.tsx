@@ -7,18 +7,8 @@ import { MdAdminPanelSettings, MdPhone, MdEmail } from 'react-icons/md';
 import { useState, useRef, useEffect } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
+import { useCategories } from '../hooks/useCategories';
 import logoImg from '../assets/images/logo.jpeg';
-
-// Nav categories matching the brand (motorcycle / auto-parts store)
-const NAV_LINKS = [
-  { label: '2026 Model Tanks', path: '/products', badge: null },
-  { label: 'Wheel',            path: '/products', badge: null },
-  { label: 'CD 70 Tanks',      path: '/products', badge: 'Hot' },
-  { label: 'CG 125 Tanks',     path: '/products', badge: 'Trending' },
-  { label: 'LED & Lighting',   path: '/products', badge: null },
-  { label: 'Helmet & Gadgets', path: '/products', badge: null },
-  { label: 'Silencer',         path: '/products', badge: null },
-];
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -37,6 +27,14 @@ const Navbar = () => {
   const { data: cartData } = useCart();
   const cartCount = cartData?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
 
+  // ── Dynamic categories from backend ──────────────────────────────────────
+  const { data: categoriesData } = useCategories();
+  const categories = categoriesData?.categories ?? [];
+
+  // Which category slug is currently active (from URL)
+  const searchParams = new URLSearchParams(location.search);
+  const activeCategorySlug = searchParams.get('category') ?? '';
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
@@ -50,7 +48,7 @@ const Navbar = () => {
   useEffect(() => {
     setIsMobileOpen(false);
     setIsUserMenuOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   useEffect(() => {
     if (searchOpen && searchRef.current) {
@@ -83,10 +81,11 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
-      <div className="bg-[#8B0000] text-white text-xs py-4 px-6">
+      <div className="bg-[#8B0000] text-white text-xs py-1.5 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
-            <a href="tel:03048405899"
+            <a
+              href="tel:03048405899"
               className="flex items-center gap-1.5 hover:text-red-200 transition-colors"
             >
               <MdPhone size={13} />
@@ -109,9 +108,10 @@ const Navbar = () => {
       {/* ── Main navbar ───────────────────────────────────────────────── */}
       <div className="bg-white border-b border-slate-200">
         <nav className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center h-[70px]">
-            {/* ── Logo ─────────────────────────────────────────────── */}
-            <Link to="/" className="flex items-center flex-shrink-0 mr-6">
+          <div className="flex items-center justify-between h-[70px]">
+
+            {/* ── Logo ──────────────────────────────────────────────── */}
+            <Link to="/" className="flex items-center flex-shrink-0 mr-4">
               <img
                 src={logoImg}
                 alt="Imtiaz Bikerz Studio"
@@ -119,34 +119,39 @@ const Navbar = () => {
               />
             </Link>
 
-            {/* ── Desktop nav links ──────────────────────────────────── */}
-            <div className="hidden lg:flex items-center gap-1 flex-1">
-              {NAV_LINKS.map(link => (
-                <Link
-                  key={link.label}
-                  to={link.path}
-                  className={`relative flex items-center gap-1.5 px-3 py-2 text-10 font-semibold whitespace-nowrap transition-colors rounded-md ${
-                    isActive(link.path)
-                      ? 'text-[#8B0000]'
-                      : 'text-slate-700 hover:text-[#8B0000]'
-                  }`}
-                >
-                  {link.label}
-                  {link.badge && (
-                    <span
-                      className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none text-white ${
-                        link.badge === 'Hot' ? 'bg-red-500' : 'bg-green-500'
+            {/* ── Desktop nav: dynamic categories ───────────────────── */}
+            <div className="hidden lg:flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-hide">
+              {categories.length === 0 ? (
+                // Skeleton placeholders while loading
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 flex-shrink-0"
+                  />
+                ))
+              ) : (
+                categories.map((cat) => {
+                  const isActivecat = activeCategorySlug === cat.slug
+                    && location.pathname.startsWith('/products');
+                  return (
+                    <Link
+                      key={cat._id}
+                      to={`/products?category=${encodeURIComponent(cat.slug)}`}
+                      className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md flex-shrink-0 ${
+                        isActivecat
+                          ? 'text-[#8B0000] bg-red-50'
+                          : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
                       }`}
                     >
-                      {link.badge}
-                    </span>
-                  )}
-                </Link>
-              ))}
+                      {cat.name}
+                    </Link>
+                  );
+                })
+              )}
             </div>
 
             {/* ── Desktop right actions ──────────────────────────────── */}
-            <div className="hidden md:flex items-center gap-1 ml-2">
+            <div className="hidden md:flex items-center gap-1 ml-2 flex-shrink-0">
 
               {/* Search */}
               <div className="relative">
@@ -313,6 +318,7 @@ const Navbar = () => {
       {/* ── Mobile menu ───────────────────────────────────────────────── */}
       {isMobileOpen && (
         <div className="md:hidden bg-white border-t border-slate-200 py-3 space-y-1 shadow-lg">
+
           {/* Mobile search */}
           <form onSubmit={handleSearch} className="px-4 mb-3">
             <div className="flex items-center border border-slate-300 rounded-lg overflow-hidden">
@@ -329,28 +335,36 @@ const Navbar = () => {
             </div>
           </form>
 
-          {NAV_LINKS.map(link => (
-            <Link
-              key={link.label}
-              to={link.path}
-              className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                isActive(link.path)
-                  ? 'text-[#8B0000] bg-red-50'
-                  : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              {link.label}
-              {link.badge && (
-                <span
-                  className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none text-white ${
-                    link.badge === 'Hot' ? 'bg-red-500' : 'bg-green-500'
-                  }`}
-                >
-                  {link.badge}
-                </span>
-              )}
-            </Link>
-          ))}
+          {/* Dynamic category links in mobile */}
+          {categories.map(cat => {
+            const isActivecat = activeCategorySlug === cat.slug
+              && location.pathname.startsWith('/products');
+            return (
+              <Link
+                key={cat._id}
+                to={`/products?category=${encodeURIComponent(cat.slug)}`}
+                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
+                  isActivecat
+                    ? 'text-[#8B0000] bg-red-50'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {cat.name}
+              </Link>
+            );
+          })}
+
+          {/* All products link */}
+          <Link
+            to="/products"
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-t border-slate-100 mt-1 pt-3 ${
+              location.pathname === '/products' && !activeCategorySlug
+                ? 'text-[#8B0000] bg-red-50'
+                : 'text-slate-700 hover:bg-slate-50'
+            }`}
+          >
+            All Products
+          </Link>
 
           <div className="border-t border-slate-100 pt-2 mt-2">
             {authenticated ? (
