@@ -9,6 +9,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import { checkoutSchema, type CheckoutFormData } from '../../schemas/checkout.schema';
 import { getImageUrl } from '../../utils/image';
+import Button from '../../components/Button';
 
 const CheckoutPage = () => {
   const navigate = useNavigate();
@@ -40,12 +41,13 @@ const CheckoutPage = () => {
           title="Your cart is empty"
           description="Add some products to your cart before checkout"
           action={
-            <button
+            <Button
+              variant="primary"
+              size="lg"
               onClick={() => navigate('/products')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
             >
               Browse Products
-            </button>
+            </Button>
           }
         />
       </div>
@@ -352,13 +354,16 @@ const CheckoutPage = () => {
                 )}
 
                 {/* Place Order Button */}
-                <button
+                <Button
                   type="submit"
-                  disabled={createOrderMutation.isPending}
-                  className="w-full mt-6 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  variant="primary"
+                  size="lg"
+                  fullWidth
+                  loading={createOrderMutation.isPending}
+                  className="mt-6"
                 >
-                  {createOrderMutation.isPending ? 'Processing...' : `Place Order - $${grandTotal.toFixed(2)}`}
-                </button>
+                  {`Place Order — $${grandTotal.toFixed(2)}`}
+                </Button>
 
                 <p className="text-xs text-gray-500 text-center mt-4">
                   By placing your order, you agree to our terms and conditions

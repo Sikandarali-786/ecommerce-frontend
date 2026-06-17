@@ -4,6 +4,7 @@ import { FiPackage, FiShoppingBag, FiClock, FiCheckCircle, FiXCircle } from 'rea
 import { useOrders, useCancelOrder } from '../../hooks/useOrders';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
+import Button from '../../components/Button';
 import type { Order } from '../../api/order.api';
 
 const OrdersPage = () => {
@@ -74,12 +75,9 @@ const OrdersPage = () => {
           title="No orders yet"
           description="You haven't placed any orders yet. Start shopping to see your orders here."
           action={
-            <Link
-              to="/products"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-            >
+            <Button variant="primary" size="lg" onClick={() => window.location.href = '/products'}>
               Browse Products
-            </Link>
+            </Button>
           }
         />
       </div>
@@ -99,19 +97,17 @@ const OrdersPage = () => {
         <div className="bg-white rounded-lg shadow-md p-4 mb-6">
           <div className="flex flex-wrap gap-2">
             {['all', 'Processing', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'].map((status) => (
-              <button
+              <Button
                 key={status}
+                variant="tab"
+                active={filter === status}
+                size="md"
                 onClick={() => setFilter(status as typeof filter)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === status
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
               >
                 {status === 'all' ? 'All Orders' : status}
                 {status === 'all' && ` (${orders.length})`}
                 {status !== 'all' && ` (${orders.filter(o => o.orderStatus === status).length})`}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -235,20 +231,18 @@ const OrderCard = ({ order, onCancel, getStatusColor, getStatusIcon, isCancellin
             </div>
           </div>
           <div className="flex items-center space-x-3">
-            <Link
-              to={`/order-success/${order._id}`}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
-              View Details
+            <Link to={`/order-success/${order._id}`}>
+              <Button variant="primary" size="md">View Details</Button>
             </Link>
             {canCancel && (
-              <button
+              <Button
+                variant="danger"
+                size="md"
                 onClick={() => onCancel(order._id)}
-                disabled={isCancelling}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                loading={isCancelling}
               >
-                {isCancelling ? 'Cancelling...' : 'Cancel Order'}
-              </button>
+                Cancel Order
+              </Button>
             )}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useAddToCart } from '../hooks/useCart';
 import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../hooks/useWishlist';
 import type { Product, Category } from '../types';
 import { getImageUrl } from '../utils/image';
+import Button from './Button';
 
 interface ProductCardProps {
   product: Product;
@@ -43,10 +44,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             : 'bg-white text-gray-600 hover:bg-gray-100'
         } shadow-md disabled:opacity-50`}
       >
-        <FiHeart
-          size={20}
-          fill={isInWishlist ? 'currentColor' : 'none'}
-        />
+        <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
       </button>
 
       <Link to={`/products/${product._id}`}>
@@ -109,20 +107,17 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {/* Add to Cart Button */}
-        <button
+        <Button
+          variant="primary"
+          fullWidth
+          size="md"
           onClick={handleAddToCart}
-          disabled={product.stock === 0 || addToCartMutation.isPending}
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400"
+          disabled={product.stock === 0}
+          loading={addToCartMutation.isPending}
+          leftIcon={<FiShoppingCart size={18} />}
         >
-          <FiShoppingCart size={18} />
-          <span>
-            {addToCartMutation.isPending
-              ? 'Adding...'
-              : product.stock === 0
-              ? 'Out of Stock'
-              : 'Add to Cart'}
-          </span>
-        </button>
+          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+        </Button>
       </div>
     </div>
   );

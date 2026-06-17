@@ -4,6 +4,7 @@ import { useCategories } from '../../hooks/useCategories';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { createCategory, updateCategory, deleteCategory } from '../../api';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Button from '../../components/Button';
 import toast from 'react-hot-toast';
 import type { Category } from '../../types';
 
@@ -93,13 +94,14 @@ const AdminCategoriesPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
           <p className="text-gray-500 text-sm mt-1">{categories.length} total categories</p>
         </div>
-        <button
+        <Button
+          variant="primary"
+          size="md"
           onClick={openCreate}
-          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          leftIcon={<FiPlus size={18} />}
         >
-          <FiPlus size={18} />
-          <span>Add Category</span>
-        </button>
+          Add Category
+        </Button>
       </div>
 
       {/* Categories Grid */}
@@ -125,18 +127,24 @@ const AdminCategoriesPage = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => openEdit(cat)}
-                  className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  className="text-blue-600 hover:bg-blue-50"
+                  title="Edit"
                 >
                   <FiEdit2 size={16} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setDeleteConfirm(cat._id)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="text-red-600 hover:bg-red-50"
+                  title="Delete"
                 >
                   <FiTrash2 size={16} />
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -151,7 +159,7 @@ const AdminCategoriesPage = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {editing ? 'Edit Category' : 'Add New Category'}
               </h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 !px-2">✕</Button>
             </div>
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
@@ -178,20 +186,18 @@ const AdminCategoriesPage = () => {
                 <p className="text-xs text-gray-400 mt-1">Auto-generated from name. Used in URLs.</p>
               </div>
               <div className="flex space-x-3 pt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-                >
+                <Button variant="secondary" size="md" onClick={closeModal} className="flex-1">
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+                  variant="primary"
+                  size="md"
+                  loading={isPending}
+                  className="flex-1"
                 >
                   {isPending ? 'Saving...' : editing ? 'Update' : 'Create'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -207,19 +213,23 @@ const AdminCategoriesPage = () => {
               Are you sure? Categories with products cannot be deleted.
             </p>
             <div className="flex space-x-3">
-              <button
+              <Button
+                variant="secondary"
+                size="md"
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="flex-1"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
                 onClick={() => deleteMutation.mutate(deleteConfirm)}
-                disabled={deleteMutation.isPending}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400"
+                loading={deleteMutation.isPending}
+                className="flex-1"
               >
-                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-              </button>
+                Delete
+              </Button>
             </div>
           </div>
         </div>

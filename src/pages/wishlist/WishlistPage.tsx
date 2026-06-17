@@ -6,6 +6,7 @@ import { useAddToCart } from '../../hooks/useCart';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import ConfirmModal from '../../components/ConfirmModal';
+import Button from '../../components/Button';
 import type { Category } from '../../types';
 import { getImageUrl } from '../../utils/image';
 
@@ -64,12 +65,9 @@ const WishlistPage = () => {
           title="Your wishlist is empty"
           description="Save your favourite products here and add them to your cart when you're ready."
           action={
-            <Link
-              to="/products"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
+            <Button variant="primary" size="lg" onClick={() => window.location.href = '/products'}>
               Browse Products
-            </Link>
+            </Button>
           }
         />
       </div>
@@ -88,14 +86,15 @@ const WishlistPage = () => {
               {products.length} item{products.length !== 1 ? 's' : ''} saved
             </p>
           </div>
-          <button
+          <Button
+            variant="dangerGhost"
+            size="sm"
             onClick={() => setClearModalOpen(true)}
             disabled={clearWishlistMutation.isPending}
-            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50 transition-colors"
+            leftIcon={<FiTrash2 size={16} />}
           >
-            <FiTrash2 size={16} />
             Clear Wishlist
-          </button>
+          </Button>
         </div>
 
         {/* Grid */}
@@ -148,24 +147,28 @@ const WishlistPage = () => {
                     ${product.price.toFixed(2)}
                   </p>
 
-                  {/* Actions */}
                   <div className="flex gap-2">
-                    <button
+                    <Button
+                      variant="primary"
+                      size="sm"
                       onClick={() => addToCartMutation.mutate({ productId: product._id, quantity: 1 })}
-                      disabled={product.stock === 0 || addToCartMutation.isPending}
-                      className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 text-white py-2 px-3 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      disabled={product.stock === 0}
+                      loading={addToCartMutation.isPending}
+                      leftIcon={<FiShoppingCart size={15} />}
+                      className="flex-1"
                     >
-                      <FiShoppingCart size={15} />
                       {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
                       onClick={() => openRemoveModal(product._id)}
                       disabled={removeFromWishlistMutation.isPending}
                       title="Remove from wishlist"
-                      className="w-9 h-9 flex items-center justify-center border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50 flex-shrink-0"
+                      className="w-9 h-9 !px-0 border-red-300 text-red-600 hover:bg-red-50 flex-shrink-0"
                     >
                       <FiTrash2 size={16} />
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

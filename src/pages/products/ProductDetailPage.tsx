@@ -8,6 +8,7 @@ import { useAddToCart } from '../../hooks/useCart';
 import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../../hooks/useWishlist';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import ProductCard from '../../components/ProductCard';
+import Button from '../../components/Button';
 import type { Category } from '../../types';
 import { useState } from 'react';
 import { getImageUrl } from '../../utils/image';
@@ -95,13 +96,15 @@ const ProductDetailPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── Back button ─────────────────────────────────────────────── */}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={() => navigate(-1)}
-          className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-6 transition-colors text-sm font-medium"
+          leftIcon={<FiArrowLeft size={18} />}
+          className="mb-6"
         >
-          <FiArrowLeft size={18} />
           Back
-        </button>
+        </Button>
 
         {/* ── Main product card ────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
@@ -199,23 +202,27 @@ const ProductDetailPage = () => {
                     Quantity
                   </label>
                   <div className="flex items-center gap-3">
-                    <button
+                    <Button
+                      variant="secondary"
+                      size="sm"
                       onClick={handleDecrease}
                       disabled={quantity <= 1}
-                      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      className="w-9 h-9 !px-0"
                     >
                       <FiMinus size={15} />
-                    </button>
+                    </Button>
                     <span className="w-12 text-center text-base font-bold text-gray-900">
                       {quantity}
                     </span>
-                    <button
+                    <Button
+                      variant="secondary"
+                      size="sm"
                       onClick={handleIncrease}
                       disabled={quantity >= maxQty}
-                      className="w-9 h-9 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                      className="w-9 h-9 !px-0"
                     >
                       <FiPlus size={15} />
-                    </button>
+                    </Button>
                     <span className="text-sm text-gray-400">
                       / {product.stock} available
                     </span>
@@ -225,14 +232,17 @@ const ProductDetailPage = () => {
 
               {/* Actions */}
               <div className="mt-auto flex gap-3">
-                <button
+                <Button
+                  variant="primary"
+                  size="lg"
                   onClick={handleAddToCart}
-                  disabled={product.stock === 0 || addToCartMutation.isPending}
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-semibold text-base disabled:bg-gray-400 disabled:cursor-not-allowed"
+                  disabled={product.stock === 0}
+                  loading={addToCartMutation.isPending}
+                  leftIcon={<FiShoppingCart size={20} />}
+                  className="flex-1"
                 >
-                  <FiShoppingCart size={20} />
-                  {addToCartMutation.isPending ? 'Adding…' : product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </button>
+                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                </Button>
 
                 <button
                   onClick={handleToggleWishlist}

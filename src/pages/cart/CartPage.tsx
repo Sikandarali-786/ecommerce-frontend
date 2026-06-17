@@ -5,6 +5,7 @@ import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from '../
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import ConfirmModal from '../../components/ConfirmModal';
+import Button from '../../components/Button';
 import type { Category } from '../../types';
 import { getImageUrl } from '../../utils/image';
 
@@ -75,12 +76,9 @@ const CartPage = () => {
           title="Your cart is empty"
           description="Add some products to your cart to see them here"
           action={
-            <Link
-              to="/products"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-            >
+            <Button variant="primary" size="lg" onClick={() => window.location.href = '/products'}>
               Browse Products
-            </Link>
+            </Button>
           }
         />
       </div>
@@ -99,14 +97,15 @@ const CartPage = () => {
               {items.length} item{items.length !== 1 ? 's' : ''} in your cart
             </p>
           </div>
-          <button
+          <Button
+            variant="dangerGhost"
+            size="sm"
             onClick={() => setClearModalOpen(true)}
             disabled={clearCartMutation.isPending}
-            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50 transition-colors"
+            leftIcon={<FiTrash2 size={16} />}
           >
-            <FiTrash2 size={16} />
             Clear Cart
-          </button>
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -150,14 +149,16 @@ const CartPage = () => {
                           {item.product.description}
                         </p>
                       </div>
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => openRemoveModal(item.product._id)}
                         disabled={removeFromCartMutation.isPending}
-                        className="flex-shrink-0 text-gray-400 hover:text-red-500 transition-colors p-1 disabled:opacity-50"
                         title="Remove item"
+                        className="flex-shrink-0 text-gray-400 hover:text-red-500 !px-1"
                       >
                         <FiTrash2 size={18} />
-                      </button>
+                      </Button>
                     </div>
 
                     {/* Price + Qty */}
@@ -168,23 +169,27 @@ const CartPage = () => {
 
                       {/* Quantity controls */}
                       <div className="flex items-center gap-2">
-                        <button
+                        <Button
+                          variant="secondary"
+                          size="sm"
                           onClick={() => handleUpdateQuantity(item.product._id, item.quantity - 1)}
                           disabled={item.quantity <= 1 || updateCartMutation.isPending}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          className="w-8 h-8 !px-0"
                         >
                           <FiMinus size={14} />
-                        </button>
+                        </Button>
                         <span className="w-8 text-center font-semibold text-gray-900">
                           {item.quantity}
                         </span>
-                        <button
+                        <Button
+                          variant="secondary"
+                          size="sm"
                           onClick={() => handleUpdateQuantity(item.product._id, item.quantity + 1)}
                           disabled={item.quantity >= item.product.stock || updateCartMutation.isPending}
-                          className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          className="w-8 h-8 !px-0"
                         >
                           <FiPlus size={14} />
-                        </button>
+                        </Button>
                       </div>
 
                       <span className="text-lg font-bold text-blue-600">

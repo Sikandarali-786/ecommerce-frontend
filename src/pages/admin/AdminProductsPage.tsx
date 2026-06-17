@@ -3,6 +3,7 @@ import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiPackage, FiUpload, FiX } from 'r
 import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Button from '../../components/Button';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import axiosInstance from '../../api/axios';
 import { API_ENDPOINTS } from '../../api/endpoints';
@@ -196,13 +197,14 @@ const AdminProductsPage = () => {
           <h1 className="text-2xl font-bold text-gray-900">Products</h1>
           <p className="text-gray-500 text-sm mt-1">{products.length} total products</p>
         </div>
-        <button
+        <Button
+          variant="primary"
+          size="md"
           onClick={openCreate}
-          className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          leftIcon={<FiPlus size={18} />}
         >
-          <FiPlus size={18} />
-          <span>Add Product</span>
-        </button>
+          Add Product
+        </Button>
       </div>
 
       {/* Search */}
@@ -274,19 +276,25 @@ const AdminProductsPage = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <button
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => openEdit(product)}
-                          className="text-blue-600 hover:text-blue-800 transition-colors"
+                          className="text-blue-600 hover:bg-blue-50 !px-2"
+                          title="Edit"
                         >
                           <FiEdit2 size={18} />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           onClick={() => setDeleteConfirm(product._id)}
-                          className="text-red-600 hover:text-red-800 transition-colors"
+                          className="text-red-600 hover:bg-red-50 !px-2"
+                          title="Delete"
                         >
                           <FiTrash2 size={18} />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -305,7 +313,7 @@ const AdminProductsPage = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h2>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600 text-xl">✕</button>
+              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 !px-2 text-xl">✕</Button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -449,14 +457,15 @@ const AdminProductsPage = () => {
                       onChange={handleFileChange}
                       className="hidden"
                     />
-                    <button
+                    <Button
                       type="button"
+                      variant="upload"
+                      size="md"
                       onClick={() => fileInputRef.current?.click()}
-                      className="flex items-center space-x-2 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg text-gray-500 hover:border-blue-400 hover:text-blue-500 transition-colors w-full justify-center"
+                      leftIcon={<FiUpload size={18} />}
                     >
-                      <FiUpload size={18} />
-                      <span>Click to upload images</span>
-                    </button>
+                      Click to upload images
+                    </Button>
                     <p className="text-xs text-gray-400 mt-1 text-center">
                       JPEG, PNG, GIF, WebP · Max 5MB per file ·{' '}
                       {5 - existingImages.length - selectedFiles.length} slot(s) remaining
@@ -467,20 +476,18 @@ const AdminProductsPage = () => {
 
               {/* Buttons */}
               <div className="flex space-x-3 pt-2">
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
+                <Button variant="secondary" size="md" type="button" onClick={closeModal} className="flex-1">
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={isPending}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  variant="primary"
+                  size="md"
+                  loading={isPending}
+                  className="flex-1"
                 >
-                  {isPending ? 'Saving...' : editingProduct ? 'Update Product' : 'Create Product'}
-                </button>
+                  {editingProduct ? 'Update Product' : 'Create Product'}
+                </Button>
               </div>
             </form>
           </div>
@@ -496,19 +503,23 @@ const AdminProductsPage = () => {
               Are you sure? This will permanently delete the product and all its images.
             </p>
             <div className="flex space-x-3">
-              <button
+              <Button
+                variant="secondary"
+                size="md"
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="flex-1"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
                 onClick={() => deleteMutation.mutate(deleteConfirm)}
-                disabled={deleteMutation.isPending}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400"
+                loading={deleteMutation.isPending}
+                className="flex-1"
               >
-                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-              </button>
+                Delete
+              </Button>
             </div>
           </div>
         </div>
