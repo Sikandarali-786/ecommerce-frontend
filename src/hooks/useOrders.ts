@@ -56,6 +56,8 @@ export const useCreateOrder = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: orderKeys.lists() });
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+      // Invalidate products so stock counts reflect the new order
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success(data.message || 'Order placed successfully!');
       navigate(`/order-success/${data.order._id}`);
     },

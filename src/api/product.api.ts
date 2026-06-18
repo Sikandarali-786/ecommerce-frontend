@@ -13,6 +13,26 @@ export interface CreateProductData {
 
 export interface UpdateProductData extends Partial<CreateProductData> {}
 
+export interface ProductQueryParams {
+  search?:   string;
+  category?: string;   // category _id
+  minPrice?: string;
+  maxPrice?: string;
+  sortBy?:   'price-asc' | 'price-desc' | 'name-asc' | 'name-desc' | 'newest' | '';
+  page?:     number;
+  limit?:    number;
+}
+
+export interface PaginatedProductsResponse extends ProductsResponse {
+  pagination: {
+    total:      number;
+    page:       number;
+    limit:      number;
+    totalPages: number;
+    hasMore:    boolean;
+  };
+}
+
 interface ProductResponse {
   success: boolean;
   message: string;
@@ -25,11 +45,14 @@ interface DeleteProductResponse {
 }
 
 /**
- * Get all products
+ * Get all products — supports server-side search, filter, sort, pagination
  */
-export const getAllProducts = async (): Promise<ProductsResponse> => {
-  const response = await axiosInstance.get<ProductsResponse>(
-    API_ENDPOINTS.PRODUCT.GET_ALL
+export const getAllProducts = async (
+  params?: ProductQueryParams,
+): Promise<PaginatedProductsResponse> => {
+  const response = await axiosInstance.get<PaginatedProductsResponse>(
+    API_ENDPOINTS.PRODUCT.GET_ALL,
+    { params },
   );
   return response.data;
 };

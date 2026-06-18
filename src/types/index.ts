@@ -71,3 +71,21 @@ export interface CategoriesResponse {
   success: boolean;
   categories: Category[];
 }
+
+// Review types
+export interface Review {
+  _id: string;
+  product: string;
+  user: { _id: string; name: string };
+  rating: number;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReviewsResponse {
+  success: boolean;
+  reviews: Review[];
+  totalReviews: number;
+  averageRating: number;
+}

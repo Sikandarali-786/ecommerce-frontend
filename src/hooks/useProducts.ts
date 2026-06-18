@@ -1,24 +1,32 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from '../api';
-import type { CreateProductData, UpdateProductData } from '../api/product.api';
+import type { CreateProductData, UpdateProductData, ProductQueryParams } from '../api/product.api';
 import toast from 'react-hot-toast';
 
 // Query keys
 export const productKeys = {
   all: ['products'] as const,
   lists: () => [...productKeys.all, 'list'] as const,
-  list: (filters?: any) => [...productKeys.lists(), filters] as const,
+  list: (params?: ProductQueryParams) => [...productKeys.lists(), params] as const,
   details: () => [...productKeys.all, 'detail'] as const,
   detail: (id: string) => [...productKeys.details(), id] as const,
 };
 
 /**
- * Hook to fetch all products
+ * Hook to fetch products — passes all params to the server.
+ * Empty / undefined params are omitted from the request.
  */
-export const useProducts = () => {
+export const useProducts = (params?: ProductQueryParams) => {
+  // Strip empty string values so they are not sent as ?search=&category=
+  const cleanParams = params
+    ? Object.fromEntries(
+        Object.entries(params).filter(([, v]) => v !== '' && v !== undefined),
+      ) as ProductQueryParams
+    : undefined;
+
   return useQuery({
-    queryKey: productKeys.lists(),
-    queryFn: getAllProducts,
+    queryKey: productKeys.list(cleanParams),
+    queryFn:  () => getAllProducts(cleanParams),
   });
 };
 

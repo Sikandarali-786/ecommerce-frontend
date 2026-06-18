@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
@@ -6,94 +6,73 @@ import ProductCard from '../../components/ProductCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import SearchBar from '../../components/SearchBar';
 import ProductFilters, { type FilterState } from '../../components/ProductFilters';
-import type { Product, Category } from '../../types';
+import type { Product } from '../../types';
+import type { ProductQueryParams } from '../../api/product.api';
+
+// ── Debounce helper ───────────────────────────────────────────────────────────
+function useDebounce<T>(value: T, delay = 400): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(t);
+  }, [value, delay]);
+  return debounced;
+}
 
 const ProductsPage = () => {
-  const { data, isLoading, isError, error } = useProducts();
-  const { data: categoriesData } = useCategories();
   const [searchParams] = useSearchParams();
+  const { data: categoriesData } = useCategories();
 
-  const [searchQuery, setSearchQuery] = useState('');
+  // ── Local state ───────────────────────────────────────────────────────────
+  const [searchInput, setSearchInput] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     category: '',
     minPrice: '',
     maxPrice: '',
-    sortBy: '',
+    sortBy:   '',
   });
 
-  // ── Pre-apply category filter from URL query param (?category=slug) ────────
-  useEffect(() => {
-    const slugFromUrl = searchParams.get('category') ?? '';
-    const searchFromUrl = searchParams.get('search') ?? '';
+  // Debounce search so we don't fire a request on every keystroke
+  const debouncedSearch = useDebounce(searchInput, 400);
 
-    if (searchFromUrl) {
-      setSearchQuery(searchFromUrl);
-    }
+  // ── Sync URL params → local state (navbar category links, search links) ───
+  useEffect(() => {
+    const slugFromUrl   = searchParams.get('category') ?? '';
+    const searchFromUrl = searchParams.get('search')   ?? '';
+
+    if (searchFromUrl) setSearchInput(searchFromUrl);
 
     if (slugFromUrl && categoriesData?.categories) {
-      // Resolve slug → _id so the existing filter logic works unchanged
-      const matched = categoriesData.categories.find(
-        c => c.slug === slugFromUrl
-      );
-      setFilters(prev => ({
-        ...prev,
-        category: matched?._id ?? '',
-      }));
+      const matched = categoriesData.categories.find(c => c.slug === slugFromUrl);
+      setFilters(prev => ({ ...prev, category: matched?._id ?? '' }));
     } else if (!slugFromUrl) {
-      // Clear category filter when URL has no category param
       setFilters(prev => ({ ...prev, category: '' }));
     }
   }, [searchParams, categoriesData]);
 
-  // ── Current category name for the page heading ────────────────────────────
-  const activeCategoryName = useMemo(() => {
-    if (!filters.category || !categoriesData?.categories) return '';
-    return categoriesData.categories.find(c => c._id === filters.category)?.name ?? '';
-  }, [filters.category, categoriesData]);
+  // ── Build server-side query params ────────────────────────────────────────
+  const queryParams: ProductQueryParams = {
+    search:   debouncedSearch   || undefined,
+    category: filters.category  || undefined,
+    minPrice: filters.minPrice  || undefined,
+    maxPrice: filters.maxPrice  || undefined,
+    sortBy:   (filters.sortBy as ProductQueryParams['sortBy']) || undefined,
+    limit:    100, // fetch up to 100; replace with pagination later
+  };
 
-  // ── Filter & sort products ────────────────────────────────────────────────
-  const filteredProducts = useMemo(() => {
-    if (!data?.products) return [];
+  const { data, isLoading, isError, error, isFetching } = useProducts(queryParams);
 
-    let filtered = [...data.products];
+  // ── Active category label for page heading ────────────────────────────────
+  const activeCategoryName =
+    filters.category && categoriesData?.categories
+      ? (categoriesData.categories.find(c => c._id === filters.category)?.name ?? '')
+      : '';
 
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (product) =>
-          product.title.toLowerCase().includes(query) ||
-          product.description.toLowerCase().includes(query)
-      );
-    }
+  const handleFilterChange = useCallback((newFilters: FilterState) => {
+    setFilters(newFilters);
+  }, []);
 
-    if (filters.category) {
-      filtered = filtered.filter((product) => {
-        const category = product.category as Category;
-        return category._id === filters.category;
-      });
-    }
-
-    if (filters.minPrice) {
-      filtered = filtered.filter((p) => p.price >= parseFloat(filters.minPrice));
-    }
-    if (filters.maxPrice) {
-      filtered = filtered.filter((p) => p.price <= parseFloat(filters.maxPrice));
-    }
-
-    if (filters.sortBy) {
-      switch (filters.sortBy) {
-        case 'price-asc':  filtered.sort((a, b) => a.price - b.price); break;
-        case 'price-desc': filtered.sort((a, b) => b.price - a.price); break;
-        case 'name-asc':   filtered.sort((a, b) => a.title.localeCompare(b.title)); break;
-        case 'name-desc':  filtered.sort((a, b) => b.title.localeCompare(a.title)); break;
-      }
-    }
-
-    return filtered;
-  }, [data?.products, searchQuery, filters]);
-
-  if (isLoading) return <LoadingSpinner />;
-
+  // ── Error state ───────────────────────────────────────────────────────────
   if (isError) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center">
@@ -107,50 +86,62 @@ const ProductsPage = () => {
     );
   }
 
-  const totalProducts = data?.products?.length ?? 0;
-  const displayedProducts = filteredProducts.length;
+  const products   = data?.products ?? [];
+  const pagination = data?.pagination;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="w-full px-4 sm:px-6 lg:px-8">
 
-        {/* Header */}
+        {/* ── Header ────────────────────────────────────────────────────── */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-1">
-            {activeCategoryName ? activeCategoryName : 'All Products'}
+            {activeCategoryName || 'All Products'}
           </h1>
-          <p className="text-gray-500 text-sm">
-            {displayedProducts === totalProducts
-              ? `Showing all ${totalProducts} products`
-              : `Showing ${displayedProducts} of ${totalProducts} products`}
+          <p className="text-gray-500 text-sm flex items-center gap-2">
+            {pagination
+              ? `Showing ${products.length} of ${pagination.total} products`
+              : `Showing ${products.length} products`}
+            {isFetching && !isLoading && (
+              <span className="inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin" />
+            )}
           </p>
         </div>
 
-        {/* Search Bar */}
+        {/* ── Search Bar ────────────────────────────────────────────────── */}
         <div className="mb-6">
-          <SearchBar onSearch={setSearchQuery} initialValue={searchQuery} />
+          <SearchBar
+            onSearch={setSearchInput}
+            initialValue={searchInput}
+          />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Filters Sidebar */}
+
+          {/* ── Filters Sidebar ───────────────────────────────────────── */}
           <div className="lg:col-span-1">
-            <ProductFilters onFilterChange={setFilters} activeFilters={filters} />
+            <ProductFilters
+              onFilterChange={handleFilterChange}
+              activeFilters={filters}
+            />
           </div>
 
-          {/* Products Grid */}
+          {/* ── Products Grid ─────────────────────────────────────────── */}
           <div className="lg:col-span-3">
-            {filteredProducts.length === 0 ? (
+            {isLoading ? (
+              <LoadingSpinner />
+            ) : products.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-slate-100">
                 <p className="text-xl text-gray-600 mb-2">No products found</p>
                 <p className="text-gray-400 text-sm">
-                  {searchQuery || filters.category || filters.minPrice || filters.maxPrice
+                  {debouncedSearch || filters.category || filters.minPrice || filters.maxPrice
                     ? 'Try adjusting your filters or search query'
                     : 'No products available in this category yet'}
                 </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product: Product) => (
+                {products.map((product: Product) => (
                   <ProductCard key={product._id} product={product} />
                 ))}
               </div>

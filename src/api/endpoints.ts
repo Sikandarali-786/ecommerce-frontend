@@ -65,4 +65,11 @@ export const API_ENDPOINTS = {
     ADMIN_GET_ALL: '/orders',
     ADMIN_UPDATE_STATUS: (id: string) => `/orders/${id}/status`,
   },
+
+  // Review endpoints
+  REVIEW: {
+    GET_ALL:  (productId: string) => `/product/${productId}/reviews`,
+    UPSERT:   (productId: string) => `/product/${productId}/reviews`,
+    DELETE:   (productId: string, reviewId: string) => `/product/${productId}/reviews/${reviewId}`,
+  },
 } as const;

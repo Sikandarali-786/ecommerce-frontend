@@ -12,6 +12,7 @@ import Button from '../../components/Button';
 import type { Category } from '../../types';
 import { useState } from 'react';
 import { getImageUrl } from '../../utils/image';
+import ReviewSection from '../../components/ReviewSection';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -292,6 +293,9 @@ const ProductDetailPage = () => {
             </div>
           </dl>
         </div>
+
+        {/* ── Reviews ──────────────────────────────────────────────────── */}
+        <ReviewSection productId={product._id} />
 
         {/* ── Related products ─────────────────────────────────────────── */}
         {related.length > 0 && (
