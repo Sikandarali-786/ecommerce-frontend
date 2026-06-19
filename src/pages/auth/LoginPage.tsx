@@ -107,7 +107,7 @@ const LoginPage = () => {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 md:hidden">
             <img src={logoImg} alt="Logo" className="h-10 w-10 object-contain rounded-lg" />
-            <span className="font-bold text-[#8B0000] text-lg">Imtiaz Bikerz Studio</span>
+            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Studio</span>
           </div>
 
           {/* Heading */}

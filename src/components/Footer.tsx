@@ -25,7 +25,7 @@ const Footer = () => {
             <div className="mb-5">
               <img
                 src={logoImg}
-                alt="Imtiaz Bikerz Studio"
+                alt="Afzal Bikerz Studio"
                 className="h-20 w-auto object-contain rounded"
               />
             </div>
@@ -40,7 +40,7 @@ const Footer = () => {
             <div className="flex items-center gap-2 text-red-100 text-sm mb-3">
               <FiMail size={14} className="flex-shrink-0 text-red-300" />
               <a
-                href="mailto:imtiazbikerzstudio@gmail.com"
+                href="mailto:Afzalbikerzstudio@gmail.com"
                 className="hover:text-white transition-colors"
               >
                 rehanqureshi@gmail.com

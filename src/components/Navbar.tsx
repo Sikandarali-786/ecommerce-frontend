@@ -114,7 +114,7 @@ const Navbar = () => {
             <Link to="/" className="flex items-center flex-shrink-0 mr-4">
               <img
                 src={logoImg}
-                alt="Imtiaz Bikerz Studio"
+                alt="Afzal Bikerz Studio"
                 className="h-14 w-auto object-contain rounded-sm"
               />
             </Link>

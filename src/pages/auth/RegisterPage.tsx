@@ -66,11 +66,11 @@ const RegisterPage = () => {
             <div className="flex items-center gap-3 mb-10">
               <img
                 src={logoImg}
-                alt="Imtiaz Bikerz Studio"
+                alt="Afzal Bikerz Studio"
                 className="h-16 w-16 object-contain rounded-xl bg-white/10 p-1"
               />
               <div>
-                <p className="text-white font-bold text-base leading-tight">Imtiaz Bikerz</p>
+                <p className="text-white font-bold text-base leading-tight">Afzal Bikerz</p>
                 <p className="text-red-200 text-xs">Studio</p>
               </div>
             </div>
@@ -95,7 +95,7 @@ const RegisterPage = () => {
           </div>
 
           <p className="relative z-10 text-red-300 text-xs">
-            © 2026 Imtiaz Bikerz Studio · Attock, Pakistan
+            © 2026 Afzal Bikerz Studio · Attock, Pakistan
           </p>
         </div>
 
@@ -105,7 +105,7 @@ const RegisterPage = () => {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 md:hidden">
             <img src={logoImg} alt="Logo" className="h-10 w-10 object-contain rounded-lg" />
-            <span className="font-bold text-[#8B0000] text-lg">Imtiaz Bikerz Studio</span>
+            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Studio</span>
           </div>
 
           {/* Heading */}

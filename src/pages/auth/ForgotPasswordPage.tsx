@@ -42,7 +42,7 @@ const ForgotPasswordPage = () => {
         <div className="bg-[#8B0000] px-8 py-6 flex items-center gap-4">
           <img src={logoImg} alt="Logo" className="h-12 w-12 object-contain rounded-xl bg-white/10 p-1" />
           <div>
-            <p className="text-white font-bold text-base leading-tight">Imtiaz Bikerz Studio</p>
+            <p className="text-white font-bold text-base leading-tight">Afzal Bikerz Studio</p>
             <p className="text-red-200 text-xs">Reset your password</p>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SITE_NAME  = 'Imtiaz Bikerz Studio';
+const SITE_NAME  = 'Afzal Bikerz Studio';
 const SITE_URL   = typeof window !== 'undefined' ? window.location.origin : '';
 const DEFAULT_IMG = '/favicon.svg';
 
