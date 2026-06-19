@@ -7,6 +7,7 @@ import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/ProductCard';
 import { SkeletonGrid } from '../../components/SkeletonCard';
 import HeroBanner from '../../components/HeroBanner';
+import { useSEO } from '../../hooks/useSEO';
 
 // ── Trust features strip ──────────────────────────────────────────────────────
 const features = [
@@ -41,6 +42,10 @@ const features = [
 ];
 
 const HomePage = () => {
+  useSEO({
+    title:       'Home',
+    description: "Pakistan's #1 Motorcycle Parts Store. Shop CD70 & CG125 tanks, alloy rims, silencers, LED lights, helmets & accessories. Fast delivery. 100% genuine products.",
+  });
   const { data: productsData, isLoading: productsLoading } = useProducts();
   const allProducts  = productsData?.products ?? [];
   // Show 8 new in-stock products as "featured"

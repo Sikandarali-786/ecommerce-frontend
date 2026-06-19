@@ -140,26 +140,37 @@ const LoginPage = () => {
             />
 
             {/* Password */}
-            <FormField
-              id="password"
-              label="Password"
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              icon={<FiLock size={16} />}
-              registration={register('password')}
-              error={errors.password?.message}
-              rightSlot={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(v => !v)}
-                  className="text-slate-400 hover:text-slate-700 transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Password</span>
+                <Link
+                  to="/forgot-password"
+                  className="text-xs text-[#8B0000] hover:underline font-medium transition-colors"
                 >
-                  {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
-                </button>
-              }
-            />
+                  Forgot password?
+                </Link>
+              </div>
+              <FormField
+                id="password"
+                label=""
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                icon={<FiLock size={16} />}
+                registration={register('password')}
+                error={errors.password?.message}
+                rightSlot={
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(v => !v)}
+                    className="text-slate-400 hover:text-slate-700 transition-colors"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
+                  </button>
+                }
+              />
+            </div>
 
             {/* Submit */}
             <Button

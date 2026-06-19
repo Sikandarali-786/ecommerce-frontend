@@ -3,8 +3,10 @@
 export const API_ENDPOINTS = {
   // Auth endpoints
   AUTH: {
-    REGISTER: '/auth/register',
-    LOGIN: '/auth/login',
+    REGISTER:        '/auth/register',
+    LOGIN:           '/auth/login',
+    FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD:  (token: string) => `/auth/reset-password/${token}`,
   },
 
   // User endpoints

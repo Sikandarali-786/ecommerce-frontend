@@ -10,6 +10,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const HomePage = lazy(() => import('../pages/home/HomePage'));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage'));
 const RegisterPage = lazy(() => import('../pages/auth/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('../pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('../pages/auth/ResetPasswordPage'));
 const ProductsPage = lazy(() => import('../pages/products/ProductsPage'));
 const ProductDetailPage = lazy(() => import('../pages/products/ProductDetailPage'));
 const CartPage = lazy(() => import('../pages/cart/CartPage'));
@@ -47,6 +49,14 @@ export const router = createBrowserRouter([
       {
         path: 'register',
         element: <SuspenseWrapper><RegisterPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'forgot-password',
+        element: <SuspenseWrapper><ForgotPasswordPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'reset-password/:token',
+        element: <SuspenseWrapper><ResetPasswordPage /></SuspenseWrapper>,
       },
       {
         path: 'products',
