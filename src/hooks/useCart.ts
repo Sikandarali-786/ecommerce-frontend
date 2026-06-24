@@ -42,6 +42,7 @@ export const useAddToCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: cartKeys.detail() });
       toast.success('Item added to cart');
+      navigate('/cart');
     },
     onError: (error: any) => {
       if (error.message !== 'Not authenticated') {
