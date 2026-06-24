@@ -19,11 +19,13 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const isCategoriesHoveredRef = useRef(false);
 
   const authenticated = isAuthenticated();
   const admin = isAdmin();
   const user = getUser();
-  const showCustomerActions = authenticated && !admin;
+  const showCustomerActions = !admin;
 
   const { data: cartData } = useCart();
   const cartCount = cartData?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
@@ -57,6 +59,43 @@ const Navbar = () => {
     }
   }, [searchOpen]);
 
+  useEffect(() => {
+    const el = categoriesRef.current;
+    if (!el || categories.length === 0) return undefined;
+
+    const speed = 3;
+    const pauseMs = 500;
+    let intervalId = 0;
+    let pauseTimeoutId = 0;
+
+    const tick = () => {
+      if (isCategoriesHoveredRef.current) return;
+
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      if (maxScrollLeft <= 0) return;
+
+      if (el.scrollLeft >= maxScrollLeft - 1) {
+        window.clearInterval(intervalId);
+        pauseTimeoutId = window.setTimeout(() => {
+          if (!isCategoriesHoveredRef.current) {
+            el.scrollLeft = 0;
+            intervalId = window.setInterval(tick, 16);
+          }
+        }, pauseMs);
+        return;
+      }
+
+      el.scrollLeft += speed;
+    };
+
+    intervalId = window.setInterval(tick, 16);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.clearTimeout(pauseTimeoutId);
+    };
+  }, [categories.length]);
+
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
@@ -74,6 +113,10 @@ const Navbar = () => {
 
   const isActive = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+
+  const goToLogin = (targetPath: string) => {
+    navigate('/login', { state: { from: targetPath } });
+  };
 
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
@@ -121,34 +164,41 @@ const Navbar = () => {
             </Link>
 
             {/* ── Desktop nav: dynamic categories ───────────────────── */}
-            <div className="hidden lg:flex items-center gap-0.5 flex-1 overflow-x-auto scrollbar-hide">
-              {categories.length === 0 ? (
-                // Skeleton placeholders while loading
-                Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 shrink-0"
-                  />
-                ))
-              ) : (
-                categories.map((cat) => {
-                  const isActivecat = activeCategorySlug === cat.slug
-                    && location.pathname.startsWith('/products');
-                  return (
-                    <Link
-                      key={cat._id}
-                      to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                      className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${
-                        isActivecat
-                          ? 'text-[#8B0000] bg-red-50'
-                          : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  );
-                })
-              )}
+            <div
+              ref={categoriesRef}
+              onMouseEnter={() => { isCategoriesHoveredRef.current = true; }}
+              onMouseLeave={() => { isCategoriesHoveredRef.current = false; }}
+              className="hidden lg:block flex-1 overflow-x-hidden scrollbar-hide"
+            >
+              <div className="flex items-center gap-0.5 w-max whitespace-nowrap">
+                {categories.length === 0 ? (
+                  // Skeleton placeholders while loading
+                  Array.from({ length: 5 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 shrink-0"
+                    />
+                  ))
+                ) : (
+                  categories.map((cat) => {
+                    const isActivecat = activeCategorySlug === cat.slug
+                      && location.pathname.startsWith('/products');
+                    return (
+                      <Link
+                        key={cat._id}
+                        to={`/products?category=${encodeURIComponent(cat.slug)}`}
+                        className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${
+                          isActivecat
+                            ? 'text-[#8B0000] bg-red-50'
+                            : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
+                        }`}
+                      >
+                        {cat.name}
+                      </Link>
+                    );
+                  })
+                )}
+              </div>
             </div>
 
             {/* ── Desktop right actions ──────────────────────────────── */}
@@ -169,7 +219,7 @@ const Navbar = () => {
                     <button
                       type="button"
                       onClick={() => { setSearchOpen(false); setSearchQuery(''); }}
-                      className="ml-1 p-1.5 text-slate-400 hover:text-slate-600"
+                      className="ml-1 p-1.5 text-slate-400 hover:text-slate-600 cursor-pointer"
                     >
                       <FiX size={16} />
                     </button>
@@ -177,7 +227,7 @@ const Navbar = () => {
                 ) : (
                   <button
                     onClick={() => setSearchOpen(true)}
-                    className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50"
+                    className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
                     title="Search"
                   >
                     <FiSearch size={20} />
@@ -190,7 +240,7 @@ const Navbar = () => {
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(v => !v)}
-                    className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
                     title="Account"
                   >
                     <div className="w-7 h-7 rounded-full bg-linear-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
@@ -231,7 +281,7 @@ const Navbar = () => {
                       <div className="border-t border-slate-100 mt-1">
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                          className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
                         >
                           <FiLogOut size={15} /> Logout
                         </button>
@@ -242,7 +292,7 @@ const Navbar = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50"
+                  className="p-2 text-slate-600 hover:text-[#8B0000] transition-colors rounded-lg hover:bg-red-50 cursor-pointer"
                   title="Login"
                 >
                   <FiUser size={20} />
@@ -251,37 +301,85 @@ const Navbar = () => {
 
               {/* Wishlist */}
               {showCustomerActions && (
-                <Link
-                  to="/wishlist"
-                  title="Wishlist"
-                  className={`p-2 rounded-lg transition-colors ${
-                    isActive('/wishlist')
-                      ? 'text-[#8B0000] bg-red-50'
-                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                  }`}
-                >
-                  <FiHeart size={20} />
-                </Link>
+                authenticated ? (
+                  <Link
+                    to="/wishlist"
+                    title="Wishlist"
+                    className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                      isActive('/wishlist')
+                        ? 'text-[#8B0000] bg-red-50'
+                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                    }`}
+                  >
+                    <FiHeart size={20} />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => goToLogin('/wishlist')}
+                    title="Wishlist"
+                    className="p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <FiHeart size={20} />
+                  </button>
+                )
+              )}
+
+              {/* Orders */}
+              {showCustomerActions && (
+                authenticated ? (
+                  <Link
+                    to="/orders"
+                    title="Orders"
+                    className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                      isActive('/orders')
+                        ? 'text-[#8B0000] bg-red-50'
+                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                    }`}
+                  >
+                    <FiPackage size={20} />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => goToLogin('/orders')}
+                    title="Orders"
+                    className="p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <FiPackage size={20} />
+                  </button>
+                )
               )}
 
               {/* Cart */}
               {showCustomerActions && (
-                <Link
-                  to="/cart"
-                  title="Cart"
-                  className={`relative p-2 rounded-lg transition-colors ${
-                    isActive('/cart')
-                      ? 'text-[#8B0000] bg-red-50'
-                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                  }`}
-                >
-                  <FiShoppingCart size={20} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
-                      {cartCount > 99 ? '99+' : cartCount}
-                    </span>
-                  )}
-                </Link>
+                authenticated ? (
+                  <Link
+                    to="/cart"
+                    title="Cart"
+                    className={`relative p-2 rounded-lg transition-colors cursor-pointer ${
+                      isActive('/cart')
+                        ? 'text-[#8B0000] bg-red-50'
+                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                    }`}
+                  >
+                    <FiShoppingCart size={20} />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                        {cartCount > 99 ? '99+' : cartCount}
+                      </span>
+                    )}
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => goToLogin('/cart')}
+                    title="Cart"
+                    className="relative p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <FiShoppingCart size={20} />
+                  </button>
+                )
               )}
 
               {/* Admin shortcut */}
@@ -289,24 +387,61 @@ const Navbar = () => {
                 <Link
                   to="/admin"
                   title="Admin Panel"
-                  className="p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors"
+                  className="p-2 rounded-lg text-slate-600 hover:text-[#8B0000] hover:bg-red-50 transition-colors cursor-pointer"
                 >
                   <MdAdminPanelSettings size={22} />
                 </Link>
               )}
             </div>
 
-            {/* ── Mobile: cart + hamburger ───────────────────────────── */}
-            <div className="md:hidden flex items-center gap-2">
+            {/* ── Mobile: actions + hamburger ─────────────────────────── */}
+            <div className="md:hidden flex items-center gap-1.5">
               {showCustomerActions && (
-                <Link to="/cart" className="relative p-2 text-slate-700">
-                  <FiShoppingCart size={22} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
-                      {cartCount > 99 ? '99+' : cartCount}
-                    </span>
-                  )}
-                </Link>
+                authenticated ? (
+                  <>
+                    <Link to="/wishlist" className="p-2 text-slate-700" aria-label="Wishlist">
+                      <FiHeart size={20} />
+                    </Link>
+                    <Link to="/orders" className="p-2 text-slate-700" aria-label="Orders">
+                      <FiPackage size={20} />
+                    </Link>
+                  <Link to="/cart" className="relative p-2 text-slate-700 cursor-pointer" aria-label="Cart">
+                      <FiShoppingCart size={22} />
+                      {cartCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
+                          {cartCount > 99 ? '99+' : cartCount}
+                        </span>
+                      )}
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/wishlist')}
+                      className="p-2 text-slate-700 cursor-pointer"
+                      aria-label="Wishlist"
+                    >
+                      <FiHeart size={20} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/orders')}
+                      className="p-2 text-slate-700 cursor-pointer"
+                      aria-label="Orders"
+                    >
+                      <FiPackage size={20} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/cart')}
+                      className="relative p-2 text-slate-700 cursor-pointer"
+                      aria-label="Cart"
+                    >
+                      <FiShoppingCart size={22} />
+                    </button>
+                  </>
+                )
               )}
               <button
                 onClick={() => setIsMobileOpen(v => !v)}
@@ -375,15 +510,20 @@ const Navbar = () => {
             {authenticated ? (
               <>
                 {showCustomerActions && (
-                  <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
-                    <FiHeart size={17} /> Wishlist
-                  </Link>
+                  <>
+                    <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer">
+                      <FiHeart size={17} /> Wishlist
+                    </Link>
+                    <Link to="/orders" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer">
+                      <FiPackage size={17} /> My Orders
+                    </Link>
+                    <Link to="/cart" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer">
+                      <FiShoppingCart size={17} /> Cart
+                    </Link>
+                  </>
                 )}
-                <Link to="/orders" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
-                  <FiPackage size={17} /> My Orders
-                </Link>
                 {admin && (
-                  <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                  <Link to="/admin" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer">
                     <MdAdminPanelSettings size={17} /> Admin Panel
                   </Link>
                 )}
@@ -398,22 +538,50 @@ const Navbar = () => {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors text-sm font-medium"
+                  className="w-full flex items-center gap-3 px-4 py-2.5 text-red-600 hover:bg-red-50 transition-colors text-sm font-medium cursor-pointer"
                 >
                   <FiLogOut size={17} /> Logout
                 </button>
               </>
             ) : (
               <div className="flex flex-col gap-2 px-4 pt-1">
+                {showCustomerActions && (
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/wishlist')}
+                      className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 py-3 text-slate-700 hover:border-[#8B0000] hover:text-[#8B0000] hover:bg-red-50 transition-colors"
+                    >
+                      <FiHeart size={18} />
+                      <span className="text-[11px] font-medium">Wishlist</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/orders')}
+                      className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 py-3 text-slate-700 hover:border-[#8B0000] hover:text-[#8B0000] hover:bg-red-50 transition-colors"
+                    >
+                      <FiPackage size={18} />
+                      <span className="text-[11px] font-medium">Orders</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => goToLogin('/cart')}
+                      className="flex flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 py-3 text-slate-700 hover:border-[#8B0000] hover:text-[#8B0000] hover:bg-red-50 transition-colors"
+                    >
+                      <FiShoppingCart size={18} />
+                      <span className="text-[11px] font-medium">Cart</span>
+                    </button>
+                  </div>
+                )}
                 <Link
                   to="/login"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-[#8B0000] border border-red-200 hover:bg-red-50 transition-colors"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-[#8B0000] border border-red-200 hover:bg-red-50 transition-colors cursor-pointer"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-white bg-[#8B0000] hover:bg-red-900 transition-colors"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-white bg-[#8B0000] hover:bg-red-900 transition-colors cursor-pointer"
                 >
                   Get Started
                 </Link>

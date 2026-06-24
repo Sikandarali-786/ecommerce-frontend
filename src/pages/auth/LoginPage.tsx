@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiShield, FiTruck, FiStar } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -25,6 +25,7 @@ const perks = [
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [now, setNow] = useState(Date.now());
@@ -40,6 +41,7 @@ const LoginPage = () => {
 
   const emailValue = watch('email')?.trim().toLowerCase() ?? '';
   const loginLock = emailValue ? getLoginLock(emailValue) : null;
+  const loginState = location.state as { from?: string } | null;
   const isEmailLocked = !!loginLock && loginLock.lockedUntil > now;
   const lockSecondsLeft = isEmailLocked
     ? Math.max(1, Math.ceil((loginLock.lockedUntil - now) / 1000))
@@ -92,7 +94,7 @@ const LoginPage = () => {
         setToken(response.token);
         setUser(response.user);
         toast.success('Welcome back!');
-        navigate('/');
+        navigate(loginState?.from || '/');
       }
     } catch (error: any) {
       const message = error.response?.data?.message || 'Login failed. Please try again.';

@@ -31,6 +31,17 @@ html {
   background: #94a3b8;
 }
 
+/* ── Hide scrollbars where scrolling is intentional ─────────────────────── */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* ── Skeleton shimmer animation ──────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
