@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 // ── Spinner ───────────────────────────────────────────────────────────────────
 const Spinner = () => (
   <svg
-    className="animate-spin h-4 w-4 flex-shrink-0"
+    className="animate-spin h-4 w-4 shrink-0"
     fill="none"
     viewBox="0 0 24 24"
     aria-hidden="true"
@@ -121,7 +121,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       variant === 'tab' && active ? 'tabActive' : variant;
 
     const base = [
-      'inline-flex items-center justify-center font-semibold',
+      'inline-flex items-center justify-center font-semibold cursor-pointer',
       'transition-all duration-150',
       'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'disabled:cursor-not-allowed',
@@ -148,9 +148,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           </>
         ) : (
           <>
-            {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+            {leftIcon && <span className="shrink-0">{leftIcon}</span>}
             {children}
-            {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+            {rightIcon && <span className="shrink-0">{rightIcon}</span>}
           </>
         )}
       </button>

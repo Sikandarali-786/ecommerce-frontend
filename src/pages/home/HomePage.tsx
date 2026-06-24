@@ -71,7 +71,7 @@ const HomePage = () => {
                 className="flex items-center gap-4 bg-white border border-slate-200 rounded-lg px-5 py-4 shadow-sm"
               >
                 {/* Icon box */}
-                <div className={`flex-shrink-0 w-12 h-12 rounded-lg ${f.iconBg} ${f.iconColor} flex items-center justify-center`}>
+                <div className={`shrink-0 w-12 h-12 rounded-lg ${f.iconBg} ${f.iconColor} flex items-center justify-center`}>
                   {f.icon}
                 </div>
                 {/* Text */}
@@ -153,7 +153,7 @@ const HomePage = () => {
 
       {/* ── CTA Banner ───────────────────────────────────────────────────── */}
       <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-400 to-orange-500 px-8 py-14 text-center">
+        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-amber-400 to-orange-500 px-8 py-14 text-center">
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-2xl" />
             <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-orange-600/20 rounded-full blur-2xl" />

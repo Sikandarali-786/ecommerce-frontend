@@ -137,7 +137,7 @@ const WishlistPage = () => {
 
                   {/* Title */}
                   <Link to={`/products/${product._id}`}>
-                    <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 mt-2 mb-1 min-h-[2.5rem]">
+                    <h3 className="text-sm font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 mt-2 mb-1 min-h-10">
                       {product.title}
                     </h3>
                   </Link>
@@ -165,7 +165,7 @@ const WishlistPage = () => {
                       onClick={() => openRemoveModal(product._id)}
                       disabled={removeFromWishlistMutation.isPending}
                       title="Remove from wishlist"
-                      className="w-9 h-9 !px-0 border-red-300 text-red-600 hover:bg-red-50 flex-shrink-0"
+                      className="w-9 h-9 px-0! border-red-300 text-red-600 hover:bg-red-50 shrink-0"
                     >
                       <FiTrash2 size={16} />
                     </Button>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { useAddToCart } from '../hooks/useCart';
 import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../hooks/useWishlist';
+import { isAdmin } from '../utils/auth';
 import type { Product, Category } from '../types';
 import { getImageUrl } from '../utils/image';
 import Button from './Button';
@@ -17,6 +18,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
   const addToWishlistMutation = useAddToWishlist();
   const removeFromWishlistMutation = useRemoveFromWishlist();
   const isInWishlist = useIsInWishlist(product._id);
+  const admin = isAdmin();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -35,17 +37,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative">
       {/* Wishlist Button */}
-      <button
-        onClick={handleToggleWishlist}
-        disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
-        className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
-          isInWishlist
-            ? 'bg-red-500 text-white hover:bg-red-600'
-            : 'bg-white text-gray-600 hover:bg-gray-100'
-        } shadow-md disabled:opacity-50`}
-      >
-        <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
-      </button>
+      {!admin && (
+        <button
+          onClick={handleToggleWishlist}
+          disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
+          className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
+            isInWishlist
+              ? 'bg-red-500 text-white hover:bg-red-600'
+              : 'bg-white text-gray-600 hover:bg-gray-100'
+          } shadow-md disabled:opacity-50`}
+        >
+          <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
+        </button>
+      )}
 
       <Link to={`/products/${product._id}`}>
         <div className="relative h-64 overflow-hidden bg-gray-100">
@@ -107,17 +111,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {/* Add to Cart Button */}
-        <Button
-          variant="primary"
-          fullWidth
-          size="md"
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          loading={addToCartMutation.isPending}
-          leftIcon={<FiShoppingCart size={18} />}
-        >
-          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-        </Button>
+        {!admin ? (
+          <Button
+            variant="primary"
+            fullWidth
+            size="md"
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            loading={addToCartMutation.isPending}
+            leftIcon={<FiShoppingCart size={18} />}
+          >
+            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </Button>
+        ) : (
+          <div className="rounded-lg border border-dashed border-gray-200 px-3 py-2 text-center text-xs text-gray-500">
+            Admin view only
+          </div>
+        )}
       </div>
     </div>
   );

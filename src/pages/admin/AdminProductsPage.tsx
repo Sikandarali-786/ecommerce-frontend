@@ -281,7 +281,7 @@ const AdminProductsPage = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => openEdit(product)}
-                          className="text-blue-600 hover:bg-blue-50 !px-2"
+                          className="text-blue-600 hover:bg-blue-50 px-2!"
                           title="Edit"
                         >
                           <FiEdit2 size={18} />
@@ -290,7 +290,7 @@ const AdminProductsPage = () => {
                           variant="ghost"
                           size="sm"
                           onClick={() => setDeleteConfirm(product._id)}
-                          className="text-red-600 hover:bg-red-50 !px-2"
+                          className="text-red-600 hover:bg-red-50 px-2!"
                           title="Delete"
                         >
                           <FiTrash2 size={18} />
@@ -313,7 +313,7 @@ const AdminProductsPage = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {editingProduct ? 'Edit Product' : 'Add New Product'}
               </h2>
-              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 !px-2 text-xl">✕</Button>
+              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 px-2! text-xl">✕</Button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">

@@ -23,6 +23,7 @@ const Navbar = () => {
   const authenticated = isAuthenticated();
   const admin = isAdmin();
   const user = getUser();
+  const showCustomerActions = authenticated && !admin;
 
   const { data: cartData } = useCart();
   const cartCount = cartData?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0;
@@ -108,10 +109,10 @@ const Navbar = () => {
       {/* ── Main navbar ───────────────────────────────────────────────── */}
       <div className="bg-white border-b border-slate-200">
         <nav className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-[70px]">
+          <div className="flex items-center justify-between h-17.5">
 
             {/* ── Logo ──────────────────────────────────────────────── */}
-            <Link to="/" className="flex items-center flex-shrink-0 mr-4">
+            <Link to="/" className="flex items-center shrink-0 mr-4">
               <img
                 src={logoImg}
                 alt="Afzal Bikerz Studio"
@@ -126,7 +127,7 @@ const Navbar = () => {
                 Array.from({ length: 5 }).map((_, i) => (
                   <div
                     key={i}
-                    className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 flex-shrink-0"
+                    className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 shrink-0"
                   />
                 ))
               ) : (
@@ -137,7 +138,7 @@ const Navbar = () => {
                     <Link
                       key={cat._id}
                       to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                      className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md flex-shrink-0 ${
+                      className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${
                         isActivecat
                           ? 'text-[#8B0000] bg-red-50'
                           : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
@@ -151,7 +152,7 @@ const Navbar = () => {
             </div>
 
             {/* ── Desktop right actions ──────────────────────────────── */}
-            <div className="hidden md:flex items-center gap-1 ml-2 flex-shrink-0">
+            <div className="hidden md:flex items-center gap-1 ml-2 shrink-0">
 
               {/* Search */}
               <div className="relative">
@@ -192,7 +193,7 @@ const Navbar = () => {
                     className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-red-50 transition-colors"
                     title="Account"
                   >
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-linear-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
                       {initials}
                     </div>
                     <FiChevronDown
@@ -249,7 +250,7 @@ const Navbar = () => {
               )}
 
               {/* Wishlist */}
-              {authenticated && (
+              {showCustomerActions && (
                 <Link
                   to="/wishlist"
                   title="Wishlist"
@@ -264,22 +265,24 @@ const Navbar = () => {
               )}
 
               {/* Cart */}
-              <Link
-                to="/cart"
-                title="Cart"
-                className={`relative p-2 rounded-lg transition-colors ${
-                  isActive('/cart')
-                    ? 'text-[#8B0000] bg-red-50'
-                    : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                }`}
-              >
-                <FiShoppingCart size={20} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
-                    {cartCount > 99 ? '99+' : cartCount}
-                  </span>
-                )}
-              </Link>
+              {showCustomerActions && (
+                <Link
+                  to="/cart"
+                  title="Cart"
+                  className={`relative p-2 rounded-lg transition-colors ${
+                    isActive('/cart')
+                      ? 'text-[#8B0000] bg-red-50'
+                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                  }`}
+                >
+                  <FiShoppingCart size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* Admin shortcut */}
               {admin && (
@@ -295,14 +298,16 @@ const Navbar = () => {
 
             {/* ── Mobile: cart + hamburger ───────────────────────────── */}
             <div className="md:hidden flex items-center gap-2">
-              <Link to="/cart" className="relative p-2 text-slate-700">
-                <FiShoppingCart size={22} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
-                    {cartCount > 99 ? '99+' : cartCount}
-                  </span>
-                )}
-              </Link>
+              {showCustomerActions && (
+                <Link to="/cart" className="relative p-2 text-slate-700">
+                  <FiShoppingCart size={22} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
+                      {cartCount > 99 ? '99+' : cartCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               <button
                 onClick={() => setIsMobileOpen(v => !v)}
                 className="p-2 text-slate-700 hover:text-[#8B0000] transition-colors"
@@ -369,9 +374,11 @@ const Navbar = () => {
           <div className="border-t border-slate-100 pt-2 mt-2">
             {authenticated ? (
               <>
-                <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
-                  <FiHeart size={17} /> Wishlist
-                </Link>
+                {showCustomerActions && (
+                  <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+                    <FiHeart size={17} /> Wishlist
+                  </Link>
+                )}
                 <Link to="/orders" className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
                   <FiPackage size={17} /> My Orders
                 </Link>
@@ -381,7 +388,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="px-4 py-2 flex items-center gap-3 border-t border-slate-100 mt-1">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold">
                     {initials}
                   </div>
                   <div>

@@ -51,7 +51,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
+    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
 
       {/* ── Card ──────────────────────────────────────────────────────────── */}
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
@@ -86,7 +86,7 @@ const RegisterPage = () => {
           <div className="relative z-10 space-y-4 my-8">
             {perks.map((p) => (
               <div key={p.text} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white shrink-0">
                   {p.icon}
                 </div>
                 <span className="text-red-100 text-sm">{p.text}</span>

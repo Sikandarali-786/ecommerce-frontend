@@ -1,11 +1,17 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiShield, FiTruck, FiStar } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { loginUser } from '../../api';
-import { setToken, setUser } from '../../utils/auth';
+import {
+  clearLoginLock,
+  getLoginLock,
+  setLoginLock,
+  setToken,
+  setUser,
+} from '../../utils/auth';
 import { loginSchema, type LoginFormData } from '../../schemas/auth.schema';
 import logoImg from '../../assets/images/logo.jpeg';
 import FormField from '../../components/FormField';
@@ -21,20 +27,68 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [now, setNow] = useState(Date.now());
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
 
+  const emailValue = watch('email')?.trim().toLowerCase() ?? '';
+  const loginLock = emailValue ? getLoginLock(emailValue) : null;
+  const isEmailLocked = !!loginLock && loginLock.lockedUntil > now;
+  const lockSecondsLeft = isEmailLocked
+    ? Math.max(1, Math.ceil((loginLock.lockedUntil - now) / 1000))
+    : 0;
+  const lockCountdown = isEmailLocked
+    ? `${Math.floor(lockSecondsLeft / 3600)
+        .toString()
+        .padStart(2, '0')}:${Math.floor((lockSecondsLeft % 3600) / 60)
+        .toString()
+        .padStart(2, '0')}:${(lockSecondsLeft % 60).toString().padStart(2, '0')}`
+    : '';
+
+  useEffect(() => {
+    if (!isEmailLocked) return undefined;
+
+    const timer = window.setInterval(() => {
+      setNow(Date.now());
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [isEmailLocked, loginLock?.lockedUntil]);
+
+  useEffect(() => {
+    if (!emailValue) return;
+
+    const lock = getLoginLock(emailValue);
+    if (lock) {
+      setNow(Date.now());
+    }
+  }, [emailValue]);
+
   const onSubmit = async (data: LoginFormData) => {
+    const normalizedEmail = data.email.trim().toLowerCase();
+    const existingLock = getLoginLock(normalizedEmail);
+
+    if (existingLock) {
+      const minutesLeft = Math.max(
+        1,
+        Math.ceil((existingLock.lockedUntil - Date.now()) / (60 * 1000)),
+      );
+      toast.error(`You are blocked for 1 hour. Try again in ${minutesLeft} minute${minutesLeft === 1 ? '' : 's'}.`);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await loginUser(data);
       if (response.success) {
+        clearLoginLock(normalizedEmail);
         setToken(response.token);
         setUser(response.user);
         toast.success('Welcome back!');
@@ -42,14 +96,26 @@ const LoginPage = () => {
       }
     } catch (error: any) {
       const message = error.response?.data?.message || 'Login failed. Please try again.';
-      toast.error(message);
+      const status = error.response?.status;
+      const isTemporaryLock =
+        status === 403 &&
+        /locked|too many failed login attempts/i.test(message);
+
+      if (isTemporaryLock) {
+        const lockMs = 60 * 60 * 1000;
+        setLoginLock(normalizedEmail, Date.now() + lockMs, 'account');
+        setNow(Date.now());
+        toast.error('You are blocked for 1 hour due to too many failed login attempts.');
+      } else {
+        toast.error(message);
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
+    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
 
       {/* ── Card ──────────────────────────────────────────────────────────── */}
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
@@ -87,7 +153,7 @@ const LoginPage = () => {
           <div className="relative z-10 space-y-4 my-8">
             {perks.map((p) => (
               <div key={p.text} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center text-white shrink-0">
                   {p.icon}
                 </div>
                 <span className="text-red-100 text-sm">{p.text}</span>
@@ -179,9 +245,16 @@ const LoginPage = () => {
               size="lg"
               fullWidth
               loading={isLoading}
+              disabled={isEmailLocked}
             >
-              Sign In
+              {isEmailLocked ? 'Blocked' : 'Sign In'}
             </Button>
+
+            {isEmailLocked && (
+              <p className="text-sm text-red-600 font-medium -mt-2 text-center">
+                Your account is blocked. Try again in {lockCountdown}.
+              </p>
+            )}
 
             {/* Divider */}
             <div className="flex items-center gap-3 text-slate-300">

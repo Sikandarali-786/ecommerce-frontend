@@ -144,7 +144,7 @@ const AdminOrdersPage = () => {
           <select
             value={filterStatus}
             onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-[150px]"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-37.5"
           >
             <option value="all">All Statuses</option>
             {ORDER_STATUSES.map(s => (
@@ -345,7 +345,7 @@ const AdminOrdersPage = () => {
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm">
                       <span className="text-gray-700 truncate pr-4">{item.title} × {item.quantity}</span>
-                      <span className="font-semibold flex-shrink-0">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-semibold shrink-0">${(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>

@@ -43,3 +43,63 @@ export const logout = (): void => {
   removeToken();
   removeUser();
 };
+
+const LOGIN_LOCK_PREFIX = 'login-lock:';
+
+export interface LoginLockState {
+  email: string;
+  lockedUntil: number;
+  label?: string;
+}
+
+const normalizeEmail = (email: string): string => email.trim().toLowerCase();
+
+export const getLoginLock = (email: string): LoginLockState | null => {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) return null;
+
+  const raw = localStorage.getItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`);
+  if (!raw) return null;
+
+  try {
+    const parsed = JSON.parse(raw) as LoginLockState;
+    if (parsed?.label === 'rate-limit') {
+      localStorage.removeItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`);
+      return null;
+    }
+
+    if (!parsed?.lockedUntil || parsed.lockedUntil <= Date.now()) {
+      localStorage.removeItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`);
+      return null;
+    }
+
+    return parsed;
+  } catch {
+    localStorage.removeItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`);
+    return null;
+  }
+};
+
+export const setLoginLock = (
+  email: string,
+  lockedUntil: number,
+  label?: string,
+): void => {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) return;
+
+  const state: LoginLockState = {
+    email: normalizedEmail,
+    lockedUntil,
+    label,
+  };
+
+  localStorage.setItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`, JSON.stringify(state));
+};
+
+export const clearLoginLock = (email: string): void => {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) return;
+
+  localStorage.removeItem(`${LOGIN_LOCK_PREFIX}${normalizedEmail}`);
+};

@@ -1,12 +1,19 @@
-import { useState } from 'react';
-import { FiPlus, FiEdit2, FiTrash2, FiTag } from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { FiPlus, FiEdit2, FiTrash2, FiTag, FiHash } from 'react-icons/fi';
 import { useCategories } from '../../hooks/useCategories';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { createCategory, updateCategory, deleteCategory } from '../../api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
+import FormField from '../../components/FormField';
 import toast from 'react-hot-toast';
 import type { Category } from '../../types';
+
+type CategoryFormData = {
+  name: string;
+  slug: string;
+};
 
 const AdminCategoriesPage = () => {
   const queryClient = useQueryClient();
@@ -15,14 +22,33 @@ const AdminCategoriesPage = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [editing, setEditing] = useState<Category | null>(null);
-  const [form, setForm] = useState({ name: '', slug: '' });
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<CategoryFormData>({
+    defaultValues: { name: '', slug: '' },
+  });
+
+  const watchedName = watch('name');
+
   // Auto-generate slug from name
-  const handleNameChange = (name: string) => {
-    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    setForm({ name, slug });
-  };
+  useEffect(() => {
+    if (!showModal) return;
+    if (editing) return;
+
+    const slug = (watchedName || '')
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+
+    setValue('slug', slug, { shouldValidate: true });
+  }, [watchedName, editing, setValue, showModal]);
 
   const createMutation = useMutation({
     mutationFn: createCategory,
@@ -57,28 +83,27 @@ const AdminCategoriesPage = () => {
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: '', slug: '' });
+    reset({ name: '', slug: '' });
     setShowModal(true);
   };
 
   const openEdit = (cat: Category) => {
     setEditing(cat);
-    setForm({ name: cat.name, slug: cat.slug });
+    reset({ name: cat.name, slug: cat.slug });
     setShowModal(true);
   };
 
   const closeModal = () => {
     setShowModal(false);
     setEditing(null);
-    setForm({ name: '', slug: '' });
+    reset({ name: '', slug: '' });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: CategoryFormData) => {
     if (editing) {
-      updateMutation.mutate({ id: editing._id, data: form });
+      updateMutation.mutate({ id: editing._id, data });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate(data);
     }
   };
 
@@ -131,7 +156,7 @@ const AdminCategoriesPage = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => openEdit(cat)}
-                  className="text-blue-600 hover:bg-blue-50"
+                  className="text-blue-600 hover:bg-blue-50 cursor-pointer"
                   title="Edit"
                 >
                   <FiEdit2 size={16} />
@@ -140,7 +165,7 @@ const AdminCategoriesPage = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setDeleteConfirm(cat._id)}
-                  className="text-red-600 hover:bg-red-50"
+                  className="text-red-600 hover:bg-red-50 cursor-pointer"
                   title="Delete"
                 >
                   <FiTrash2 size={16} />
@@ -159,32 +184,26 @@ const AdminCategoriesPage = () => {
               <h2 className="text-xl font-bold text-gray-900">
                 {editing ? 'Edit Category' : 'Add New Category'}
               </h2>
-              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 !px-2">✕</Button>
+              <Button variant="ghost" size="sm" onClick={closeModal} className="text-gray-400 hover:text-gray-600 px-2!">✕</Button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g. Electronics"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
-                <input
-                  type="text"
-                  required
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="e.g. electronics"
-                />
-                <p className="text-xs text-gray-400 mt-1">Auto-generated from name. Used in URLs.</p>
-              </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+              <FormField
+                id="name"
+                label="Name *"
+                placeholder="Enter Category Name"
+                icon={<FiTag size={16} />}
+                registration={register('name', { required: 'Category name is required' })}
+                error={errors.name?.message}
+              />
+              <FormField
+                id="slug"
+                label="Slug *"
+                placeholder="Auto slug create"
+                icon={<FiHash size={16} />}
+                registration={register('slug', { required: 'Slug is required' })}
+                error={errors.slug?.message}
+              />
+              <p className="text-xs text-gray-400 -mt-1">Auto-generated from name. Used in URLs.</p>
               <div className="flex space-x-3 pt-2">
                 <Button variant="secondary" size="md" onClick={closeModal} className="flex-1">
                   Cancel

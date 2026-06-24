@@ -122,7 +122,7 @@ const CartPage = () => {
                   className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row gap-4"
                 >
                   {/* Image */}
-                  <Link to={`/products/${item.product._id}`} className="flex-shrink-0">
+                  <Link to={`/products/${item.product._id}`} className="shrink-0">
                     <img
                       src={imageUrl}
                       alt={item.product.title}
@@ -132,7 +132,7 @@ const CartPage = () => {
                   </Link>
 
                   {/* Details */}
-                  <div className="flex-grow min-w-0">
+                  <div className="grow min-w-0">
                     <div className="flex justify-between items-start gap-2">
                       <div className="min-w-0">
                         {category && (
@@ -155,7 +155,7 @@ const CartPage = () => {
                         onClick={() => openRemoveModal(item.product._id)}
                         disabled={removeFromCartMutation.isPending}
                         title="Remove item"
-                        className="flex-shrink-0 text-gray-400 hover:text-red-500 !px-1"
+                        className="shrink-0 text-gray-400 hover:text-red-500 px-1!"
                       >
                         <FiTrash2 size={18} />
                       </Button>
@@ -174,7 +174,7 @@ const CartPage = () => {
                           size="sm"
                           onClick={() => handleUpdateQuantity(item.product._id, item.quantity - 1)}
                           disabled={item.quantity <= 1 || updateCartMutation.isPending}
-                          className="w-8 h-8 !px-0"
+                          className="w-8 h-8 px-0!"
                         >
                           <FiMinus size={14} />
                         </Button>
@@ -186,7 +186,7 @@ const CartPage = () => {
                           size="sm"
                           onClick={() => handleUpdateQuantity(item.product._id, item.quantity + 1)}
                           disabled={item.quantity >= item.product.stock || updateCartMutation.isPending}
-                          className="w-8 h-8 !px-0"
+                          className="w-8 h-8 px-0!"
                         >
                           <FiPlus size={14} />
                         </Button>

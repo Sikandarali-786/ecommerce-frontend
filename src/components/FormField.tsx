@@ -64,7 +64,7 @@ const FormField = ({
     {/* Error message */}
     {error && (
       <p className="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-        <span className="w-1 h-1 rounded-full bg-red-500 inline-block flex-shrink-0" />
+        <span className="w-1 h-1 rounded-full bg-red-500 inline-block shrink-0" />
         {error}
       </p>
     )}

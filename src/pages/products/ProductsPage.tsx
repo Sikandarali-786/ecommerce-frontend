@@ -75,7 +75,7 @@ const Pagination = ({
           <button
             key={p}
             onClick={() => onPageChange(p as number)}
-            className={`min-w-[36px] h-9 rounded-lg text-sm font-semibold transition-colors ${
+            className={`min-w-9 h-9 rounded-lg text-sm font-semibold transition-colors ${
               p === currentPage
                 ? 'bg-[#8B0000] text-white shadow-sm'
                 : 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50'

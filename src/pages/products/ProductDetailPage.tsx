@@ -13,6 +13,7 @@ import type { Category } from '../../types';
 import { useState } from 'react';
 import { getImageUrl } from '../../utils/image';
 import ReviewSection from '../../components/ReviewSection';
+import { isAdmin } from '../../utils/auth';
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ const ProductDetailPage = () => {
   const addToWishlistMutation = useAddToWishlist();
   const removeFromWishlistMutation = useRemoveFromWishlist();
   const isInWishlist = useIsInWishlist(id!);
+  const admin = isAdmin();
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -208,7 +210,7 @@ const ProductDetailPage = () => {
                       size="sm"
                       onClick={handleDecrease}
                       disabled={quantity <= 1}
-                      className="w-9 h-9 !px-0"
+                      className="w-9 h-9 px-0!"
                     >
                       <FiMinus size={15} />
                     </Button>
@@ -220,7 +222,7 @@ const ProductDetailPage = () => {
                       size="sm"
                       onClick={handleIncrease}
                       disabled={quantity >= maxQty}
-                      className="w-9 h-9 !px-0"
+                      className="w-9 h-9 px-0!"
                     >
                       <FiPlus size={15} />
                     </Button>
@@ -232,32 +234,38 @@ const ProductDetailPage = () => {
               )}
 
               {/* Actions */}
-              <div className="mt-auto flex gap-3">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                  loading={addToCartMutation.isPending}
-                  leftIcon={<FiShoppingCart size={20} />}
-                  className="flex-1"
-                >
-                  {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </Button>
+              {!admin ? (
+                <div className="mt-auto flex gap-3">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
+                    loading={addToCartMutation.isPending}
+                    leftIcon={<FiShoppingCart size={20} />}
+                    className="flex-1"
+                  >
+                    {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                  </Button>
 
-                <button
-                  onClick={handleToggleWishlist}
-                  disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
-                  title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                  className={`w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all disabled:opacity-50 ${
-                    isInWishlist
-                      ? 'bg-red-500 border-red-500 text-white hover:bg-red-600'
-                      : 'border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500'
-                  }`}
-                >
-                  <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
-                </button>
-              </div>
+                  <button
+                    onClick={handleToggleWishlist}
+                    disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
+                    title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+                    className={`w-12 h-12 flex items-center justify-center rounded-xl border-2 transition-all disabled:opacity-50 ${
+                      isInWishlist
+                        ? 'bg-red-500 border-red-500 text-white hover:bg-red-600'
+                        : 'border-gray-300 text-gray-500 hover:border-red-400 hover:text-red-500'
+                    }`}
+                  >
+                    <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
+                  </button>
+                </div>
+              ) : (
+                <div className="mt-auto rounded-xl border border-dashed border-gray-200 px-4 py-3 text-center text-sm text-gray-500">
+                  Admin view only
+                </div>
+              )}
 
               {/* Delivery note */}
               {product.stock > 0 && (

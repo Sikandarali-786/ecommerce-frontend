@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
+    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
 
         {/* Header strip */}
@@ -134,7 +134,7 @@ const ResetPasswordPage = () => {
                 {/* Error */}
                 {error && (
                   <p className="text-xs text-red-500 flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block shrink-0" />
                     {error}
                   </p>
                 )}

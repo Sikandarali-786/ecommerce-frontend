@@ -35,7 +35,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-gradient-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
+    <div className="min-h-[calc(100vh-130px)] flex items-center justify-center bg-linear-to-br from-slate-100 via-slate-50 to-red-50 px-4 py-10">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
 
         {/* Header strip */}
