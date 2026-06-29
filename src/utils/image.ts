@@ -10,7 +10,8 @@
  * - Legacy full URL already stored: returned as-is
  */
 
-const BACKEND_URL = (import.meta.env.VITE_API_BASE_URL as string)
+// const BACKEND_URL = (import.meta.env.VITE_API_BASE_URL as string)
+const BACKEND_URL = ((import.meta.env.VITE_API_BASE_URL as string) ?? '')
   .replace('/api', ''); // strip the /api suffix → "http://localhost:5112"
 
 export const getImageUrl = (path: string | undefined | null): string => {

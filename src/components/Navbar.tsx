@@ -125,7 +125,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
-      <div className="bg-[#8B0000] text-white text-xs py-1.5 px-6">
+      <div className="bg-gradient-to-r from-[#10354a]  to-[#cf531f] text-white text-xs py-5 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
             <a
@@ -187,11 +187,10 @@ const Navbar = () => {
                       <Link
                         key={cat._id}
                         to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                        className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${
-                          isActivecat
+                        className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${isActivecat
                             ? 'text-[#8B0000] bg-red-50'
                             : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
-                        }`}
+                          }`}
                       >
                         {cat.name}
                       </Link>
@@ -305,11 +304,10 @@ const Navbar = () => {
                   <Link
                     to="/wishlist"
                     title="Wishlist"
-                    className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                      isActive('/wishlist')
+                    className={`p-2 rounded-lg transition-colors cursor-pointer ${isActive('/wishlist')
                         ? 'text-[#8B0000] bg-red-50'
                         : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                    }`}
+                      }`}
                   >
                     <FiHeart size={20} />
                   </Link>
@@ -331,11 +329,10 @@ const Navbar = () => {
                   <Link
                     to="/orders"
                     title="Orders"
-                    className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                      isActive('/orders')
+                    className={`p-2 rounded-lg transition-colors cursor-pointer ${isActive('/orders')
                         ? 'text-[#8B0000] bg-red-50'
                         : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                    }`}
+                      }`}
                   >
                     <FiPackage size={20} />
                   </Link>
@@ -357,11 +354,10 @@ const Navbar = () => {
                   <Link
                     to="/cart"
                     title="Cart"
-                    className={`relative p-2 rounded-lg transition-colors cursor-pointer ${
-                      isActive('/cart')
+                    className={`relative p-2 rounded-lg transition-colors cursor-pointer ${isActive('/cart')
                         ? 'text-[#8B0000] bg-red-50'
                         : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
-                    }`}
+                      }`}
                   >
                     <FiShoppingCart size={20} />
                     {cartCount > 0 && (
@@ -405,7 +401,7 @@ const Navbar = () => {
                     <Link to="/orders" className="p-2 text-slate-700" aria-label="Orders">
                       <FiPackage size={20} />
                     </Link>
-                  <Link to="/cart" className="relative p-2 text-slate-700 cursor-pointer" aria-label="Cart">
+                    <Link to="/cart" className="relative p-2 text-slate-700 cursor-pointer" aria-label="Cart">
                       <FiShoppingCart size={22} />
                       {cartCount > 0 && (
                         <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
@@ -483,11 +479,10 @@ const Navbar = () => {
               <Link
                 key={cat._id}
                 to={`/products?category=${encodeURIComponent(cat.slug)}`}
-                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                  isActivecat
+                className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${isActivecat
                     ? 'text-[#8B0000] bg-red-50'
                     : 'text-slate-700 hover:bg-slate-50'
-                }`}
+                  }`}
               >
                 {cat.name}
               </Link>
@@ -497,11 +492,10 @@ const Navbar = () => {
           {/* All products link */}
           <Link
             to="/products"
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-t border-slate-100 mt-1 pt-3 ${
-              location.pathname === '/products' && !activeCategorySlug
+            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-t border-slate-100 mt-1 pt-3 ${location.pathname === '/products' && !activeCategorySlug
                 ? 'text-[#8B0000] bg-red-50'
                 : 'text-slate-700 hover:bg-slate-50'
-            }`}
+              }`}
           >
             All Products
           </Link>
