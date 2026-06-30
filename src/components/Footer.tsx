@@ -13,7 +13,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-[#8B0000] text-white">
+    <footer className="bg-linear-to-r from-[#cf531f] to-[#10354a] text-white">
 
       {/* ── Main footer grid ─────────────────────────────────────────────── */}
       <div className="w-full px-6 sm:px-10 lg:px-16 pt-10 pb-8">
@@ -25,20 +25,20 @@ const Footer = () => {
             <div className="mb-5">
               <img
                 src={logoImg}
-                alt="Afzal Bikerz Studio"
-                className="h-20 w-auto object-contain rounded"
+                alt="Afzal Bikerz Store"
+                className="h-20 w-auto object-contain rounded bg-white/95 shadow-sm border border-white/20 p-1"
               />
             </div>
 
             {/* Address */}
             <div className="flex items-start gap-2 text-red-100 text-sm mb-3">
-              <FiMapPin size={15} className="mt-0.5 flex-shrink-0 text-red-300" />
+              <FiMapPin size={15} className="mt-0.5 shrink-0 text-[#ffcfb0]" />
               <span>K-Block Street#3 Corner Shop<br />Motorcycle Market, Attock</span>
             </div>
 
             {/* Email */}
             <div className="flex items-center gap-2 text-red-100 text-sm mb-3">
-              <FiMail size={14} className="flex-shrink-0 text-red-300" />
+              <FiMail size={14} className="shrink-0 text-[#ffcfb0]" />
               <a
                 href="mailto:Afzalbikerzstudio@gmail.com"
                 className="hover:text-white transition-colors"
@@ -49,7 +49,7 @@ const Footer = () => {
 
             {/* Phone */}
             <div className="flex items-center gap-2 text-red-100 text-sm mb-5">
-              <FiPhone size={14} className="flex-shrink-0 text-red-300" />
+              <FiPhone size={14} className="shrink-0 text-[#ffcfb0]" />
               <a
                 href="tel:+923335959318"
                 className="hover:text-white transition-colors"
@@ -64,7 +64,7 @@ const Footer = () => {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-white/15 text-white hover:bg-white/25 flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
                 <FaFacebookF size={14} />
@@ -73,7 +73,7 @@ const Footer = () => {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-white/15 text-white hover:bg-white/25 flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
                 <FaInstagram size={14} />
@@ -82,7 +82,7 @@ const Footer = () => {
                 href="https://tiktok.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/30 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-white/15 text-white hover:bg-white/25 flex items-center justify-center transition-colors"
                 aria-label="TikTok"
               >
                 <FaTiktok size={14} />
@@ -156,11 +156,11 @@ const Footer = () => {
                 onChange={e => setEmail(e.target.value)}
                 placeholder="Your email addr..."
                 required
-                className="flex-1 min-w-0 text-sm px-3 py-2.5 rounded-l-md bg-white/10 border border-white/20 text-white placeholder-red-300 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors"
+                className="flex-1 min-w-0 text-sm px-3 py-2.5 rounded-l-md bg-white/10 border border-white/20 text-white placeholder-red-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors"
               />
               <button
                 type="submit"
-                className="flex-shrink-0 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-r-md transition-colors"
+                className="shrink-0 px-4 py-2.5 bg-[#8B0000] hover:bg-red-900 text-white text-sm font-semibold rounded-r-md transition-colors"
               >
                 Subscribe
               </button>
@@ -171,8 +171,8 @@ const Footer = () => {
       </div>
 
       {/* ── Bottom bar ───────────────────────────────────────────────────── */}
-      <div className="border-t border-white/20 px-6 sm:px-10 lg:px-16 py-4">
-        <p className="text-center text-red-200 text-xs">
+      <div className="border-t border-white/15 px-6 sm:px-10 lg:px-16 py-4">
+        <p className="text-center text-red-100 text-xs">
           Copyright © 2026{' '}
           <span className="text-white font-semibold">Afzal Bikers Store</span>{' '}
           all rights reserved.

@@ -42,6 +42,21 @@ html {
   height: 0;
 }
 
+/* ── Navbar category marquee ───────────────────────────────────────────── */
+@keyframes category-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.category-marquee {
+  will-change: transform;
+  animation: category-marquee var(--marquee-duration, 24s) linear infinite;
+}
+
+.category-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* ── Skeleton shimmer animation ──────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }

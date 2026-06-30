@@ -1,10 +1,8 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import {
-  FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
-  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser,
-} from 'react-icons/fi';
+import { FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
+  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser,} from 'react-icons/fi';
 import { MdAdminPanelSettings, MdPhone, MdEmail } from 'react-icons/md';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
 import { useCategories } from '../hooks/useCategories';
@@ -19,9 +17,6 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const categoriesRef = useRef<HTMLDivElement>(null);
-  const isCategoriesHoveredRef = useRef(false);
-
   const authenticated = isAuthenticated();
   const admin = isAdmin();
   const user = getUser();
@@ -59,43 +54,6 @@ const Navbar = () => {
     }
   }, [searchOpen]);
 
-  useEffect(() => {
-    const el = categoriesRef.current;
-    if (!el || categories.length === 0) return undefined;
-
-    const speed = 3;
-    const pauseMs = 500;
-    let intervalId = 0;
-    let pauseTimeoutId = 0;
-
-    const tick = () => {
-      if (isCategoriesHoveredRef.current) return;
-
-      const maxScrollLeft = el.scrollWidth - el.clientWidth;
-      if (maxScrollLeft <= 0) return;
-
-      if (el.scrollLeft >= maxScrollLeft - 1) {
-        window.clearInterval(intervalId);
-        pauseTimeoutId = window.setTimeout(() => {
-          if (!isCategoriesHoveredRef.current) {
-            el.scrollLeft = 0;
-            intervalId = window.setInterval(tick, 16);
-          }
-        }, pauseMs);
-        return;
-      }
-
-      el.scrollLeft += speed;
-    };
-
-    intervalId = window.setInterval(tick, 16);
-
-    return () => {
-      window.clearInterval(intervalId);
-      window.clearTimeout(pauseTimeoutId);
-    };
-  }, [categories.length]);
-
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
@@ -121,11 +79,13 @@ const Navbar = () => {
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U';
+  const marqueeCategories = categories.length > 0 ? [...categories, ...categories] : [];
+  const marqueeDuration = `${Math.max(categories.length * 2.5, 24)}s`;
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-[#10354a]  to-[#cf531f] text-white text-xs py-5 px-6">
+      <div className="bg-linear-to-r from-[#10354a]  to-[#cf531f] text-white text-xs py-5 px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-5">
             <a
@@ -158,34 +118,32 @@ const Navbar = () => {
             <Link to="/" className="flex items-center shrink-0 mr-4">
               <img
                 src={logoImg}
-                alt="Afzal Bikerz Studio"
+                alt="Afzal Bikerz Store"
                 className="h-14 w-auto object-contain rounded-sm"
               />
             </Link>
 
             {/* ── Desktop nav: dynamic categories ───────────────────── */}
-            <div
-              ref={categoriesRef}
-              onMouseEnter={() => { isCategoriesHoveredRef.current = true; }}
-              onMouseLeave={() => { isCategoriesHoveredRef.current = false; }}
-              className="hidden lg:block flex-1 overflow-x-hidden scrollbar-hide"
-            >
-              <div className="flex items-center gap-0.5 w-max whitespace-nowrap">
+            <div className="hidden lg:block flex-1 overflow-hidden">
+              <div
+                className="flex items-center gap-0.5 w-max whitespace-nowrap category-marquee"
+                style={{ '--marquee-duration': marqueeDuration } as CSSProperties}
+              >
                 {categories.length === 0 ? (
                   // Skeleton placeholders while loading
                   Array.from({ length: 5 }).map((_, i) => (
                     <div
                       key={i}
                       className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 shrink-0"
-                    />
-                  ))
+                      />
+                    ))
                 ) : (
-                  categories.map((cat) => {
+                  marqueeCategories.map((cat, index) => {
                     const isActivecat = activeCategorySlug === cat.slug
                       && location.pathname.startsWith('/products');
                     return (
                       <Link
-                        key={cat._id}
+                        key={`${cat._id}-${index}`}
                         to={`/products?category=${encodeURIComponent(cat.slug)}`}
                         className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${isActivecat
                             ? 'text-[#8B0000] bg-red-50'
