@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
-import logoImg from '../assets/images/logo.jpeg';
+import logoImg from '../assets/images/logo.png';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +33,7 @@ const Footer = () => {
             {/* Address */}
             <div className="flex items-start gap-2 text-red-100 text-sm mb-3">
               <FiMapPin size={15} className="mt-0.5 shrink-0 text-[#ffcfb0]" />
-              <span>K-Block Street#3 Corner Shop<br />Motorcycle Market, Attock</span>
+              <span>Zam Zam Autos Decoration Hussain a Gahi Road Multan</span>
             </div>
 
             {/* Email */}

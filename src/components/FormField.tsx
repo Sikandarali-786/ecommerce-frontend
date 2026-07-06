@@ -26,7 +26,7 @@ const FormField = ({
   <div>
     <label
       htmlFor={id}
-      className="block text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5"
+      className="block text-xs font-semibold text-slate-600 tracking-wide mb-1.5"
     >
       {label}
     </label>

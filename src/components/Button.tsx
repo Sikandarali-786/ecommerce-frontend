@@ -61,6 +61,13 @@ const variantClasses = {
   /** Active tab state */
   tabActive:
     'bg-blue-600 text-white focus:ring-blue-500',
+
+  /** Brand gradient — teal-to-orange */
+  gradient:
+    'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white ' +
+    'hover:opacity-90 disabled:opacity-60 ' +
+    'shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ' +
+    'focus:ring-[#cf531f]',
 } as const;
 
 // ── Size styles ───────────────────────────────────────────────────────────────

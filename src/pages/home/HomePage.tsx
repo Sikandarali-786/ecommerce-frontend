@@ -117,7 +117,7 @@ const HomePage = () => {
           <div className="text-center mt-10">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-xl font-700 hover:bg-indigo-700 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
+              className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white px-8 py-3.5 rounded-xl font-700 hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
             >
               View All Products
               <FiArrowRight size={18} />

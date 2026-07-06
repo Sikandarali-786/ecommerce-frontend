@@ -6,7 +6,7 @@ import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
 import { useCategories } from '../hooks/useCategories';
-import logoImg from '../assets/images/logo.jpeg';
+import logoImg from '../assets/images/logo.png';
 
 const Navbar = () => {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMail, FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
 import { forgotPassword } from '../../api/auth.api';
-import logoImg from '../../assets/images/logo.jpeg';
+import logoImg from '../../assets/images/logo.png';
 import Button from '../../components/Button';
 
 const ForgotPasswordPage = () => {

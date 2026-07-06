@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FiLock, FiEye, FiEyeOff, FiCheckCircle, FiArrowLeft } from 'react-icons/fi';
 import { resetPassword } from '../../api/auth.api';
-import logoImg from '../../assets/images/logo.jpeg';
+import logoImg from '../../assets/images/logo.png';
 import Button from '../../components/Button';
 
 const ResetPasswordPage = () => {

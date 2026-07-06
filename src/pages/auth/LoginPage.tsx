@@ -13,7 +13,7 @@ import {
   setUser,
 } from '../../utils/auth';
 import { loginSchema, type LoginFormData } from '../../schemas/auth.schema';
-import logoImg from '../../assets/images/logo.jpeg';
+import logoImg from '../../assets/images/logo.png';
 import FormField from '../../components/FormField';
 import Button from '../../components/Button';
 
@@ -199,7 +199,7 @@ const LoginPage = () => {
               id="email"
               label="Email Address"
               type="email"
-              placeholder="you@example.com"
+              placeholder="Enter your Email"
               autoComplete="email"
               icon={<FiMail size={16} />}
               registration={register('email')}

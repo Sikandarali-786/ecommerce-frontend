@@ -100,7 +100,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         <div className="flex items-center justify-between mb-3">
           <div>
             <span className="text-2xl font-bold text-gray-900">
-              ${product.price.toFixed(2)}
+              {product.price.toFixed(2)}
             </span>
           </div>
           <div className="text-sm">
@@ -113,7 +113,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         {/* Add to Cart Button */}
         {!admin ? (
           <Button
-            variant="primary"
+            variant="gradient"
             fullWidth
             size="md"
             onClick={handleAddToCart}
