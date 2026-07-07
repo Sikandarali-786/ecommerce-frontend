@@ -144,7 +144,7 @@ const WishlistPage = () => {
 
                   {/* Price */}
                   <p className="text-xl font-bold text-gray-900 mb-4">
-                    ${product.price.toFixed(2)}
+                    {product.price.toFixed(2)}
                   </p>
 
                   <div className="flex gap-2">

@@ -262,7 +262,7 @@ const AdminProductsPage = () => {
                       {typeof product.category === 'object' ? product.category.name : product.category}
                     </td>
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                      ${product.price.toFixed(2)}
+                      {product.price.toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
                       <span className={`px-2 py-1 text-xs font-semibold rounded-full ${

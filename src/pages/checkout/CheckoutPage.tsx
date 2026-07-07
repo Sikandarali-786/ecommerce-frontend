@@ -314,7 +314,7 @@ const CheckoutPage = () => {
                           </h4>
                           <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
                           <p className="text-sm font-semibold text-gray-900">
-                            ${(item.product.price * item.quantity).toFixed(2)}
+                            {(item.product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -326,21 +326,21 @@ const CheckoutPage = () => {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-semibold">${total.toFixed(2)}</span>
+                    <span className="font-semibold">{total.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
                     <span className="font-semibold">
-                      {shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+                      {shippingCost === 0 ? 'FREE' : shippingCost.toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>Tax (10%)</span>
-                    <span className="font-semibold">${tax.toFixed(2)}</span>
+                    <span className="font-semibold">{tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
-                    <span className="text-blue-600">${grandTotal.toFixed(2)}</span>
+                    <span className="text-blue-600">{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -348,7 +348,7 @@ const CheckoutPage = () => {
                 {total < 100 && (
                   <div className="mt-4 p-3 bg-orange-50 rounded-lg">
                     <p className="text-sm text-orange-800">
-                      Add ${(100 - total).toFixed(2)} more to get FREE shipping!
+                      Add {(100 - total).toFixed(2)} more to get FREE shipping!
                     </p>
                   </div>
                 )}
@@ -362,7 +362,7 @@ const CheckoutPage = () => {
                   loading={createOrderMutation.isPending}
                   className="mt-6"
                 >
-                  {`Place Order — $${grandTotal.toFixed(2)}`}
+                  {`Place Order — ${grandTotal.toFixed(2)}`}
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center mt-4">

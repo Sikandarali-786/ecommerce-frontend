@@ -44,7 +44,7 @@ const ConfirmModal = ({
   const iconColor = variant === 'danger' ? 'text-red-500' : 'text-amber-500';
   const iconBg   = variant === 'danger' ? 'bg-red-50'   : 'bg-amber-50';
   const btnColor = variant === 'danger'
-    ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+    ? 'bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 focus:ring-[#cf531f]'
     : 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-400';
 
   return (

@@ -31,7 +31,7 @@ const AdminSidebar = () => {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
       isActive
-        ? 'bg-blue-600 text-white'
+        ? 'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white'
         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
     }`;
 

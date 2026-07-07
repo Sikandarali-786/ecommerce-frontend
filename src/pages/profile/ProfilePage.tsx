@@ -199,7 +199,7 @@ const ProfilePage = () => {
               <button
                 type="submit"
                 disabled={profileMutation.isPending}
-                className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white py-2.5 px-4 rounded-lg hover:opacity-90 transition-all font-semibold text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 <FiSave size={15} />
                 {profileMutation.isPending ? 'Saving…' : 'Save Changes'}

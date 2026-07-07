@@ -27,7 +27,7 @@ const OrderSuccessPage = () => {
           <p className="text-gray-600 mb-6">We couldn't find the order you're looking for.</p>
           <Link
             to="/"
-            className="inline-flex items-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center space-x-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white px-6 py-3 rounded-lg hover:opacity-90 transition-all"
           >
             <FiHome />
             <span>Go to Home</span>
@@ -122,12 +122,12 @@ const OrderSuccessPage = () => {
                   <h3 className="font-semibold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    ${item.price.toFixed(2)} each
+                    {item.price.toFixed(2)} each
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-gray-900">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {(item.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -141,21 +141,21 @@ const OrderSuccessPage = () => {
           <div className="space-y-2">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span className="font-semibold">${order.subtotal.toFixed(2)}</span>
+              <span className="font-semibold">{order.subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
               <span className="font-semibold">
-                {order.shippingCost === 0 ? 'FREE' : `$${order.shippingCost.toFixed(2)}`}
+                {order.shippingCost === 0 ? 'FREE' : order.shippingCost.toFixed(2)}
               </span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Tax</span>
-              <span className="font-semibold">${order.tax.toFixed(2)}</span>
+              <span className="font-semibold">{order.tax.toFixed(2)}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
               <span>Total</span>
-              <span className="text-blue-600">${order.total.toFixed(2)}</span>
+              <span className="text-blue-600">{order.total.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@ const OrderSuccessPage = () => {
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
             to="/orders"
-            className="flex-1 flex items-center justify-center space-x-2 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            className="flex-1 flex items-center justify-center space-x-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white px-6 py-3 rounded-lg hover:opacity-90 transition-all font-semibold"
           >
             <FiPackage />
             <span>View My Orders</span>

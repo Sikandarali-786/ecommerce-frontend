@@ -37,7 +37,7 @@ const NotFoundPage = () => {
           </button>
           <Link
             to="/"
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium text-sm"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg bg-linear-to-r from-[#10354a] to-[#cf531f] text-white hover:opacity-90 transition-all font-medium text-sm"
           >
             <FiHome size={16} />
             Go to Home
