@@ -258,7 +258,7 @@ const Navbar = () => {
                     className="flex items-center gap-1.5 p-2 rounded-lg hover:bg-red-50 transition-colors cursor-pointer"
                     title="Account"
                   >
-                    <div className="w-7 h-7 rounded-full bg-linear-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] flex items-center justify-center text-white text-xs font-bold shrink-0">
                       {initials}
                     </div>
                     <FiChevronDown
@@ -377,7 +377,7 @@ const Navbar = () => {
                   >
                     <FiShoppingCart size={20} />
                     {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-[#8B0000] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
+                      <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1 leading-none">
                         {cartCount > 99 ? '99+' : cartCount}
                       </span>
                     )}
@@ -420,7 +420,7 @@ const Navbar = () => {
                     <Link to="/cart" className="relative p-2 text-slate-700 cursor-pointer" aria-label="Cart">
                       <FiShoppingCart size={22} />
                       {cartCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-[#8B0000] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
+                        <span className="absolute -top-0.5 -right-0.5 min-w-4.25 h-4.25 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
                           {cartCount > 99 ? '99+' : cartCount}
                         </span>
                       )}
@@ -553,7 +553,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="px-4 py-2 flex items-center gap-3 border-t border-slate-100 mt-1">
-                  <div className="w-8 h-8 rounded-full bg-linear-to-br from-[#8B0000] to-red-600 flex items-center justify-center text-white text-xs font-bold">
+                  <div className="w-8 h-8 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] flex items-center justify-center text-white text-xs font-bold">
                     {initials}
                   </div>
                   <div>
@@ -600,13 +600,13 @@ const Navbar = () => {
                 )}
                 <Link
                   to="/login"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-[#8B0000] border border-red-200 hover:bg-red-50 transition-colors cursor-pointer"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-[#10354a] border border-[#10354a]/30 hover:bg-[#10354a]/5 transition-colors cursor-pointer"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-white bg-[#8B0000] hover:bg-red-900 transition-colors cursor-pointer"
+                  className="w-full text-center py-2.5 rounded-lg text-sm font-semibold text-white bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 transition-all cursor-pointer"
                 >
                   Get Started
                 </Link>

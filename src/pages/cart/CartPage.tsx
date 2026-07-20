@@ -192,7 +192,7 @@ const CartPage = () => {
                     {/* Price + Qty */}
                     <div className="flex flex-wrap items-center justify-between gap-3 mt-4">
                       <span className="text-lg font-bold text-gray-900">
-                        ${item.product.price.toFixed(2)}
+                        {item.product.price.toFixed(2)}
                       </span>
 
                       {/* Quantity controls */}
@@ -221,7 +221,7 @@ const CartPage = () => {
                       </div>
 
                       <span className="text-lg font-bold text-blue-600">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                        {(item.product.price * item.quantity).toFixed(2)}
                       </span>
                     </div>
 
@@ -242,24 +242,24 @@ const CartPage = () => {
               <div className="space-y-3 text-sm mb-5">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({items.length} items)</span>
-                  <span className="font-semibold text-gray-900">${total.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-900">{total.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Shipping</span>
                   <span className="font-semibold text-gray-900">
                     {shippingCost === 0
                       ? <span className="text-green-600">FREE</span>
-                      : `$${shippingCost.toFixed(2)}`
+                      : shippingCost.toFixed(2)
                     }
                   </span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Tax (10%)</span>
-                  <span className="font-semibold text-gray-900">${tax.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-900">{tax.toFixed(2)}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between text-base font-bold text-gray-900">
                   <span>Total</span>
-                  <span className="text-blue-600">${grandTotal.toFixed(2)}</span>
+                  <span className="text-blue-600">{grandTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -267,7 +267,7 @@ const CartPage = () => {
               {total < 100 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-5">
                   <p className="text-xs text-amber-800 font-medium">
-                    🚚 Add <span className="font-bold">${(100 - total).toFixed(2)}</span> more for free shipping!
+                    🚚 Add <span className="font-bold">{(100 - total).toFixed(2)}</span> more for free shipping!
                   </p>
                   <div className="mt-1.5 h-1.5 bg-amber-200 rounded-full overflow-hidden">
                     <div
@@ -280,7 +280,7 @@ const CartPage = () => {
 
               <Link
                 to="/checkout"
-                className="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 font-semibold"
+                className="w-full bg-linear-to-r from-[#10354a] to-[#cf531f] text-white py-3 px-4 rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 font-semibold"
               >
                 Proceed to Checkout
                 <FiArrowRight size={16} />

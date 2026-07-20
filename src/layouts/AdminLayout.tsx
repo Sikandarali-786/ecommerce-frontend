@@ -88,7 +88,7 @@ const AdminLayout = () => {
             onClick={() => setSidebarOpen(false)}
             className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all group ${
               isActive(item.path)
-                ? 'bg-blue-600 text-white'
+                ? 'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
           >

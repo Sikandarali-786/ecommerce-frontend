@@ -54,7 +54,7 @@ const ProductFilters = ({ onFilterChange, activeFilters }: ProductFiltersProps) 
         <FiFilter size={20} />
         <span className="font-medium">Filters</span>
         {hasActiveFilters && (
-          <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">Active</span>
+          <span className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-xs px-2 py-1 rounded-full">Active</span>
         )}
       </button>
 

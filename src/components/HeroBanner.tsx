@@ -146,7 +146,7 @@ const HeroBanner = () => {
           style={{ animation: 'slideUp 0.6s ease forwards' }}
         >
           {/* Badge */}
-          <span className="inline-block bg-[#8B0000] text-white text-xs font-bold px-3 py-1 rounded-full mb-4 tracking-wide uppercase">
+          <span className="inline-block bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-xs font-bold px-3 py-1 rounded-full mb-4 tracking-wide uppercase">
             {slide.badge}
           </span>
 
@@ -163,7 +163,7 @@ const HeroBanner = () => {
           {/* CTA */}
           <Link
             to={slide.ctaPath}
-            className="inline-flex items-center gap-2 bg-[#8B0000] hover:bg-red-900 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
           >
             {slide.cta}
             <FiArrowRight size={16} />
@@ -205,7 +205,7 @@ const HeroBanner = () => {
 
       {/* ── Progress bar ──────────────────────────────────────────────── */}
       {!isPaused && (
-        <div className="absolute bottom-0 left-0 z-20 h-0.5 bg-[#8B0000]"
+        <div className="absolute bottom-0 left-0 z-20 h-0.5 bg-linear-to-r from-[#10354a] to-[#cf531f]"
           style={{
             animation: `progressBar ${AUTOPLAY_INTERVAL}ms linear`,
             animationIterationCount: 1,

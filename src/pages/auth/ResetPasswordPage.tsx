@@ -51,7 +51,7 @@ const ResetPasswordPage = () => {
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
 
         {/* Header strip */}
-        <div className="bg-[#8B0000] px-8 py-6 flex items-center gap-4">
+        <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] px-8 py-6 flex items-center gap-4">
           <img src={logoImg} alt="Logo" className="h-12 w-12 object-contain rounded-xl bg-white/10 p-1" />
           <div>
             <p className="text-white font-bold text-base leading-tight">Afzal Bikerz Studio</p>

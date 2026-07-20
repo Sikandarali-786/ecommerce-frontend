@@ -201,7 +201,8 @@ const OrderCard = ({
             </div>
             <div>
               <p className="text-sm text-gray-600">Total</p>
-              <p className="font-bold text-blue-600">${order.total.toFixed(2)}</p>
+              <p className="font-bold text-blue-600">{order.total.toFixed(2)}</p>
+
             </div>
           </div>
           <div
@@ -231,11 +232,11 @@ const OrderCard = ({
               <div className="flex-1">
                 <h4 className="font-semibold text-gray-900">{item.title}</h4>
                 <p className="text-sm text-gray-600">
-                  Qty: {item.quantity} × ${item.price.toFixed(2)}
+                  Qty: {item.quantity} × {item.price.toFixed(2)}
                 </p>
               </div>
               <p className="font-semibold text-gray-900">
-                ${(item.price * item.quantity).toFixed(2)}
+                {(item.price * item.quantity).toFixed(2)}
               </p>
             </div>
           ))}

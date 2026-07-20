@@ -15,24 +15,28 @@ const Spinner = () => (
 
 // ── Variant styles ────────────────────────────────────────────────────────────
 const variantClasses = {
-  /** Blue primary — used across products, cart, admin, checkout */
+  /** Gradient primary — used across products, cart, admin, checkout */
   primary:
-    'bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-400 focus:ring-blue-500 shadow-sm',
+    'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white ' +
+    'hover:opacity-90 disabled:opacity-60 ' +
+    'shadow-sm hover:shadow-md focus:ring-[#cf531f]',
 
-  /** Dark red brand — login/register submit, navbar mobile */
+  /** Gradient brand — login/register submit, navbar mobile */
   brand:
-    'bg-[#8B0000] text-white hover:bg-red-900 disabled:opacity-60 ' +
-    'shadow-lg shadow-red-900/20 hover:shadow-xl hover:shadow-red-900/30 ' +
-    'hover:-translate-y-0.5 active:translate-y-0 focus:ring-[#8B0000]',
+    'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white ' +
+    'hover:opacity-90 disabled:opacity-60 ' +
+    'shadow-lg hover:shadow-xl ' +
+    'hover:-translate-y-0.5 active:translate-y-0 focus:ring-[#cf531f]',
 
-  /** Dark red outline — secondary auth action, navbar */
+  /** Gradient outline — secondary auth action, navbar */
   brandOutline:
-    'bg-transparent text-[#8B0000] border-2 border-[#8B0000]/30 ' +
-    'hover:border-[#8B0000] hover:bg-red-50 focus:ring-[#8B0000]',
+    'bg-transparent text-[#10354a] border-2 border-[#10354a]/30 ' +
+    'hover:border-[#10354a] hover:bg-[#10354a]/5 focus:ring-[#10354a]',
 
-  /** Red solid — destructive confirm (delete, cancel order) */
+  /** Gradient — destructive confirm (delete, cancel order) */
   danger:
-    'bg-red-600 text-white hover:bg-red-700 disabled:bg-gray-400 focus:ring-red-500 shadow-sm',
+    'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white ' +
+    'hover:opacity-90 disabled:opacity-60 shadow-sm focus:ring-[#cf531f]',
 
   /** Red ghost text — clear cart / clear wishlist */
   dangerGhost:
@@ -52,7 +56,7 @@ const variantClasses = {
   /** Dashed upload trigger */
   upload:
     'bg-transparent text-gray-500 border-2 border-dashed border-gray-300 ' +
-    'hover:border-blue-400 hover:text-blue-500 focus:ring-blue-400 w-full justify-center',
+    'hover:border-[#10354a] hover:text-[#10354a] focus:ring-[#cf531f] w-full justify-center',
 
   /** Filter tabs (active controlled externally via `active` prop) */
   tab:
@@ -60,7 +64,7 @@ const variantClasses = {
 
   /** Active tab state */
   tabActive:
-    'bg-blue-600 text-white focus:ring-blue-500',
+    'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white focus:ring-[#cf531f]',
 
   /** Brand gradient — teal-to-orange */
   gradient:

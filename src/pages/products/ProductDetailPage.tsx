@@ -60,7 +60,7 @@ const ProductDetailPage = () => {
           </p>
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white px-6 py-2.5 rounded-lg hover:opacity-90 transition-all font-medium"
           >
             <FiArrowLeft size={16} />
             Back to Products
@@ -314,7 +314,7 @@ const ProductDetailPage = () => {
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <dt className="text-sm text-gray-500">Price</dt>
-              <dd className="text-sm font-semibold text-gray-900">${product.price.toFixed(2)}</dd>
+              <dd className="text-sm font-semibold text-gray-900">{product.price.toFixed(2)}</dd>
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <dt className="text-sm text-gray-500">Condition</dt>
