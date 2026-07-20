@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
-  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser,} from 'react-icons/fi';
+  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,} from 'react-icons/fi';
 import { MdAdminPanelSettings, MdPhone, MdEmail } from 'react-icons/md';
 import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
@@ -15,6 +15,14 @@ const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const [locationLabel, setLocationLabel] = useState('Hussain Agahi Market · Pakistan');
+  const [locationInput, setLocationInput] = useState('Hussain Agahi Market, Multan');
+  const [locationPin, setLocationPin] = useState({ lat: 30.1959895, lng: 71.4750566 });
+  const googleMapsEmbedUrl = `https://www.google.com/maps?q=${locationPin.lat},${locationPin.lng}&z=17&output=embed`;
+  const googleMapsLink = 'https://maps.app.goo.gl/ECdA7b4iphZjXf2e9';
+  const whatsappNumber = '923048405899'; // replace with your WhatsApp number
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi, I want to place an order from Afzal Bikerz Store.')}`;
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const authenticated = isAuthenticated();
@@ -69,6 +77,19 @@ const Navbar = () => {
     }
   };
 
+  const openLocationModal = () => {
+    setLocationModalOpen(true);
+  };
+
+  const closeLocationModal = () => {
+    setLocationModalOpen(false);
+  };
+
+  const confirmLocation = () => {
+    setLocationLabel(`Other · ${locationInput}`);
+    closeLocationModal();
+  };
+
   const isActive = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
@@ -85,27 +106,63 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
-      <div className="bg-linear-to-r from-[#10354a]  to-[#cf531f] text-white text-xs py-5 px-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-5">
+      <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
+        <div className="mx-auto flex flex-wrap items-center gap-3 px-4 py-3 lg:flex-nowrap lg:justify-between lg:px-6 xl:px-8">
+          <div className="flex flex-wrap items-center gap-5 text-[13px]">
             <a
               href="tel:03048405899"
-              className="flex items-center gap-1.5 hover:text-red-200 transition-colors"
+              className="flex items-center gap-2 hover:text-orange-200 transition-colors"
             >
-              <MdPhone size={13} />
+              <MdPhone size={14} />
               <span>03048405899</span>
             </a>
             <a
               href="mailto:rehanqureshi@gmail.com"
-              className="flex items-center gap-1.5 hover:text-red-200 transition-colors"
+              className="flex items-center gap-2 hover:text-orange-200 transition-colors"
             >
-              <MdEmail size={13} />
+              <MdEmail size={14} />
               <span>rehanqureshi@gmail.com</span>
             </a>
           </div>
-          <span className="hidden sm:block text-red-200 text-[11px]">
-            Pakistan's #1 Motorcycle Parts Store
-          </span>
+
+          <div className="flex flex-1 flex-wrap items-center justify-center gap-3 min-w-70">
+            <button
+              type="button"
+              onClick={openLocationModal}
+              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:border-white hover:text-slate-900 transition-colors"
+            >
+              <FiMapPin size={18} className="text-[#8B0000]" />
+              {locationLabel}
+            </button>
+
+            <form onSubmit={handleSearch} className="relative flex-1 min-w-55">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search for products..."
+                className="w-full rounded-full border border-white/30 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+              />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors"
+              >
+                <FiSearch size={18} />
+              </button>
+            </form>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 rounded-full bg-[#f97316] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm sm:text-sm">
+            <span>Pakistan's #1 Motorcycle Parts Store</span>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white hover:bg-white/25 transition-colors"
+            >
+              Order to WhatsApp
+            </a>
+          </div>
         </div>
       </div>
 
@@ -124,6 +181,7 @@ const Navbar = () => {
             </Link>
 
             {/* ── Desktop nav: dynamic categories ───────────────────── */}
+
             <div className="hidden lg:block flex-1 overflow-hidden">
               <div
                 className="flex items-center gap-0.5 w-max whitespace-nowrap category-marquee"
@@ -413,21 +471,36 @@ const Navbar = () => {
       {isMobileOpen && (
         <div className="md:hidden bg-white border-t border-slate-200 py-3 space-y-1 shadow-lg">
 
-          {/* Mobile search */}
-          <form onSubmit={handleSearch} className="px-4 mb-3">
-            <div className="flex items-center border border-slate-300 rounded-lg overflow-hidden">
+          {/* Mobile location + search */}
+          <div className="px-4 mb-3 space-y-3">
+            <button
+              type="button"
+              onClick={openLocationModal}
+              className="w-full inline-flex items-center justify-between gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm hover:border-[#8B0000] hover:text-[#8B0000] transition-colors"
+            >
+              <span className="inline-flex items-center gap-2">
+                <FiMapPin size={18} className="text-[#8B0000]" />
+                {locationLabel}
+              </span>
+              <span className="text-xs text-slate-500">Change</span>
+            </button>
+
+            <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="flex-1 text-sm px-3 py-2 focus:outline-none"
+                placeholder="Search for products..."
+                className="w-full rounded-full border border-slate-200 bg-white px-4 py-3 text-sm focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
               />
-              <button type="submit" className="px-3 py-2 bg-[#8B0000] text-white">
-                <FiSearch size={15} />
+              <button
+                type="submit"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors"
+              >
+                <FiSearch size={18} />
               </button>
-            </div>
-          </form>
+            </form>
+          </div>
 
           {/* Dynamic category links in mobile */}
           {categories.map(cat => {
@@ -539,6 +612,87 @@ const Navbar = () => {
                 </Link>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {locationModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-3xl rounded-3xl bg-white shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <div>
+                <p className="text-sm text-slate-500">Select delivery location</p>
+                <h2 className="text-xl font-semibold text-slate-900">Choose address</h2>
+              </div>
+              <button
+                type="button"
+                onClick={closeLocationModal}
+                className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200"
+              >
+                <FiX size={22} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1  gap-4 p-5">
+              {/* <div className="space-y-4"> */}
+                {/* <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Search for your national address, building...</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={locationInput}
+                      onChange={e => setLocationInput(e.target.value)}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+                      placeholder="Search for address, building..."
+                    />
+                    <button
+                      type="button"
+                      onClick={confirmLocation}
+                      className="rounded-2xl bg-[#8B0000] px-4 py-3 text-sm font-semibold text-white hover:bg-[#7a0f07] transition-colors"
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                </div> */}
+
+                {/* <button
+                  type="button"
+                  onClick={() => setLocationInput('Current location')}
+                  className="inline-flex items-center gap-2 rounded-full border border-[#8B0000] bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-[#8B0000] hover:bg-[#ecfdf5] transition-colors"
+                >
+                  <FiMapPin size={18} />
+                  Use current location
+                </button> */}
+              {/* </div> */}
+
+              <div className="relative h-96 overflow-hidden rounded-3xl bg-slate-100">
+                <iframe
+                  title="Pakistan Location Map"
+                  src={googleMapsEmbedUrl}
+                  className="h-full w-full border-0"
+                  loading="lazy"
+                  allowFullScreen
+                />
+                <div className="absolute inset-x-0 bottom-0 p-5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 rounded-3xl bg-black/60 p-4 text-white">
+                    <div>
+                      <p className="text-xs uppercase tracking-[.18em] text-slate-200">Selected delivery area</p>
+                      <p className="mt-1 text-lg font-semibold">Hussain Agahi Market</p>
+                      <p className="text-sm text-slate-300">Multan, Pakistan</p>
+                    </div>
+                    <a
+                      href={googleMapsLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-white transition-colors hover:bg-white/20"
+                    >
+                      <FiMapPin size={16} />
+                      Open in Maps
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}

@@ -68,6 +68,10 @@ const variantClasses = {
     'hover:opacity-90 disabled:opacity-60 ' +
     'shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 ' +
     'focus:ring-[#cf531f]',
+
+  /** Orange CTA — used for product add-to-cart in updated card */
+  orange:
+    'bg-[#ff7a1a] text-white hover:bg-[#ff6a00] disabled:opacity-60 focus:ring-[#ff7a1a] shadow-md',
 } as const;
 
 // ── Size styles ───────────────────────────────────────────────────────────────

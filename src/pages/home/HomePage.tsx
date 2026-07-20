@@ -127,7 +127,7 @@ const HomePage = () => {
       </section>
 
       {/* ── New Arrivals ──────────────────────────────────────────────────── */}
-      {newArrivals.length > 0 && (
+      {/* {newArrivals.length > 0 && (
         <section className="py-16 bg-white border-t border-slate-100">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-8">
@@ -149,7 +149,7 @@ const HomePage = () => {
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
       {/* ── CTA Banner ───────────────────────────────────────────────────── */}
       <section className="py-16 w-full px-4 sm:px-6 lg:px-8">

@@ -9,7 +9,7 @@ export const checkoutSchema = z.object({
   address: z.string().min(5, 'Address must be at least 5 characters'),
   city: z.string().min(2, 'City is required'),
   state: z.string().min(2, 'State/Province is required'),
-  zipCode: z.string().min(3, 'ZIP/Postal code is required'),
+  zipCode: z.string().optional(),
 });
 
 export type CheckoutFormData = z.infer<typeof checkoutSchema>;

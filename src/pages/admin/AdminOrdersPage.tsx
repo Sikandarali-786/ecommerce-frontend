@@ -110,7 +110,7 @@ const AdminOrdersPage = () => {
           <p className="text-gray-500 text-sm mt-1">
             {filtered.length} of {orders.length} order{orders.length !== 1 ? 's' : ''}
             {data?.totalRevenue !== undefined && (
-              <> · Total Revenue: <span className="font-semibold text-gray-700">${data.totalRevenue.toFixed(2)}</span></>
+              <> · Total Revenue: <span className="font-semibold text-gray-700">{data.totalRevenue.toFixed(2)}</span></>
             )}
           </p>
         </div>
@@ -258,7 +258,7 @@ const AdminOrdersPage = () => {
                       {order.items.length} item{order.items.length !== 1 ? 's' : ''}
                     </td>
                     <td className="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
-                      ${order.total.toFixed(2)}
+                      {order.total.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`text-xs font-semibold px-2 py-1 rounded-full ${paymentColors[order.paymentStatus] ?? 'bg-gray-100 text-gray-700'}`}>
@@ -345,7 +345,7 @@ const AdminOrdersPage = () => {
                   {selectedOrder.items.map((item, i) => (
                     <div key={i} className="flex justify-between text-sm">
                       <span className="text-gray-700 truncate pr-4">{item.title} × {item.quantity}</span>
-                      <span className="font-semibold shrink-0">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-semibold shrink-0">{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -354,16 +354,16 @@ const AdminOrdersPage = () => {
               {/* Totals */}
               <div className="border-t pt-3 space-y-1.5 text-sm">
                 {[
-                  { label: 'Subtotal',  value: `$${selectedOrder.subtotal.toFixed(2)}` },
+                  { label: 'Subtotal',  value: `${selectedOrder.subtotal.toFixed(2)}` },
                   { label: 'Shipping',  value: selectedOrder.shippingCost === 0 ? 'FREE' : `$${selectedOrder.shippingCost.toFixed(2)}` },
-                  { label: 'Tax',       value: `$${selectedOrder.tax.toFixed(2)}` },
+                  { label: 'Tax',       value: `${selectedOrder.tax.toFixed(2)}` },
                 ].map(r => (
                   <div key={r.label} className="flex justify-between text-gray-600">
                     <span>{r.label}</span><span>{r.value}</span>
                   </div>
                 ))}
                 <div className="flex justify-between font-bold text-gray-900 text-base border-t pt-2">
-                  <span>Total</span><span>${selectedOrder.total.toFixed(2)}</span>
+                  <span>Total</span><span>{selectedOrder.total.toFixed(2)}</span>
                 </div>
               </div>
 

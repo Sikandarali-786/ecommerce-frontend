@@ -10,7 +10,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import ProductCard from '../../components/ProductCard';
 import Button from '../../components/Button';
 import type { Category } from '../../types';
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { getImageUrl } from '../../utils/image';
 import ReviewSection from '../../components/ReviewSection';
 import { isAdmin } from '../../utils/auth';
@@ -30,6 +30,21 @@ const ProductDetailPage = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [imageZoomOrigin, setImageZoomOrigin] = useState('50% 50%');
+
+  const handleImageMouseMove = (e: MouseEvent<HTMLImageElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setImageZoomOrigin(`${x}% ${y}%`);
+    setIsImageZoomed(true);
+  };
+
+  const handleImageMouseLeave = () => {
+    setIsImageZoomed(false);
+    setImageZoomOrigin('50% 50%');
+  };
 
   /* ── Loading / Error states ─────────────────────────────────────────────── */
   if (isLoading) return <LoadingSpinner />;
@@ -120,7 +135,13 @@ const ProductDetailPage = () => {
                 <img
                   src={images[selectedImage]}
                   alt={product.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 ease-out"
+                  style={{
+                    transformOrigin: imageZoomOrigin,
+                    transform: isImageZoomed ? 'scale(1.7)' : 'scale(1)',
+                  }}
+                  onMouseMove={handleImageMouseMove}
+                  onMouseLeave={handleImageMouseLeave}
                   onError={e => { e.currentTarget.src = 'https://placehold.co/600x600?text=No+Image'; }}
                 />
                 {product.stock === 0 && (
@@ -148,7 +169,7 @@ const ProductDetailPage = () => {
                       <img
                         src={img}
                         alt={`${product.title} ${idx + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 ease-out hover:scale-110"
                         onError={e => { e.currentTarget.src = 'https://placehold.co/100x100?text=No'; }}
                       />
                     </button>
@@ -178,7 +199,7 @@ const ProductDetailPage = () => {
               {/* Price */}
               <div className="flex items-baseline gap-3 mb-4">
                 <span className="text-3xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
+                  {product.price.toFixed(2)}
                 </span>
               </div>
 
@@ -270,7 +291,7 @@ const ProductDetailPage = () => {
               {/* Delivery note */}
               {product.stock > 0 && (
                 <p className="mt-4 text-xs text-gray-400 text-center">
-                  🚚 Free shipping on orders over $100
+                  🚚 Free shipping on orders over 100
                 </p>
               )}
             </div>

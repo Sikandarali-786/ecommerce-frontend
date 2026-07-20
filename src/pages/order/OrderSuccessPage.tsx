@@ -122,12 +122,12 @@ const OrderSuccessPage = () => {
                   <h3 className="font-semibold text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                   <p className="text-sm font-semibold text-gray-900">
-                    ${item.price.toFixed(2)} each
+                    {item.price.toFixed(2)} each
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-gray-900">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {(item.price * item.quantity).toFixed(2)}
                   </p>
                 </div>
               </div>
@@ -141,7 +141,7 @@ const OrderSuccessPage = () => {
           <div className="space-y-2">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span className="font-semibold">${order.subtotal.toFixed(2)}</span>
+              <span className="font-semibold">{order.subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Shipping</span>
@@ -151,11 +151,11 @@ const OrderSuccessPage = () => {
             </div>
             <div className="flex justify-between text-gray-600">
               <span>Tax</span>
-              <span className="font-semibold">${order.tax.toFixed(2)}</span>
+              <span className="font-semibold">{order.tax.toFixed(2)}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
               <span>Total</span>
-              <span className="text-blue-600">${order.total.toFixed(2)}</span>
+              <span className="text-blue-600">{order.total.toFixed(2)}</span>
             </div>
           </div>
         </div>

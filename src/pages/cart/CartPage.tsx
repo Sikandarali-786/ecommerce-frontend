@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiTrash2, FiMinus, FiPlus, FiArrowRight } from 'react-icons/fi';
 import { useCart, useUpdateCartItem, useRemoveFromCart, useClearCart } from '../../hooks/useCart';
@@ -19,6 +19,39 @@ const CartPage = () => {
   const [clearModalOpen, setClearModalOpen]     = useState(false);
   const [removeModalOpen, setRemoveModalOpen]   = useState(false);
   const [removeProductId, setRemoveProductId]   = useState<string | null>(null);
+
+  const ZoomImage = ({ src, alt }: { src: string; alt: string }) => {
+    const [isZoomed, setIsZoomed] = useState(false);
+    const [transformOrigin, setTransformOrigin] = useState('50% 50%');
+
+    const handleMouseMove = (e: MouseEvent<HTMLImageElement>) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      setTransformOrigin(`${x}% ${y}%`);
+      setIsZoomed(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsZoomed(false);
+      setTransformOrigin('50% 50%');
+    };
+
+    return (
+      <img
+        src={src}
+        alt={alt}
+        className="w-full sm:w-28 h-28 object-cover rounded-lg transition-transform duration-700 ease-out"
+        style={{
+          transformOrigin,
+          transform: isZoomed ? 'scale(1.6)' : 'scale(1)',
+        }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onError={e => { e.currentTarget.src = 'https://placehold.co/150x150?text=No+Image'; }}
+      />
+    );
+  };
 
   if (isLoading) return <LoadingSpinner />;
 
@@ -122,13 +155,8 @@ const CartPage = () => {
                   className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex flex-col sm:flex-row gap-4"
                 >
                   {/* Image */}
-                  <Link to={`/products/${item.product._id}`} className="shrink-0">
-                    <img
-                      src={imageUrl}
-                      alt={item.product.title}
-                      className="w-full sm:w-28 h-28 object-cover rounded-lg"
-                      onError={e => { e.currentTarget.src = 'https://placehold.co/150x150?text=No+Image'; }}
-                    />
+                  <Link to={`/products/${item.product._id}`} className="shrink-0 overflow-hidden rounded-lg">
+                    <ZoomImage src={imageUrl} alt={item.product.title} />
                   </Link>
 
                   {/* Details */}

@@ -54,9 +54,8 @@ const CheckoutPage = () => {
     );
   }
 
-  const shippingCost = total > 100 ? 0 : 10;
-  const tax = total * 0.1; // 10% tax
-  const grandTotal = total + shippingCost + tax;
+  const shippingCost = total > 100 ? 0 : total * 0.1; // 10% shipping when subtotal <= 100
+  const grandTotal = total + shippingCost;
 
   const onSubmit = async (formData: CheckoutFormData) => {
     const orderData = {
@@ -77,7 +76,6 @@ const CheckoutPage = () => {
       paymentMethod,
       subtotal: total,
       shippingCost,
-      tax,
       total: grandTotal,
     };
 
@@ -115,7 +113,7 @@ const CheckoutPage = () => {
                       className={`w-full px-3 py-2 border ${
                         errors.fullName ? 'border-red-500' : 'border-gray-300'
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="John Doe"
+                      placeholder="Enter your full name"
                     />
                     {errors.fullName && (
                       <p className="mt-1 text-sm text-red-600">{errors.fullName.message}</p>
@@ -132,7 +130,7 @@ const CheckoutPage = () => {
                       className={`w-full px-3 py-2 border ${
                         errors.email ? 'border-red-500' : 'border-gray-300'
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="john@example.com"
+                      placeholder="Enter your email"
                     />
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -149,7 +147,7 @@ const CheckoutPage = () => {
                       className={`w-full px-3 py-2 border ${
                         errors.phone ? 'border-red-500' : 'border-gray-300'
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="Enter your phone number"
                     />
                     {errors.phone && (
                       <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
@@ -166,7 +164,7 @@ const CheckoutPage = () => {
                       className={`w-full px-3 py-2 border ${
                         errors.country ? 'border-red-500' : 'border-gray-300'
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="United States"
+                      placeholder="Pakistan"
                     />
                     {errors.country && (
                       <p className="mt-1 text-sm text-red-600">{errors.country.message}</p>
@@ -183,7 +181,7 @@ const CheckoutPage = () => {
                       className={`w-full px-3 py-2 border ${
                         errors.address ? 'border-red-500' : 'border-gray-300'
                       } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="123 Main Street"
+                      placeholder="Enter your address"
                     />
                     {errors.address && (
                       <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
@@ -314,7 +312,7 @@ const CheckoutPage = () => {
                           </h4>
                           <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
                           <p className="text-sm font-semibold text-gray-900">
-                            ${(item.product.price * item.quantity).toFixed(2)}
+                            {(item.product.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -326,21 +324,17 @@ const CheckoutPage = () => {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-semibold">${total.toFixed(2)}</span>
+                    <span className="font-semibold">{total.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-gray-600">
-                    <span>Shipping</span>
+                    <span>Shipping {shippingCost === 0 ? '' : '(10%)'}</span>
                     <span className="font-semibold">
-                      {shippingCost === 0 ? 'FREE' : `$${shippingCost.toFixed(2)}`}
+                      {shippingCost === 0 ? 'FREE' : shippingCost.toFixed(2)}
                     </span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Tax (10%)</span>
-                    <span className="font-semibold">${tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
-                    <span className="text-blue-600">${grandTotal.toFixed(2)}</span>
+                    <span className="text-blue-600">{grandTotal.toFixed(2)}</span>
                   </div>
                 </div>
 
@@ -348,7 +342,7 @@ const CheckoutPage = () => {
                 {total < 100 && (
                   <div className="mt-4 p-3 bg-orange-50 rounded-lg">
                     <p className="text-sm text-orange-800">
-                      Add ${(100 - total).toFixed(2)} more to get FREE shipping!
+                      Add {(100 - total).toFixed(2)} more to get FREE shipping!
                     </p>
                   </div>
                 )}
@@ -362,7 +356,7 @@ const CheckoutPage = () => {
                   loading={createOrderMutation.isPending}
                   className="mt-6"
                 >
-                  {`Place Order — $${grandTotal.toFixed(2)}`}
+                  {`Place Order — ${grandTotal.toFixed(2)}`}
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center mt-4">

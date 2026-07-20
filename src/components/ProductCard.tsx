@@ -35,32 +35,37 @@ const ProductCard = ({ product }: ProductCardProps) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 relative">
-      {/* Wishlist Button */}
+    <div className="relative rounded-xl overflow-hidden transform hover:-translate-y-1 transition-all duration-300 shadow-xl bg-linear-to-r from-[#10354a] to-[#cf531f] text-white">
+      {/* Price badge (top-right) */}
+      {/* Wishlist Button - moved to top-left */}
       {!admin && (
         <button
           onClick={handleToggleWishlist}
           disabled={addToWishlistMutation.isPending || removeFromWishlistMutation.isPending}
-          className={`absolute top-3 right-3 z-10 p-2 rounded-full transition-all ${
+          className={`absolute top-3 left-3 z-20 p-2 rounded-full transition-all ${
             isInWishlist
               ? 'bg-red-500 text-white hover:bg-red-600'
-              : 'bg-white text-gray-600 hover:bg-gray-100'
+              : 'bg-white/10 text-white hover:bg-white/20'
           } shadow-md disabled:opacity-50`}
         >
-          <FiHeart size={20} fill={isInWishlist ? 'currentColor' : 'none'} />
+          <FiHeart size={18} fill={isInWishlist ? 'currentColor' : 'none'} />
         </button>
       )}
 
       <Link to={`/products/${product._id}`}>
-        <div className="relative h-64 overflow-hidden bg-gray-100">
+        <div className="relative h-56 flex items-center justify-center bg-linear-to-b from-transparent to-black/20">
+          {/* Glow behind image using orange/orange-red like the design */}
+          <div className="absolute w-40 h-40 rounded-full opacity-70 bg-linear-to-r from-[#ff7a1a] to-[#cf531f] blur-3xl" />
+
           <img
             src={imageUrl}
             alt={product.title}
-            className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+            className="relative w-48 h-48 object-contain transform transition-transform duration-500 hover:scale-105 drop-shadow-2xl"
             onError={(e) => {
               e.currentTarget.src = 'https://placehold.co/300x300?text=No+Image';
             }}
           />
+
           {product.stock === 0 && (
             <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
               <span className="text-white text-lg font-semibold bg-red-600 px-4 py-2 rounded-lg">
@@ -76,55 +81,51 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
       </Link>
 
-      <div className="p-4">
+      <div className="p-4 bg-transparent">
         {/* Category Badge */}
         {category && (
-          <span className="inline-block px-2 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full mb-2">
+          <span className="inline-block px-2 py-1 text-xs font-semibold text-white/90 bg-black/20 rounded-full mb-2">
             {category.name}
           </span>
         )}
 
-        {/* Product Title */}
         <Link to={`/products/${product._id}`}>
-          <h3 className="text-lg font-semibold text-gray-800 hover:text-blue-600 transition-colors line-clamp-2 mb-2 min-h-[3.5rem]">
+          <h3 className="text-lg font-semibold text-white hover:text-blue-300 transition-colors line-clamp-2 mb-2 min-h-14">
             {product.title}
           </h3>
         </Link>
 
-        {/* Product Description */}
-        <p className="text-sm text-gray-600 line-clamp-2 mb-3 min-h-[2.5rem]">
+        <p className="text-sm text-gray-300 line-clamp-2 mb-4 min-h-10">
           {product.description}
         </p>
 
-        {/* Price and Stock */}
         <div className="flex items-center justify-between mb-3">
           <div>
-            <span className="text-2xl font-bold text-gray-900">
+            <span className="text-2xl font-bold text-white">
               {product.price.toFixed(2)}
             </span>
           </div>
           <div className="text-sm">
-            <span className={`font-semibold ${product.stock > 5 ? 'text-green-600' : product.stock > 0 ? 'text-orange-600' : 'text-red-600'}`}>
+            <span className={`font-semibold ${product.stock > 5 ? 'text-green-400' : product.stock > 0 ? 'text-yellow-400' : 'text-red-500'}`}>
               {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
             </span>
           </div>
         </div>
 
-        {/* Add to Cart Button */}
         {!admin ? (
           <Button
-            variant="gradient"
+            variant="orange"
             fullWidth
-            size="md"
+            size="sm"
             onClick={handleAddToCart}
             disabled={product.stock === 0}
             loading={addToCartMutation.isPending}
-            leftIcon={<FiShoppingCart size={18} />}
+            leftIcon={<FiShoppingCart size={16} />}
           >
             {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         ) : (
-          <div className="rounded-lg border border-dashed border-gray-200 px-3 py-2 text-center text-xs text-gray-500">
+          <div className="rounded-lg border border-dashed border-gray-700 px-3 py-2 text-center text-xs text-gray-400">
             Admin view only
           </div>
         )}
