@@ -106,8 +106,14 @@ export const cancelOrder = async (id: string): Promise<OrderResponse> => {
 export interface AdminOrdersResponse {
   success: boolean;
   orders: Order[];
-  totalOrders: number;
-  totalRevenue: number;
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+  totalRevenue?: number;
 }
 
 export interface UpdateOrderStatusData {
@@ -118,9 +124,21 @@ export interface UpdateOrderStatusData {
 /**
  * Get all orders (admin only)
  */
-export const getAllOrdersAdmin = async (): Promise<AdminOrdersResponse> => {
+export interface AdminOrdersQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export const getAllOrdersAdmin = async (
+  params?: AdminOrdersQueryParams,
+): Promise<AdminOrdersResponse> => {
   const response = await axiosInstance.get<AdminOrdersResponse>(
-    API_ENDPOINTS.ORDER.ADMIN_GET_ALL
+    API_ENDPOINTS.ORDER.ADMIN_GET_ALL,
+    { params },
   );
   return response.data;
 };

@@ -1,8 +1,7 @@
 import { useState, useMemo } from 'react';
 import { FiSearch, FiShoppingBag, FiEye, FiX, FiFilter } from 'react-icons/fi';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
-import axiosInstance from '../../api/axios';
-import { API_ENDPOINTS } from '../../api/endpoints';
+import { getAllOrdersAdmin, updateOrderStatusAdmin } from '../../api/order.api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
@@ -36,18 +35,24 @@ const AdminOrdersPage = () => {
 
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
-  // ── Fetch orders ───────────────────────────────────────────────────────────
+  const [page, setPage] = useState(1);
+  const [limit] = useState(20);
+
+  // ── Fetch orders (server-side pagination + filters) ────────────────────────
   const { data, isLoading } = useQuery({
-    queryKey: ['admin-orders'],
-    queryFn:  async () => {
-      const res = await axiosInstance.get(API_ENDPOINTS.ORDER.ADMIN_GET_ALL);
-      return res.data;
-    },
+    queryKey: ['admin-orders', { page, limit, search, filterStatus, dateFrom, dateTo }],
+    queryFn:  () => getAllOrdersAdmin({
+      page, limit, search: search || undefined,
+      status: filterStatus !== 'all' ? filterStatus : undefined,
+      dateFrom: dateFrom || undefined,
+      dateTo: dateTo || undefined,
+    }),
+    keepPreviousData: true,
   });
 
   const updateStatusMutation = useMutation({
     mutationFn: ({ id, orderStatus }: { id: string; orderStatus: string }) =>
-      axiosInstance.put(API_ENDPOINTS.ORDER.ADMIN_UPDATE_STATUS(id), { orderStatus }),
+      updateOrderStatusAdmin(id, { orderStatus }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
       toast.success('Order status updated');
@@ -58,36 +63,6 @@ const AdminOrdersPage = () => {
   });
 
   const orders: Order[] = data?.orders || [];
-
-  // ── Client-side filtering ──────────────────────────────────────────────────
-  const filtered = useMemo(() => {
-    const q          = search.trim().toLowerCase();
-    const fromTs     = dateFrom ? new Date(dateFrom).setHours(0, 0, 0, 0)    : null;
-    const toTs       = dateTo   ? new Date(dateTo).setHours(23, 59, 59, 999) : null;
-
-    return orders.filter(o => {
-      // Search: order ID tail, customer name, customer email
-      if (q) {
-        const name  = typeof o.user === 'object' ? (o.user?.name  ?? '') : '';
-        const email = typeof o.user === 'object' ? (o.user?.email ?? '') : '';
-        const matches =
-          o._id.toLowerCase().includes(q) ||
-          name.toLowerCase().includes(q)  ||
-          email.toLowerCase().includes(q);
-        if (!matches) return false;
-      }
-
-      // Status filter
-      if (filterStatus !== 'all' && o.orderStatus !== filterStatus) return false;
-
-      // Date range filter
-      const orderTs = new Date(o.orderDate).getTime();
-      if (fromTs && orderTs < fromTs) return false;
-      if (toTs   && orderTs > toTs)   return false;
-
-      return true;
-    });
-  }, [orders, search, filterStatus, dateFrom, dateTo]);
 
   // Check if any filter is active
   const hasActiveFilters = search || filterStatus !== 'all' || dateFrom || dateTo;
@@ -108,7 +83,7 @@ const AdminOrdersPage = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
           <p className="text-gray-500 text-sm mt-1">
-            {filtered.length} of {orders.length} order{orders.length !== 1 ? 's' : ''}
+            {orders.length} items (showing page {data?.pagination?.page ?? page}) · {data?.pagination?.total ?? 0} total
             {data?.totalRevenue !== undefined && (
               <> · Total Revenue: <span className="font-semibold text-gray-700">{data.totalRevenue.toFixed(2)}</span></>
             )}
@@ -215,7 +190,7 @@ const AdminOrdersPage = () => {
 
       {/* ── Orders Table ───────────────────────────────────────────────────── */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {filtered.length === 0 ? (
+        {orders.length === 0 ? (
           <div className="p-12 text-center">
             <FiShoppingBag className="mx-auto text-gray-300 mb-3" size={48} />
             <p className="text-gray-500 font-medium">No orders match your filters</p>
@@ -241,7 +216,7 @@ const AdminOrdersPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filtered.map(order => (
+                {orders.map(order => (
                   <tr key={order._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 text-sm font-mono text-gray-700 whitespace-nowrap">
                       #{order._id.slice(-8).toUpperCase()}
@@ -291,6 +266,34 @@ const AdminOrdersPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {data?.pagination && data.pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-gray-600">
+            Page {data.pagination.page} of {data.pagination.totalPages}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={data.pagination.page === 1}
+            >
+              Prev
+            </Button>
+            <div className="text-sm text-gray-700">{data.pagination.page}</div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPage((p) => Math.min(data.pagination.totalPages, p + 1))}
+              disabled={!data.pagination.hasMore}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* ── Order Detail / Status Modal ─────────────────────────────────────── */}
       {selectedOrder && (

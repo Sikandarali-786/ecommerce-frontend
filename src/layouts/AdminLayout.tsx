@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import logoImg from '../assets/images/logo.png';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import {
   FiGrid,
@@ -61,7 +62,7 @@ const AdminLayout = () => {
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-700">
         <Link to="/" className="flex items-center space-x-2">
-          <span className="text-2xl font-bold text-white">ShopHub</span>
+          <img src={logoImg} alt="ShopHub" className="h-9 object-contain" />
         </Link>
         <p className="text-xs text-gray-400 mt-1">Admin Panel</p>
       </div>

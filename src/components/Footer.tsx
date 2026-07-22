@@ -61,7 +61,7 @@ const Footer = () => {
             {/* Social icons */}
             <div className="flex items-center gap-3">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/1EPHNehFik/?mibextid=wwXIfr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded-full bg-white/15 text-white hover:bg-white/25 flex items-center justify-center transition-colors"
@@ -70,7 +70,7 @@ const Footer = () => {
                 <FaFacebookF size={14} />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/afzalbikerzstore?igsh=cWd5YXVsemRzZ3M0&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-8 h-8 rounded-full bg-white/15 text-white hover:bg-white/25 flex items-center justify-center transition-colors"

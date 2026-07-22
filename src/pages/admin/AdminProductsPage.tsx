@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiPackage, FiUpload, FiX } from 'react-icons/fi';
 import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
@@ -30,10 +30,12 @@ const emptyForm: ProductFormData = {
 
 const AdminProductsPage = () => {
   const queryClient = useQueryClient();
-  const { data: productsData, isLoading } = useProducts();
-  const { data: categoriesData } = useCategories();
-
+  const [page, setPage] = useState(1);
+  const [limit] = useState(20);
   const [search, setSearch] = useState('');
+  // Pass server-side params (search applied server-side)
+  const { data: productsData, isLoading } = useProducts({ page, limit, search });
+  const { data: categoriesData } = useCategories();
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [form, setForm] = useState<ProductFormData>(emptyForm);
@@ -46,9 +48,11 @@ const AdminProductsPage = () => {
 
   const products = productsData?.products || [];
   const categories = categoriesData?.categories || [];
-  const filtered = products.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
-  );
+
+  // Reset page when search term changes
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
 
   // ─── Create mutation (multipart/form-data) ───────────────────────────────
   const createMutation = useMutation({
@@ -195,7 +199,7 @@ const AdminProductsPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 text-sm mt-1">{products.length} total products</p>
+          <p className="text-gray-500 text-sm mt-1">{productsData?.pagination?.total ?? products.length} total products</p>
         </div>
         <Button
           variant="primary"
@@ -223,7 +227,7 @@ const AdminProductsPage = () => {
 
       {/* Products Table */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {filtered.length === 0 ? (
+        {products.length === 0 ? (
           <div className="p-12 text-center">
             <FiPackage className="mx-auto text-gray-300 mb-3" size={48} />
             <p className="text-gray-500">No products found</p>
@@ -241,7 +245,7 @@ const AdminProductsPage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filtered.map((product) => (
+                {products.map((product) => (
                   
                   <tr key={product._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
@@ -304,6 +308,34 @@ const AdminProductsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Pagination Controls */}
+      {productsData?.pagination && productsData.pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-gray-600">
+            Page {productsData.pagination.page} of {productsData.pagination.totalPages}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={productsData.pagination.page === 1}
+            >
+              Prev
+            </Button>
+            <div className="text-sm text-gray-700">{productsData.pagination.page}</div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setPage((p) => Math.min(productsData.pagination.totalPages, p + 1))}
+              disabled={!productsData.pagination.hasMore}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* ─── Create / Edit Modal ─────────────────────────────────────────────── */}
       {showModal && (
