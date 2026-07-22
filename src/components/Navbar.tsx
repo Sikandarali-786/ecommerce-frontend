@@ -109,20 +109,13 @@ const Navbar = () => {
       <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
         <div className="mx-auto flex flex-wrap items-center gap-3 px-4 py-3 lg:flex-nowrap lg:justify-between lg:px-6 xl:px-8">
           <div className="flex flex-wrap items-center gap-5 text-[13px]">
-            <a
-              href="tel:03048405899"
-              className="flex items-center gap-2 hover:text-orange-200 transition-colors"
-            >
-              <MdPhone size={14} />
-              <span>03048405899</span>
-            </a>
-            <a
-              href="mailto:rehanqureshi@gmail.com"
-              className="flex items-center gap-2 hover:text-orange-200 transition-colors"
-            >
-              <MdEmail size={14} />
-              <span>rehanqureshi@gmail.com</span>
-            </a>
+             <Link to="/" className="flex items-center shrink-0 mr-4">
+              <img
+                src={logoImg}
+                alt="Afzal Bikerz Store"
+                className="h-16 w-auto object-contain rounded-sm"
+              />
+            </Link>
           </div>
 
           <div className="flex flex-1 flex-wrap items-center justify-center gap-3 min-w-70">
@@ -168,18 +161,8 @@ const Navbar = () => {
 
       {/* ── Main navbar ───────────────────────────────────────────────── */}
       <div className="bg-white border-b border-slate-200">
-        <nav className="w-full px-4 sm:px-6 lg:px-8">
+        <nav className="w-full px-4 sm:px-6 lg:px-14">
           <div className="flex items-center justify-between h-17.5">
-
-            {/* ── Logo ──────────────────────────────────────────────── */}
-            <Link to="/" className="flex items-center shrink-0 mr-4">
-              <img
-                src={logoImg}
-                alt="Afzal Bikerz Store"
-                className="h-14 w-auto object-contain rounded-sm"
-              />
-            </Link>
-
             {/* ── Desktop nav: dynamic categories ───────────────────── */}
 
             <div className="hidden lg:block flex-1 overflow-hidden">

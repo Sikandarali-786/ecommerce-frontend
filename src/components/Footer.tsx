@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiMapPin, FiMail, FiPhone } from 'react-icons/fi';
 import { FaFacebookF, FaInstagram, FaTiktok } from 'react-icons/fa';
-import logoImg from '../assets/images/logo.png';
+import logoImg from "../assets/images/logo.png"
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +14,6 @@ const Footer = () => {
 
   return (
     <footer className="bg-linear-to-r from-[#cf531f] to-[#10354a] text-white">
-
       {/* ── Main footer grid ─────────────────────────────────────────────── */}
       <div className="w-full px-6 sm:px-10 lg:px-16 pt-10 pb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -26,7 +25,7 @@ const Footer = () => {
               <img
                 src={logoImg}
                 alt="Afzal Bikerz Store"
-                className="h-20 w-auto object-contain rounded bg-white/95 shadow-sm border border-white/20 p-1"
+                className="h-20 w-auto object-contain rounded-sm"
               />
             </div>
 
