@@ -51,11 +51,6 @@ const HomePage = () => {
   // Show 8 new in-stock products as "featured"
   const featured = allProducts.filter(p => p.stock > 0).slice(0, 8);
 
-  // New arrivals — last 4
-  const newArrivals = [...allProducts]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4);
-
   return (
     <div className="min-h-screen bg-slate-50">
       {/* ── Hero Banner with Slider ───────────────────────────────────────── */}
@@ -125,31 +120,6 @@ const HomePage = () => {
           </div>
         )}
       </section>
-
-      {/* ── New Arrivals ──────────────────────────────────────────────────── */}
-      {/* {newArrivals.length > 0 && (
-        <section className="py-16 bg-white border-t border-slate-100">
-          <div className="w-full px-4 sm:px-6 lg:px-8">
-            <div className="flex items-end justify-between mb-8">
-              <div>
-                <p className="text-xs font-700 text-amber-500 uppercase tracking-widest mb-1">Just In</p>
-                <h2 className="text-2xl sm:text-3xl font-800 text-slate-900">New Arrivals</h2>
-              </div>
-              <Link
-                to="/products"
-                className="hidden sm:inline-flex items-center gap-1.5 text-sm font-600 text-indigo-600 hover:text-indigo-700 transition-colors"
-              >
-                See all <FiArrowRight size={15} />
-              </Link>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {newArrivals.map(product => (
-                <ProductCard key={product._id} product={product} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )} */}
 
       {/* ── CTA Banner ───────────────────────────────────────────────────── */}
       <section className="py-16 w-full px-4 sm:px-6 lg:px-8">

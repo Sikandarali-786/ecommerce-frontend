@@ -105,11 +105,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
               {product.price.toFixed(2)}
             </span>
           </div>
-          <div className="text-sm">
-            <span className={`font-semibold ${product.stock > 5 ? 'text-green-400' : product.stock > 0 ? 'text-yellow-400' : 'text-red-500'}`}>
-              {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
-            </span>
-          </div>
         </div>
 
         {!admin ? (

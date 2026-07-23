@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
   FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,} from 'react-icons/fi';
-import { MdAdminPanelSettings, MdPhone, MdEmail } from 'react-icons/md';
+import { MdAdminPanelSettings } from 'react-icons/md';
 import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
@@ -16,7 +16,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [locationModalOpen, setLocationModalOpen] = useState(false);
-  const [locationLabel, setLocationLabel] = useState('Hussain Agahi Market · Pakistan');
+  const [locationLabel, setLocationLabel] = useState(' Pakistan');
   const [locationInput, setLocationInput] = useState('Hussain Agahi Market, Multan');
   const [locationPin, setLocationPin] = useState({ lat: 30.1959895, lng: 71.4750566 });
   const googleMapsEmbedUrl = `https://www.google.com/maps?q=${locationPin.lat},${locationPin.lng}&z=17&output=embed`;

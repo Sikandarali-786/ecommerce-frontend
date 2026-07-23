@@ -10,63 +10,43 @@ import decorationImg from '../assets/images/decoration.jpeg';
 interface Slide {
   id: number;
   image: string;
-  badge: string;
-  heading: string;
-  subheading: string;
+  // badge: string;
+  // heading: string;
+  // subheading: string;
   cta: string;
   ctaPath: string;
-  overlayFrom: string;
-  overlayTo: string;
+  // overlayFrom: string;
+  // overlayTo: string;
 }
 
 const slides: Slide[] = [
   {
     id: 1,
     image: tankImg,
-    badge: '2026 New Arrivals',
-    heading: 'Premium Fuel Tanks',
-    subheading: 'Upgrade your ride with our latest CD 70 & CG 125 tank collection. Precision built, style-forward.',
     cta: 'Shop Tanks',
     ctaPath: '/products',
-    overlayFrom: 'from-[#8B0000]/80',
-    overlayTo: 'to-black/40',
   },
   {
     id: 2,
     image: rimsImg,
-    badge: 'Hot Pick',
-    heading: 'Stylish Alloy Rims',
-    subheading: 'High-performance rims designed for Pakistani roads. Durable, lightweight, and sleek.',
     cta: 'Browse Rims',
     ctaPath: '/products',
-    overlayFrom: 'from-black/70',
-    overlayTo: 'to-slate-900/30',
   },
   {
     id: 3,
     image: silencersImg,
-    badge: 'Best Seller',
-    heading: 'Performance Silencers',
-    subheading: 'Give your bike the roar it deserves. Wide range of exhaust silencers for all models.',
     cta: 'Shop Silencers',
     ctaPath: '/products',
-    overlayFrom: 'from-[#8B0000]/75',
-    overlayTo: 'to-black/30',
   },
   {
     id: 4,
     image: decorationImg,
-    badge: 'Trending Now',
-    heading: 'Bike Decoration & Accessories',
-    subheading: 'Personalise your motorcycle with our exclusive decoration kits, stickers, and accessories.',
     cta: 'Explore Now',
     ctaPath: '/products',
-    overlayFrom: 'from-black/65',
-    overlayTo: 'to-slate-800/30',
   },
 ];
 
-const AUTOPLAY_INTERVAL = 5000;
+const AUTOPLAY_INTERVAL = 2000;
 
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);
@@ -77,7 +57,7 @@ const HeroBanner = () => {
     if (animating) return;
     setAnimating(true);
     setCurrent(index);
-    setTimeout(() => setAnimating(false), 600);
+    setTimeout(() => setAnimating(false), 800);
   }, [animating]);
 
   const prev = useCallback(() => {
@@ -126,12 +106,12 @@ const HeroBanner = () => {
           {/* Background image */}
           <img
             src={s.image}
-            alt={s.heading}
+            alt={""}
             className="w-full h-full object-cover"
             loading={i === 0 ? 'eager' : 'lazy'}
           />
           {/* Gradient overlay */}
-          <div className={`absolute inset-0 bg-gradient-to-r ${s.overlayFrom} ${s.overlayTo}`} />
+          {/* <div className={`absolute inset-0 bg-linear-to-r ${s.overlayFrom} ${s.overlayTo}`} /> */}
         </div>
       ))}
 
@@ -145,20 +125,6 @@ const HeroBanner = () => {
           className="max-w-xl text-white"
           style={{ animation: 'slideUp 0.6s ease forwards' }}
         >
-          {/* Badge */}
-          <span className="inline-block bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-xs font-bold px-3 py-1 rounded-full mb-4 tracking-wide uppercase">
-            {slide.badge}
-          </span>
-
-          {/* Heading */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-tight mb-3 drop-shadow-lg">
-            {slide.heading}
-          </h1>
-
-          {/* Subheading */}
-          <p className="text-sm sm:text-base text-white/85 mb-6 max-w-md leading-relaxed drop-shadow">
-            {slide.subheading}
-          </p>
 
           {/* CTA */}
           <Link

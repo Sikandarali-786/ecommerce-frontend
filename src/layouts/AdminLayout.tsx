@@ -70,9 +70,6 @@ const AdminLayout = () => {
       {/* Admin Info */}
       <div className="px-6 py-4 border-b border-gray-700">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg">
-            {user?.name?.charAt(0).toUpperCase() || 'A'}
-          </div>
           <div>
             <p className="text-sm font-semibold text-white">{user?.name || 'Admin'}</p>
             <p className="text-xs text-gray-400">{user?.email || ''}</p>
@@ -130,7 +127,7 @@ const AdminLayout = () => {
   return (
     <div className="flex h-screen bg-gray-100 overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col w-64 bg-gray-900 flex-shrink-0">
+      <aside className="hidden lg:flex lg:flex-col w-64 bg-gray-900 shrink-0">
         <SidebarContent />
       </aside>
 
@@ -150,7 +147,7 @@ const AdminLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Bar */}
-        <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between flex-shrink-0">
+        <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center space-x-4">
             {/* Mobile menu button */}
             <button
