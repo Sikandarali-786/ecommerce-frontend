@@ -8,11 +8,13 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
 import FormField from '../../components/FormField';
 import toast from 'react-hot-toast';
+import { getImageUrl } from '../../utils/image';
 import type { Category } from '../../types';
 
 type CategoryFormData = {
   name: string;
   slug: string;
+  image?: FileList;
 };
 
 const AdminCategoriesPage = () => {
@@ -61,8 +63,7 @@ const AdminCategoriesPage = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { name: string; slug: string } }) =>
-      updateCategory(id, data),
+    mutationFn: ({ id, data }: { id: string; data: FormData }) => updateCategory(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       toast.success('Category updated successfully');
@@ -100,10 +101,18 @@ const AdminCategoriesPage = () => {
   };
 
   const onSubmit = (data: CategoryFormData) => {
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('slug', data.slug);
+
+    if (data.image && data.image.length > 0) {
+      formData.append('image', data.image[0]);
+    }
+
     if (editing) {
-      updateMutation.mutate({ id: editing._id, data });
+      updateMutation.mutate({ id: editing._id, data: formData });
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate(formData);
     }
   };
 
@@ -143,8 +152,16 @@ const AdminCategoriesPage = () => {
               className="bg-white rounded-lg shadow-sm p-5 flex items-center justify-between hover:shadow-md transition-shadow"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <FiTag className="text-blue-600" size={20} />
+                <div className="w-12 h-12 overflow-hidden rounded-lg bg-blue-100 flex items-center justify-center">
+                  {cat.image ? (
+                    <img
+                      src={getImageUrl(cat.image)}
+                      alt={cat.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <FiTag className="text-blue-600" size={20} />
+                  )}
                 </div>
                 <div>
                   <p className="font-semibold text-gray-900">{cat.name}</p>
@@ -204,6 +221,27 @@ const AdminCategoriesPage = () => {
                 error={errors.slug?.message}
               />
               <p className="text-xs text-gray-400 -mt-1">Auto-generated from name. Used in URLs.</p>
+              <FormField
+                id="image"
+                label="Category Image"
+                type="file"
+                placeholder=""
+                icon={<FiTag size={16} />}
+                registration={register('image')}
+                error={errors.image?.message}
+                autoComplete="off"
+              />
+              <p className="text-xs text-gray-400 -mt-1">Upload an image for the Home top collections card.</p>
+              {editing?.image && !watch('image')?.length && (
+                <div className="mt-3">
+                  <p className="text-xs text-slate-500 mb-2">Current image</p>
+                  <img
+                    src={getImageUrl(editing.image)}
+                    alt={editing.name}
+                    className="w-full h-32 object-cover rounded-lg border border-slate-200"
+                  />
+                </div>
+              )}
               <div className="flex space-x-3 pt-2">
                 <Button variant="secondary" size="md" onClick={closeModal} className="flex-1">
                   Cancel

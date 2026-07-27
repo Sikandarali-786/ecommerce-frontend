@@ -100,7 +100,8 @@ const Navbar = () => {
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U';
-  const marqueeCategories = categories.length > 0 ? [...categories, ...categories] : [];
+  // const marqueeCategories = categories.length > 0 ? [...categories, ...categories] : [];
+  const marqueeCategories = categories;
   const marqueeDuration = `${Math.max(categories.length * 2.5, 24)}s`;
 
   return (

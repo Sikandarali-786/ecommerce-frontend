@@ -5,7 +5,7 @@ import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
 import ProductCard from '../../components/ProductCard';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import SearchBar from '../../components/SearchBar';
+// SearchBar intentionally removed from this page (no search input on products list)
 import ProductFilters, { type FilterState } from '../../components/ProductFilters';
 import type { Product } from '../../types';
 import type { ProductQueryParams } from '../../api/product.api';
@@ -204,10 +204,7 @@ const ProductsPage = () => {
           </p>
         </div>
 
-        {/* ── Search Bar ────────────────────────────────────────────────── */}
-        <div className="mb-6">
-          <SearchBar onSearch={setSearchInput} initialValue={searchInput} />
-        </div>
+        {/* Search input removed for this page */}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
 

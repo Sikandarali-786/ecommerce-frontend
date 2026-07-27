@@ -2,9 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-import tankImg       from '../assets/images/tank.jpg';
-import rimsImg       from '../assets/images/rims.jpeg';
-import silencersImg  from '../assets/images/silencers.jpeg';
+import tankImg       from '../assets/images/fueltank_banner.png';
+import rimsImg       from '../assets/images/rimlight_banner.png';
+import silencersImg  from '../assets/images/silencer_banner.png';
 import decorationImg from '../assets/images/decoration.jpeg';
 
 interface Slide {

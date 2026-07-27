@@ -2,11 +2,6 @@ import axiosInstance from './axios';
 import { API_ENDPOINTS } from './endpoints';
 import type { CategoriesResponse, Category } from '../types';
 
-interface CreateCategoryData {
-  name: string;
-  slug: string;
-}
-
 interface CreateCategoryResponse {
   success: boolean;
   message: string;
@@ -26,10 +21,13 @@ export const getAllCategories = async (): Promise<CategoriesResponse> => {
 /**
  * Create a new category (admin only)
  */
-export const createCategory = async (data: CreateCategoryData): Promise<CreateCategoryResponse> => {
+export const createCategory = async (data: FormData): Promise<CreateCategoryResponse> => {
   const response = await axiosInstance.post<CreateCategoryResponse>(
     API_ENDPOINTS.CATEGORY.CREATE,
-    data
+    data,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
   );
   return response.data;
 };
@@ -45,11 +43,14 @@ interface CategoryMutationResponse {
  */
 export const updateCategory = async (
   id: string,
-  data: CreateCategoryData
+  data: FormData
 ): Promise<CategoryMutationResponse> => {
   const response = await axiosInstance.put<CategoryMutationResponse>(
     API_ENDPOINTS.CATEGORY.UPDATE(id),
-    data
+    data,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }
   );
   return response.data;
 };

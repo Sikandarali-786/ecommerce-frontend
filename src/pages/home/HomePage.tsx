@@ -7,7 +7,12 @@ import { useProducts } from '../../hooks/useProducts';
 import ProductCard from '../../components/ProductCard';
 import { SkeletonGrid } from '../../components/SkeletonCard';
 import HeroBanner from '../../components/HeroBanner';
+import DealZone from '../../components/DealZone';
+import TestimonialSection from '../../components/TestimonialSection';
+import VideoShowcase from '../../components/VideoShowcase';
 import { useSEO } from '../../hooks/useSEO';
+import { useCategories } from '../../hooks/useCategories';
+import { getImageUrl } from '../../utils/image';
 
 // ── Trust features strip ──────────────────────────────────────────────────────
 const features = [
@@ -47,7 +52,9 @@ const HomePage = () => {
     description: "Pakistan's #1 Motorcycle Parts Store. Shop CD70 & CG125 tanks, alloy rims, silencers, LED lights, helmets & accessories. Fast delivery. 100% genuine products.",
   });
   const { data: productsData, isLoading: productsLoading } = useProducts();
+  const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
   const allProducts  = productsData?.products ?? [];
+  const categories = categoriesData?.categories ?? [];
   // Show 8 new in-stock products as "featured"
   const featured = allProducts.filter(p => p.stock > 0).slice(0, 8);
 
@@ -79,6 +86,55 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* ── Top Collections ──────────────────────────────────────────────── */}
+      <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-center gap-4 mb-10">
+          <div className="text-center">
+            {/* <p className="text-xs font-700 text-indigo-600 uppercase tracking-widest mb-1">Our Best Picks</p> */}
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Our Top Collections</h2>
+          </div>
+        </div>
+
+        {categoriesLoading ? (
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, idx) => (
+              <div key={idx} className="h-64 rounded-3xl bg-slate-200 animate-pulse" />
+            ))}
+          </div>
+        ) : categories.length === 0 ? (
+          <div className="text-center text-slate-500">No top collections available yet.</div>
+        ) : (
+          <div className="mx-auto grid w-full max-w-7xl grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {categories.slice(0, 8).map(category => (
+              <Link
+                key={category._id}
+                to={`/products?category=${encodeURIComponent(category.slug)}`}
+                className="group block overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={getImageUrl(category.image || '')}
+                    alt={category.name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x600?text=No+Image'; }}
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <p className="text-sm uppercase tracking-[0.24em] font-semibold text-white/80">Category</p>
+                    <h3 className="mt-2 text-xl font-bold leading-tight">{category.name}</h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <VideoShowcase />
+      <DealZone />
+      <TestimonialSection />
+
       {/* ── Featured Products ─────────────────────────────────────────────── */}
       <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
@@ -119,33 +175,6 @@ const HomePage = () => {
             </Link>
           </div>
         )}
-      </section>
-
-      {/* ── CTA Banner ───────────────────────────────────────────────────── */}
-      <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-linear-to-r from-amber-400 to-orange-500 px-8 py-14 text-center">
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-2xl" />
-            <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-orange-600/20 rounded-full blur-2xl" />
-          </div>
-          <div className="relative">
-            <span className="inline-block px-4 py-1 rounded-full bg-white/20 text-white text-sm font-600 mb-4">
-              Limited time offer
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-800 text-white mb-3">
-              Free Shipping on Orders Over $100
-            </h2>
-            <p className="text-white/80 text-lg mb-8 max-w-md mx-auto">
-              Stock up and save. No code needed — discount applied automatically at checkout.
-            </p>
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-white text-orange-600 px-8 py-3.5 rounded-xl font-700 hover:bg-orange-50 transition-all shadow-lg hover:-translate-y-0.5"
-            >
-              Shop Now <FiArrowRight size={18} />
-            </Link>
-          </div>
-        </div>
       </section>
 
     </div>
