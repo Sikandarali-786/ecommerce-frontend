@@ -136,7 +136,7 @@ const HomePage = () => {
       <TestimonialSection />
 
       {/* ── Featured Products ─────────────────────────────────────────────── */}
-      <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
+      {/* <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
             <p className="text-xs font-700 text-indigo-600 uppercase tracking-widest mb-1">Handpicked</p>
@@ -175,7 +175,7 @@ const HomePage = () => {
             </Link>
           </div>
         )}
-      </section>
+      </section> */}
 
     </div>
   );
