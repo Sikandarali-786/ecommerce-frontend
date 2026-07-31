@@ -84,11 +84,10 @@ const AdminLayout = () => {
             key={item.path}
             to={item.path}
             onClick={() => setSidebarOpen(false)}
-            className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all group ${
-              isActive(item.path)
+            className={`flex items-center justify-between px-4 py-3 rounded-lg transition-all group ${isActive(item.path)
                 ? 'bg-linear-to-r from-[#10354a] to-[#cf531f] text-white'
                 : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-            }`}
+              }`}
           >
             <div className="flex items-center space-x-3">
               {item.icon}
@@ -96,9 +95,8 @@ const AdminLayout = () => {
             </div>
             <FiChevronRight
               size={16}
-              className={`transition-transform ${
-                isActive(item.path) ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'
-              }`}
+              className={`transition-transform ${isActive(item.path) ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'
+                }`}
             />
           </Link>
         ))}
@@ -177,7 +175,7 @@ const AdminLayout = () => {
             </span>
             <button
               onClick={handleLogout}
-              className="flex items-center space-x-1 text-sm text-red-600 hover:text-red-700 transition-colors"
+              className="flex items-center cursor-pointer space-x-1 text-sm text-red-600 hover:text-red-700 transition-colors"
             >
               <FiLogOut size={16} />
               <span className="hidden sm:block">Logout</span>
