@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import {
-  FiArrowRight, FiShoppingBag, FiTruck, FiPhone, FiRefreshCw,
+  FiTruck, FiPhone, FiRefreshCw,
   FiCheckSquare,
 } from 'react-icons/fi';
 import { useProducts } from '../../hooks/useProducts';
-import ProductCard from '../../components/ProductCard';
-import { SkeletonGrid } from '../../components/SkeletonCard';
 import HeroBanner from '../../components/HeroBanner';
 import DealZone from '../../components/DealZone';
 import TestimonialSection from '../../components/TestimonialSection';
@@ -48,12 +46,12 @@ const features = [
 
 const HomePage = () => {
   useSEO({
-    title:       'Home',
+    title: 'Home',
     description: "Pakistan's #1 Motorcycle Parts Store. Shop CD70 & CG125 tanks, alloy rims, silencers, LED lights, helmets & accessories. Fast delivery. 100% genuine products.",
   });
   const { data: productsData, isLoading: productsLoading } = useProducts();
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
-  const allProducts  = productsData?.products ?? [];
+  const allProducts = productsData?.products ?? [];
   const categories = categoriesData?.categories ?? [];
   // Show 8 new in-stock products as "featured"
   const featured = allProducts.filter(p => p.stock > 0).slice(0, 8);
@@ -134,48 +132,6 @@ const HomePage = () => {
       <VideoShowcase />
       <DealZone />
       <TestimonialSection />
-
-      {/* ── Featured Products ─────────────────────────────────────────────── */}
-      {/* <section className="py-16 w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="text-xs font-700 text-indigo-600 uppercase tracking-widest mb-1">Handpicked</p>
-            <h2 className="text-2xl sm:text-3xl font-800 text-slate-900">Featured Products</h2>
-          </div>
-          <Link
-            to="/products"
-            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-600 text-indigo-600 hover:text-indigo-700 transition-colors">
-            View all <FiArrowRight size={15} />
-          </Link>
-        </div>
-
-        {productsLoading ? (
-          <SkeletonGrid count={8} />
-        ) : featured.length === 0 ? (
-          <div className="text-center py-20">
-            <FiShoppingBag className="mx-auto text-slate-300 mb-4" size={48} />
-            <p className="text-slate-500 font-500">No products available yet.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {featured.map(product => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        )}
-
-        {featured.length > 0 && (
-          <div className="text-center mt-10">
-            <Link
-              to="/products"
-              className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white px-8 py-3.5 rounded-xl font-700 hover:opacity-90 transition-all hover:-translate-y-0.5 shadow-md hover:shadow-lg"
-            >
-              View All Products
-              <FiArrowRight size={18} />
-            </Link>
-          </div>
-        )}
-      </section> */}
 
     </div>
   );

@@ -1,36 +1,81 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Default title & description (overridden per-page by useSEO hook) -->
-    <title>Afzal Bikerz Store — Pakistan's #1 Motorcycle Parts Store</title>
-    <meta name="description" content="Pakistan's #1 Motorcycle Parts Store. Shop tanks, rims, silencers, LED lighting, helmets & accessories. Fast delivery across Pakistan. 100% genuine products." />
-    <meta name="keywords" content="motorcycle parts pakistan, bike tanks, CD70 tank, CG125 tank, silencer, alloy rims, LED lights, helmet, motorcycle accessories, attock" />
-    <meta name="author" content="Afzal Bikerz Store" />
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Open Graph defaults -->
-    <meta property="og:site_name"   content="Afzal Bikerz Store" />
-    <meta property="og:type"        content="website" />
-    <meta property="og:title"       content="Afzal Bikerz Store — Pakistan's #1 Motorcycle Parts Store" />
-    <meta property="og:description" content="Pakistan's #1 Motorcycle Parts Store. Shop tanks, rims, silencers, LED lighting, helmets & accessories." />
-    <meta property="og:image"       content="/favicon.svg" />
+  <!-- Default title & description (overridden per-page by useSEO hook) -->
+  <title>Afzal Bikerz Store — Pakistan's #1 Motorcycle Parts Store</title>
+  <meta name="description"
+    content="Pakistan's #1 Motorcycle Parts Store. Shop tanks, rims, silencers, LED lighting, helmets & accessories. Fast delivery across Pakistan. 100% genuine products." />
+  <meta name="keywords"
+    content="motorcycle parts pakistan, bike tanks, CD70 tank, CG125 tank, silencer, alloy rims, LED lights, helmet, motorcycle accessories, attock" />
+  <meta name="author" content="Afzal Bikerz Store" />
 
-    <!-- Twitter Card defaults -->
-    <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:title"       content="Afzal Bikerz Store" />
-    <meta name="twitter:description" content="Pakistan's #1 Motorcycle Parts Store." />
-    <meta name="twitter:image"       content="/favicon.svg" />
+  <!-- Open Graph defaults -->
+  <meta property="og:site_name" content="Afzal Bikerz Store" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Afzal Bikerz Store — Pakistan's #1 Motorcycle Parts Store" />
+  <meta property="og:description"
+    content="Pakistan's #1 Motorcycle Parts Store. Shop tanks, rims, silencers, LED lighting, helmets & accessories." />
+  <meta property="og:image" content="/favicon.svg" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+  <!-- Twitter Card defaults -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Afzal Bikerz Store" />
+  <meta name="twitter:description" content="Pakistan's #1 Motorcycle Parts Store." />
+  <meta name="twitter:image" content="/favicon.svg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+
+  <!-- Splash Loader styles -->
+  <link rel="stylesheet" href="/src/styles/splash.css" />
+</head>
+
+<body>
+  <!-- Splash Loader — hidden as soon as React mounts -->
+  <div id="app-splash">
+    <div class="splash-ring">
+      <div class="splash-icon">🏍️</div>
+    </div>
+    <p class="splash-title">Afzal Bikerz Store</p>
+    <p class="splash-sub">Pakistan's #1 Motorcycle Parts Store</p>
+    <div class="splash-dots">
+      <div class="splash-dot"></div>
+      <div class="splash-dot"></div>
+      <div class="splash-dot"></div>
+    </div>
+  </div>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <script>
+    // Hide splash once React has painted the first frame
+    (function () {
+      var splash = document.getElementById('app-splash');
+      var root = document.getElementById('root');
+      if (!splash) return;
+
+      var observer = new MutationObserver(function () {
+        if (root && root.children.length > 0) {
+          // Small delay for smooth fade-out
+          setTimeout(function () {
+            splash.classList.add('splash-hidden');
+            setTimeout(function () { splash.remove(); }, 450);
+          }, 200);
+          observer.disconnect();
+        }
+      });
+      observer.observe(root, { childList: true, subtree: true });
+    })();
+  </script>
+</body>
+
 </html>

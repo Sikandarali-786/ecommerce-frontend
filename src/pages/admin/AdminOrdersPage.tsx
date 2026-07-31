@@ -1,9 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { FiSearch, FiShoppingBag, FiEye, FiX, FiFilter } from 'react-icons/fi';
 import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { getAllOrdersAdmin, updateOrderStatusAdmin } from '../../api/order.api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
+import Table from '../../components/Table';
+import type { TableColumn } from '../../components/Table';
 import toast from 'react-hot-toast';
 import type { Order } from '../../api/order.api';
 
@@ -75,6 +77,83 @@ const AdminOrdersPage = () => {
   };
 
   if (isLoading) return <LoadingSpinner />;
+
+  // ─── Table columns ───────────────────────────────────────────────────────
+  const columns: TableColumn<Order>[] = [
+    {
+      header: 'Order ID',
+      cell: (order) => (
+        <span className="font-mono text-gray-700 whitespace-nowrap">
+          #{order._id.slice(-8).toUpperCase()}
+        </span>
+      ),
+    },
+    {
+      header: 'Customer',
+      cell: (order) => (
+        <div className="whitespace-nowrap">
+          <p className="font-medium text-gray-900">
+            {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
+          </p>
+          <p className="text-xs text-gray-500">
+            {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
+          </p>
+        </div>
+      ),
+    },
+    {
+      header: 'Items',
+      cell: (order) => `${order.items.length} item${order.items.length !== 1 ? 's' : ''}`,
+    },
+    {
+      header: 'Total',
+      cell: (order) => (
+        <span className="font-semibold text-gray-900 whitespace-nowrap">
+          {order.total.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      header: 'Payment',
+      cell: (order) => (
+        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${paymentColors[order.paymentStatus] ?? 'bg-gray-100 text-gray-700'}`}>
+          {order.paymentStatus}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      cell: (order) => (
+        <span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusColors[order.orderStatus] ?? 'bg-gray-100 text-gray-700'}`}>
+          {order.orderStatus}
+        </span>
+      ),
+    },
+    {
+      header: 'Date',
+      cell: (order) => (
+        <span className="text-gray-500 whitespace-nowrap">
+          {new Date(order.orderDate).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric',
+          })}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      cell: (order) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setSelectedOrder(order)}
+          leftIcon={<FiEye size={15} />}
+          className="text-blue-600 hover:bg-blue-50 whitespace-nowrap"
+        >
+          Manage
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -190,81 +269,25 @@ const AdminOrdersPage = () => {
 
       {/* ── Orders Table ───────────────────────────────────────────────────── */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {orders.length === 0 ? (
-          <div className="p-12 text-center">
-            <FiShoppingBag className="mx-auto text-gray-300 mb-3" size={48} />
-            <p className="text-gray-500 font-medium">No orders match your filters</p>
-            {hasActiveFilters && (
-              <button
-                onClick={clearFilters}
-                className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Clear all filters
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  {['Order ID', 'Customer', 'Items', 'Total', 'Payment', 'Status', 'Date', 'Actions'].map(h => (
-                    <th key={h} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {orders.map(order => (
-                  <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-mono text-gray-700 whitespace-nowrap">
-                      #{order._id.slice(-8).toUpperCase()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <p className="text-sm font-medium text-gray-900">
-                        {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
-                      </p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
-                      {order.items.length} item{order.items.length !== 1 ? 's' : ''}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
-                      {order.total.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${paymentColors[order.paymentStatus] ?? 'bg-gray-100 text-gray-700'}`}>
-                        {order.paymentStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-xs font-semibold px-2 py-1 rounded-full ${statusColors[order.orderStatus] ?? 'bg-gray-100 text-gray-700'}`}>
-                        {order.orderStatus}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                      {new Date(order.orderDate).toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'short', day: 'numeric',
-                      })}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => setSelectedOrder(order)}
-                        className="flex items-center gap-1.5 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
-                      >
-                        <FiEye size={15} />
-                        Manage
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <Table
+          columns={columns}
+          data={orders}
+          rowKey={(o) => o._id}
+          emptyState={
+            <div className="p-12 text-center">
+              <FiShoppingBag className="mx-auto text-gray-300 mb-3" size={48} />
+              <p className="text-gray-500 font-medium">No orders match your filters</p>
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          }
+        />
       </div>
 
       {/* Pagination Controls */}

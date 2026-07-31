@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { FiSearch, FiUsers, FiShield, FiUser, FiLock, FiUnlock, FiTrash2 } from 'react-icons/fi';
 import { useAllUsers, useUpdateUserRole, useToggleUserStatus, useDeleteUser } from '../../hooks/useAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Button from '../../components/Button';
+import Table from '../../components/Table';
+import type { TableColumn } from '../../components/Table';
 import type { User } from '../../api/admin.api';
 
 const AdminUsersPage = () => {
@@ -25,6 +28,85 @@ const AdminUsersPage = () => {
   });
 
   if (isLoading) return <LoadingSpinner />;
+
+  // ─── Table columns ────────────────────────────────────────────────────────
+  const columns: TableColumn<User>[] = [
+    {
+      header: 'User',
+      cell: (user) => (
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <p className="font-medium text-gray-900">{user.name}</p>
+            <p className="text-sm text-gray-500">{user.email}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Role',
+      cell: (user) => (
+        <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold ${
+          user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-700'
+        }`}>
+          {user.role === 'admin' ? <FiShield size={12} /> : <FiUser size={12} />}
+          <span className="capitalize">{user.role}</span>
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      cell: (user) => (
+        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+          user.isBlocked ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
+        }`}>
+          {user.isBlocked ? 'Blocked' : 'Active'}
+        </span>
+      ),
+    },
+    {
+      header: 'Joined',
+      cell: (user) => new Date(user.createdAt).toLocaleDateString(),
+    },
+    {
+      header: 'Actions',
+      cell: (user) => (
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => updateRoleMutation.mutate({ id: user._id, role: user.role === 'admin' ? 'user' : 'admin' })}
+            disabled={updateRoleMutation.isPending}
+            title={user.role === 'admin' ? 'Demote to User' : 'Promote to Admin'}
+            className={`px-2! ${user.role === 'admin' ? 'text-purple-600 hover:bg-purple-50' : 'text-gray-600 hover:bg-gray-100'}`}
+          >
+            {user.role === 'admin' ? <FiShield size={16} /> : <FiUser size={16} />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => toggleStatusMutation.mutate(user._id)}
+            disabled={toggleStatusMutation.isPending}
+            title={user.isBlocked ? 'Unblock User' : 'Block User'}
+            className={`px-2! ${user.isBlocked ? 'text-green-600 hover:bg-green-50' : 'text-orange-600 hover:bg-orange-50'}`}
+          >
+            {user.isBlocked ? <FiUnlock size={16} /> : <FiLock size={16} />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setDeleteConfirm(user._id)}
+            title="Delete User"
+            className="px-2! text-red-600 hover:bg-red-50"
+          >
+            <FiTrash2 size={16} />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -61,110 +143,18 @@ const AdminUsersPage = () => {
 
       {/* Users Table */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {filtered.length === 0 ? (
-          <div className="p-12 text-center">
-            <FiUsers className="mx-auto text-gray-300 mb-3" size={48} />
-            <p className="text-gray-500">No users found</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">User</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filtered.map((user) => (
-                  <tr key={user._id} className={`hover:bg-gray-50 ${user.isBlocked ? 'opacity-60' : ''}`}>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
-                          {user.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{user.name}</p>
-                          <p className="text-sm text-gray-500">{user.email}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold ${
-                        user.role === 'admin'
-                          ? 'bg-purple-100 text-purple-800'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {user.role === 'admin' ? <FiShield size={12} /> : <FiUser size={12} />}
-                        <span className="capitalize">{user.role}</span>
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        user.isBlocked
-                          ? 'bg-red-100 text-red-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {user.isBlocked ? 'Blocked' : 'Active'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        {/* Toggle Role */}
-                        <button
-                          onClick={() =>
-                            updateRoleMutation.mutate({
-                              id: user._id,
-                              role: user.role === 'admin' ? 'user' : 'admin',
-                            })
-                          }
-                          disabled={updateRoleMutation.isPending}
-                          title={user.role === 'admin' ? 'Demote to User' : 'Promote to Admin'}
-                          className={`p-2 rounded-lg transition-colors ${
-                            user.role === 'admin'
-                              ? 'text-purple-600 hover:bg-purple-50'
-                              : 'text-gray-600 hover:bg-gray-100'
-                          }`}
-                        >
-                          {user.role === 'admin' ? <FiShield size={16} /> : <FiUser size={16} />}
-                        </button>
-
-                        {/* Block/Unblock */}
-                        <button
-                          onClick={() => toggleStatusMutation.mutate(user._id)}
-                          disabled={toggleStatusMutation.isPending}
-                          title={user.isBlocked ? 'Unblock User' : 'Block User'}
-                          className={`p-2 rounded-lg transition-colors ${
-                            user.isBlocked
-                              ? 'text-green-600 hover:bg-green-50'
-                              : 'text-orange-600 hover:bg-orange-50'
-                          }`}
-                        >
-                          {user.isBlocked ? <FiUnlock size={16} /> : <FiLock size={16} />}
-                        </button>
-
-                        {/* Delete */}
-                        <button
-                          onClick={() => setDeleteConfirm(user._id)}
-                          title="Delete User"
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <FiTrash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <Table
+          columns={columns}
+          data={filtered}
+          rowKey={(u) => u._id}
+          rowClassName={(u) => u.isBlocked ? 'opacity-60' : ''}
+          emptyState={
+            <div className="p-12 text-center">
+              <FiUsers className="mx-auto text-gray-300 mb-3" size={48} />
+              <p className="text-gray-500">No users found</p>
+            </div>
+          }
+        />
       </div>
 
       {/* Delete Confirm */}
@@ -176,22 +166,18 @@ const AdminUsersPage = () => {
               Are you sure you want to permanently delete this user? This cannot be undone.
             </p>
             <div className="flex space-x-3">
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-              >
+              <Button variant="secondary" size="md" onClick={() => setDeleteConfirm(null)} className="flex-1">
                 Cancel
-              </button>
-              <button
-                onClick={() => {
-                  deleteUserMutation.mutate(deleteConfirm);
-                  setDeleteConfirm(null);
-                }}
-                disabled={deleteUserMutation.isPending}
-                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400"
+              </Button>
+              <Button
+                variant="danger"
+                size="md"
+                onClick={() => { deleteUserMutation.mutate(deleteConfirm); setDeleteConfirm(null); }}
+                loading={deleteUserMutation.isPending}
+                className="flex-1"
               >
-                {deleteUserMutation.isPending ? 'Deleting...' : 'Delete'}
-              </button>
+                Delete
+              </Button>
             </div>
           </div>
         </div>

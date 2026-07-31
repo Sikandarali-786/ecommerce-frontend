@@ -9,6 +9,8 @@ import {
 } from 'react-icons/fi';
 import { useDashboardStats } from '../../hooks/useAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import Table from '../../components/Table';
+import type { TableColumn } from '../../components/Table';
 
 const AdminDashboardPage = () => {
   const { data, isLoading } = useDashboardStats();
@@ -71,6 +73,71 @@ const AdminDashboardPage = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  type RecentOrder = (typeof recentOrders)[number];
+
+  const recentOrderColumns: TableColumn<RecentOrder>[] = [
+    {
+      header: 'Order ID',
+      cell: (order) => (
+        <span className="font-medium text-gray-900 whitespace-nowrap">
+          {order._id.slice(-8)}
+        </span>
+      ),
+    },
+    {
+      header: 'Customer',
+      cell: (order) => (
+        <div className="whitespace-nowrap">
+          <div className="text-sm text-gray-900">
+            {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
+          </div>
+          <div className="text-sm text-gray-500">
+            {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Items',
+      cell: (order) => `${order.items.length} item(s)`,
+    },
+    {
+      header: 'Total',
+      cell: (order) => (
+        <span className="font-semibold text-gray-900 whitespace-nowrap">
+          ${order.total.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      header: 'Status',
+      cell: (order) => (
+        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(order.orderStatus)}`}>
+          {order.orderStatus}
+        </span>
+      ),
+    },
+    {
+      header: 'Date',
+      cell: (order) => (
+        <span className="text-sm text-gray-500 whitespace-nowrap">
+          {new Date(order.orderDate).toLocaleDateString()}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      cell: (order) => (
+        <Link
+          to={`/admin/orders/${order._id}`}
+          className="text-blue-600 hover:text-blue-900 font-medium text-sm whitespace-nowrap"
+        >
+          View
+        </Link>
+      ),
+    },
+  ];
 
   return (
     <div className="p-6 lg:p-8">
@@ -138,78 +205,11 @@ const AdminDashboardPage = () => {
               No orders yet
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Order ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Customer
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Items
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Total
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {recentOrders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {order._id.slice(-8)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {typeof order.user === 'object' ? (order.user?.name ?? 'N/A') : 'N/A'}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {typeof order.user === 'object' ? (order.user?.email ?? '—') : '—'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {order.items.length} item(s)
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        ${order.total.toFixed(2)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(
-                            order.orderStatus
-                          )}`}
-                        >
-                          {order.orderStatus}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(order.orderDate).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <Link
-                          to={`/admin/orders/${order._id}`}
-                          className="text-blue-600 hover:text-blue-900 font-medium"
-                        >
-                          View
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <Table
+              columns={recentOrderColumns}
+              data={recentOrders}
+              rowKey={(order) => order._id}
+            />
           )}
 
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">

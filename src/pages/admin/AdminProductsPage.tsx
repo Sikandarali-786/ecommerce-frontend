@@ -4,6 +4,8 @@ import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
+import Table from '../../components/Table';
+import type { TableColumn } from '../../components/Table';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import axiosInstance from '../../api/axios';
 import { API_ENDPOINTS } from '../../api/endpoints';
@@ -193,6 +195,81 @@ const AdminProductsPage = () => {
 
   if (isLoading) return <LoadingSpinner />;
 
+  // ─── Table columns ───────────────────────────────────────────────────────
+  const columns: TableColumn<Product>[] = [
+    {
+      header: 'Product',
+      cell: (product) => (
+        <div className="flex items-center space-x-3">
+          <img
+            src={getImageUrl(product.images?.[0])}
+            alt={product.title}
+            className="w-12 h-12 object-cover rounded-lg border"
+            onError={(e) => { e.currentTarget.src = 'https://placehold.co/48x48?text=No+Img'; }}
+          />
+          <div>
+            <p className="font-medium text-gray-900 line-clamp-1">{product.title}</p>
+            <p className="text-sm text-gray-500 line-clamp-1">{product.description}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: 'Category',
+      cell: (product) =>
+        product.category
+          ? typeof product.category === 'object'
+            ? product.category.name || 'Uncategorized'
+            : product.category
+          : 'Uncategorized',
+    },
+    {
+      header: 'Price',
+      cell: (product) => (
+        <span className="font-semibold text-gray-900">{product.price.toFixed(2)}</span>
+      ),
+    },
+    {
+      header: 'Stock',
+      cell: (product) => (
+        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+          product.stock === 0
+            ? 'bg-red-100 text-red-800'
+            : product.stock < 10
+            ? 'bg-yellow-100 text-yellow-800'
+            : 'bg-green-100 text-green-800'
+        }`}>
+          {product.stock === 0 ? 'Out of Stock' : `${product.stock} in stock`}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      cell: (product) => (
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openEdit(product)}
+            className="text-blue-600 hover:bg-blue-50 px-2!"
+            title="Edit"
+          >
+            <FiEdit2 size={18} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setDeleteConfirm(product._id)}
+            className="text-red-600 hover:bg-red-50 px-2!"
+            title="Delete"
+          >
+            <FiTrash2 size={18} />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div>
       {/* Header */}
@@ -227,90 +304,17 @@ const AdminProductsPage = () => {
 
       {/* Products Table */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        {products.length === 0 ? (
-          <div className="p-12 text-center">
-            <FiPackage className="mx-auto text-gray-300 mb-3" size={48} />
-            <p className="text-gray-500">No products found</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {products.map((product) => (
-                  
-                  <tr key={product._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <img
-                          src={getImageUrl(product.images?.[0])}
-                          alt={product.title}
-                          className="w-12 h-12 object-cover rounded-lg border"
-                          onError={(e) => { e.currentTarget.src = 'https://placehold.co/48x48?text=No+Img'; }}
-                        />
-                        <div>
-                          <p className="font-medium text-gray-900 line-clamp-1">{product.title}</p>
-                          <p className="text-sm text-gray-500 line-clamp-1">{product.description}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-700">
-                      {product.category
-                        ? typeof product.category === 'object'
-                          ? product.category.name || 'Uncategorized'
-                          : product.category
-                        : 'Uncategorized'}
-                    </td>
-                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
-                      {product.price.toFixed(2)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                        product.stock === 0
-                          ? 'bg-red-100 text-red-800'
-                          : product.stock < 10
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {product.stock === 0 ? 'Out of Stock' : `${product.stock} in stock`}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openEdit(product)}
-                          className="text-blue-600 hover:bg-blue-50 px-2!"
-                          title="Edit"
-                        >
-                          <FiEdit2 size={18} />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setDeleteConfirm(product._id)}
-                          className="text-red-600 hover:bg-red-50 px-2!"
-                          title="Delete"
-                        >
-                          <FiTrash2 size={18} />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <Table
+          columns={columns}
+          data={products}
+          rowKey={(p) => p._id}
+          emptyState={
+            <div className="p-12 text-center">
+              <FiPackage className="mx-auto text-gray-300 mb-3" size={48} />
+              <p className="text-gray-500">No products found</p>
+            </div>
+          }
+        />
       </div>
 
       {/* Pagination Controls */}

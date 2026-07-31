@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { FiAlertTriangle, FiX } from 'react-icons/fi';
+import Button from './Button';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -42,10 +43,7 @@ const ConfirmModal = ({
   if (!isOpen) return null;
 
   const iconColor = variant === 'danger' ? 'text-red-500' : 'text-amber-500';
-  const iconBg   = variant === 'danger' ? 'bg-red-50'   : 'bg-amber-50';
-  const btnColor = variant === 'danger'
-    ? 'bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 focus:ring-[#cf531f]'
-    : 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-400';
+  const iconBg = variant === 'danger' ? 'bg-red-50' : 'bg-amber-50';
 
   return (
     <div
@@ -63,13 +61,14 @@ const ConfirmModal = ({
       {/* Panel */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-[fadeInScale_0.18s_ease-out]">
         {/* Close button */}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onCancel}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 p-1.5 rounded-full"
           aria-label="Close"
-        >
-          <FiX size={20} />
-        </button>
+          leftIcon={<FiX size={20} />}
+        />
 
         {/* Icon + Title */}
         <div className="flex items-start gap-4 mb-4">
@@ -86,20 +85,22 @@ const ConfirmModal = ({
 
         {/* Actions */}
         <div className="flex gap-3 justify-end pt-2">
-          <button
+          <Button
+            variant="secondary"
+            size="md"
             onClick={onCancel}
             disabled={isLoading}
-            className="px-4 py-2 text-sm font-600 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50"
           >
             {cancelLabel}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={variant === 'danger' ? 'danger' : 'primary'}
+            size="md"
             onClick={onConfirm}
-            disabled={isLoading}
-            className={`px-4 py-2 text-sm font-600 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed ${btnColor}`}
+            loading={isLoading}
           >
-            {isLoading ? 'Processing...' : confirmLabel}
-          </button>
+            {confirmLabel}
+          </Button>
         </div>
       </div>
     </div>
