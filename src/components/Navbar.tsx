@@ -615,36 +615,6 @@ const Navbar = () => {
             </div>
 
             <div className="grid grid-cols-1  gap-4 p-5">
-              {/* <div className="space-y-4"> */}
-              {/* <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Search for your national address, building...</label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={locationInput}
-                      onChange={e => setLocationInput(e.target.value)}
-                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
-                      placeholder="Search for address, building..."
-                    />
-                    <button
-                      type="button"
-                      onClick={confirmLocation}
-                      className="rounded-2xl bg-[#8B0000] px-4 py-3 text-sm font-semibold text-white hover:bg-[#7a0f07] transition-colors"
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                </div> */}
-
-              {/* <button
-                  type="button"
-                  onClick={() => setLocationInput('Current location')}
-                  className="inline-flex items-center gap-2 rounded-full border border-[#8B0000] bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-[#8B0000] hover:bg-[#ecfdf5] transition-colors"
-                >
-                  <FiMapPin size={18} />
-                  Use current location
-                </button> */}
-              {/* </div> */}
 
               <div className="relative h-96 overflow-hidden rounded-3xl bg-slate-100">
                 <iframe
