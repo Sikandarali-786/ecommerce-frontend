@@ -1,6 +1,8 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
-  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,} from 'react-icons/fi';
+import {
+  FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
+  FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,
+} from 'react-icons/fi';
 import { MdAdminPanelSettings } from 'react-icons/md';
 import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
@@ -100,9 +102,7 @@ const Navbar = () => {
   const initials = user?.name
     ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : 'U';
-  // const marqueeCategories = categories.length > 0 ? [...categories, ...categories] : [];
-  const marqueeCategories = categories;
-  const marqueeDuration = `${Math.max(categories.length * 2.5, 24)}s`;
+
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
@@ -110,7 +110,7 @@ const Navbar = () => {
       <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
         <div className="mx-auto flex flex-wrap items-center gap-3 px-4 py-3 lg:flex-nowrap lg:justify-between lg:px-6 xl:px-8">
           <div className="flex flex-wrap items-center gap-5 text-[13px]">
-             <Link to="/" className="flex items-center shrink-0 mr-4">
+            <Link to="/" className="flex items-center shrink-0 mr-4">
               <img
                 src={logoImg}
                 alt="Afzal Bikerz Store"
@@ -167,29 +167,26 @@ const Navbar = () => {
             {/* ── Desktop nav: dynamic categories ───────────────────── */}
 
             <div className="hidden lg:block flex-1 overflow-hidden">
-              <div
-                className="flex items-center gap-0.5 w-max whitespace-nowrap category-marquee"
-                style={{ '--marquee-duration': marqueeDuration } as CSSProperties}
-              >
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide py-1">
                 {categories.length === 0 ? (
                   // Skeleton placeholders while loading
                   Array.from({ length: 5 }).map((_, i) => (
                     <div
                       key={i}
                       className="h-4 w-24 bg-slate-100 rounded animate-pulse mx-1.5 shrink-0"
-                      />
-                    ))
+                    />
+                  ))
                 ) : (
-                  marqueeCategories.map((cat, index) => {
+                  categories.map((cat) => {
                     const isActivecat = activeCategorySlug === cat.slug
                       && location.pathname.startsWith('/products');
                     return (
                       <Link
-                        key={`${cat._id}-${index}`}
+                        key={cat._id}
                         to={`/products?category=${encodeURIComponent(cat.slug)}`}
                         className={`relative flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors rounded-md shrink-0 ${isActivecat
-                            ? 'text-[#8B0000] bg-red-50'
-                            : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
+                          ? 'text-[#8B0000] bg-red-50'
+                          : 'text-slate-700 hover:text-[#8B0000] hover:bg-red-50'
                           }`}
                       >
                         {cat.name}
@@ -204,7 +201,7 @@ const Navbar = () => {
             <div className="hidden md:flex items-center gap-1 ml-2 shrink-0">
 
               {/* Search */}
-              <div className="relative">
+              {/* <div className="relative">
                 {searchOpen ? (
                   <form onSubmit={handleSearch} className="flex items-center">
                     <input
@@ -232,7 +229,7 @@ const Navbar = () => {
                     <FiSearch size={20} />
                   </button>
                 )}
-              </div>
+              </div> */}
 
               {/* User / Auth */}
               {authenticated ? (
@@ -305,8 +302,8 @@ const Navbar = () => {
                     to="/wishlist"
                     title="Wishlist"
                     className={`p-2 rounded-lg transition-colors cursor-pointer ${isActive('/wishlist')
-                        ? 'text-[#8B0000] bg-red-50'
-                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                      ? 'text-[#8B0000] bg-red-50'
+                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
                       }`}
                   >
                     <FiHeart size={20} />
@@ -330,8 +327,8 @@ const Navbar = () => {
                     to="/orders"
                     title="Orders"
                     className={`p-2 rounded-lg transition-colors cursor-pointer ${isActive('/orders')
-                        ? 'text-[#8B0000] bg-red-50'
-                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                      ? 'text-[#8B0000] bg-red-50'
+                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
                       }`}
                   >
                     <FiPackage size={20} />
@@ -355,8 +352,8 @@ const Navbar = () => {
                     to="/cart"
                     title="Cart"
                     className={`relative p-2 rounded-lg transition-colors cursor-pointer ${isActive('/cart')
-                        ? 'text-[#8B0000] bg-red-50'
-                        : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
+                      ? 'text-[#8B0000] bg-red-50'
+                      : 'text-slate-600 hover:text-[#8B0000] hover:bg-red-50'
                       }`}
                   >
                     <FiShoppingCart size={20} />
@@ -495,8 +492,8 @@ const Navbar = () => {
                 key={cat._id}
                 to={`/products?category=${encodeURIComponent(cat.slug)}`}
                 className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors ${isActivecat
-                    ? 'text-[#8B0000] bg-red-50'
-                    : 'text-slate-700 hover:bg-slate-50'
+                  ? 'text-[#8B0000] bg-red-50'
+                  : 'text-slate-700 hover:bg-slate-50'
                   }`}
               >
                 {cat.name}
@@ -508,8 +505,8 @@ const Navbar = () => {
           <Link
             to="/products"
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium transition-colors border-t border-slate-100 mt-1 pt-3 ${location.pathname === '/products' && !activeCategorySlug
-                ? 'text-[#8B0000] bg-red-50'
-                : 'text-slate-700 hover:bg-slate-50'
+              ? 'text-[#8B0000] bg-red-50'
+              : 'text-slate-700 hover:bg-slate-50'
               }`}
           >
             All Products
@@ -619,7 +616,7 @@ const Navbar = () => {
 
             <div className="grid grid-cols-1  gap-4 p-5">
               {/* <div className="space-y-4"> */}
-                {/* <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              {/* <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                   <label className="block text-sm font-medium text-slate-700 mb-2">Search for your national address, building...</label>
                   <div className="flex items-center gap-2">
                     <input
@@ -639,7 +636,7 @@ const Navbar = () => {
                   </div>
                 </div> */}
 
-                {/* <button
+              {/* <button
                   type="button"
                   onClick={() => setLocationInput('Current location')}
                   className="inline-flex items-center gap-2 rounded-full border border-[#8B0000] bg-[#f8fafc] px-4 py-3 text-sm font-semibold text-[#8B0000] hover:bg-[#ecfdf5] transition-colors"

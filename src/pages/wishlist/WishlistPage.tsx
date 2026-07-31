@@ -65,9 +65,11 @@ const WishlistPage = () => {
           title="Your wishlist is empty"
           description="Save your favourite products here and add them to your cart when you're ready."
           action={
-            <Button variant="primary" size="lg" onClick={() => window.location.href = '/products'}>
-              Browse Products
-            </Button>
+            <Link to="/products">
+              <Button variant="primary" size="lg">
+                Browse Products
+              </Button>
+            </Link>
           }
         />
       </div>

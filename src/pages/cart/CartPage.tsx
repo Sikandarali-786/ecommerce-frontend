@@ -109,9 +109,11 @@ const CartPage = () => {
           title="Your cart is empty"
           description="Add some products to your cart to see them here"
           action={
-            <Button variant="primary" size="lg" onClick={() => window.location.href = '/products'}>
-              Browse Products
-            </Button>
+            <Link to="/products">
+              <Button variant="primary" size="lg">
+                Browse Products
+              </Button>
+            </Link>
           }
         />
       </div>

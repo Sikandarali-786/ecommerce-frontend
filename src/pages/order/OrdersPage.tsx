@@ -75,13 +75,11 @@ const OrdersPage = () => {
           title="No orders yet"
           description="You haven't placed any orders yet. Start shopping to see your orders here."
           action={
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => (window.location.href = '/products')}
-            >
-              Browse Products
-            </Button>
+            <Link to="/products">
+              <Button variant="primary" size="lg">
+                Browse Products
+              </Button>
+            </Link>
           }
         />
       </div>

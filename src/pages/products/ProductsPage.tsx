@@ -206,42 +206,37 @@ const ProductsPage = () => {
 
         {/* Search input removed for this page */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* ── Filters Section (Full Width Top) ────────────────────── */}
+        <ProductFilters onFilterChange={handleFilterChange} activeFilters={filters} />
 
-          {/* ── Filters Sidebar ───────────────────────────────────────── */}
-          <div className="lg:col-span-1">
-            <ProductFilters onFilterChange={handleFilterChange} activeFilters={filters} />
-          </div>
-
-          {/* ── Products Grid + Pagination ─────────────────────────── */}
-          <div className="lg:col-span-3">
-            {isLoading ? (
-              <LoadingSpinner />
-            ) : products.length === 0 ? (
-              <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-slate-100">
-                <p className="text-xl text-gray-600 mb-2">No products found</p>
-                <p className="text-gray-400 text-sm">
-                  {debouncedSearch || filters.category || filters.minPrice || filters.maxPrice
-                    ? 'Try adjusting your filters or search query'
-                    : 'No products available in this category yet'}
-                </p>
+        {/* ── Products Grid + Pagination ─────────────────────────── */}
+        <div>
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : products.length === 0 ? (
+            <div className="bg-white rounded-lg shadow-sm p-12 text-center border border-slate-100">
+              <p className="text-xl text-gray-600 mb-2">No products found</p>
+              <p className="text-gray-400 text-sm">
+                {debouncedSearch || filters.category || filters.minPrice || filters.maxPrice
+                  ? 'Try adjusting your filters or search query'
+                  : 'No products available in this category yet'}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {products.map((product: Product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
               </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {products.map((product: Product) => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
-                </div>
 
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  onPageChange={handlePageChange}
-                />
-              </>
-            )}
-          </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>

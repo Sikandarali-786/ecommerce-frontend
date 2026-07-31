@@ -197,35 +197,25 @@ const HeroBanner = () => {
           )}
 
           {/* Buttons */}
-          <div className="flex flex-wrap gap-4">
-
-            {/* <Link
-              to={slide.ctaPath}
-              className="inline-flex items-center gap-2 rounded bg-red-600 px-6 py-3 font-bold uppercase transition hover:bg-red-700"
-            >
-              {/* {slide.cta} */}
-              {/* <FiArrowRight /> */}
-            {/* </Link> */} 
-
+          <div className="flex flex-wrap items-center gap-4">
             {slide.secondaryCta && (
               <Link
                 to={slide.ctaPath}
-                className="inline-flex items-center gap-2 rounded border border-white/40 px-6 py-3 font-bold uppercase text-white transition hover:border-red-500 hover:text-red-500"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-6 py-3 font-bold text-sm uppercase text-white transition hover:border-red-500 hover:text-red-500"
               >
                 {slide.secondaryCta}
-                <FiArrowRight />
+                <FiArrowRight size={16} />
               </Link>
             )}
 
+            <Link
+              to={slide.ctaPath}
+              className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+            >
+              {slide.cta}
+              <FiArrowRight size={16} />
+            </Link>
           </div>
-          {/* CTA */}
-          <Link
-            to={slide.ctaPath}
-            className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-          >
-            {slide.cta}
-            <FiArrowRight size={16} />
-          </Link>
         </div>
       </div>
 
