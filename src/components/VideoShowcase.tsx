@@ -1,18 +1,22 @@
+import video1 from '../assets/video/WhatsApp Video 2026-08-01 at 11.41.09 PM.mp4';
+import video2 from '../assets/video/WhatsApp Video 2026-08-01 at 11.41.58 PM.mp4';
+import video3 from '../assets/video/WhatsApp Video 2026-08-01 at 11.43.20 PM.mp4';
+
 const videoItems = [
   {
     title: 'Tanks Installation',
     label: 'Watch Now',
-    src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+    src: video1,
   },
   {
     title: 'Rims Styling',
     label: 'Watch Now',
-    src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/boat.mp4',
+    src: video2,
   },
   {
     title: 'Silencer Sound Test',
     label: 'Watch Now',
-    src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
+    src: video3,
   },
   {
     title: 'LED Lights Showcase',

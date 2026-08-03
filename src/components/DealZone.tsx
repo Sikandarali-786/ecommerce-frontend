@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiTag, FiPercent, FiZap, FiTrendingUp, FiArrowRight } from 'react-icons/fi';
-import { FaFlame } from 'react-icons/fa';
+import { FaFire } from 'react-icons/fa';
 
 const deals = [
   {
@@ -60,7 +60,7 @@ const DealZone = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 rounded-full bg-red-50 border border-red-200 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-[#8B0000] mb-3">
-            <FaFlame className="text-red-600 animate-pulse" size={16} />
+            <FaFire className="text-red-600 animate-pulse" size={16} />
             Exclusive Offers
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
