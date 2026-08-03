@@ -307,7 +307,7 @@ const ProfilePage = () => {
               <button
                 type="submit"
                 disabled={passwordMutation.isPending}
-                className="w-full flex items-center justify-center gap-2 bg-orange-500 text-white py-2.5 px-4 rounded-lg hover:bg-orange-600 transition-colors font-semibold text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] text-white py-2.5 px-4 rounded-lg hover:opacity-90 transition-all font-semibold text-sm disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
               >
                 <FiLock size={15} />
                 {passwordMutation.isPending ? 'Changing…' : 'Change Password'}

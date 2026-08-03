@@ -95,7 +95,7 @@ const RegisterPage = () => {
           </div>
 
           <p className="relative z-10 text-red-300 text-xs">
-            © 2026 Afzal Bikerz Studio · Attock, Pakistan
+            © 2026 Afzal Bikerz Store · Multan, Pakistan
           </p>
         </div>
 

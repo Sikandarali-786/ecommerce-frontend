@@ -39,7 +39,7 @@ const Footer = () => {
             <div className="flex items-center gap-2 text-red-100 text-sm mb-3">
               <FiMail size={14} className="shrink-0 text-[#ffcfb0]" />
               <a
-                href="mailto:Afzalbikerzstudio@gmail.com"
+                href="mailto:rehanqureshi@gmail.com"
                 className="hover:text-white transition-colors"
               >
                 rehanqureshi@gmail.com
@@ -50,7 +50,7 @@ const Footer = () => {
             <div className="flex items-center gap-2 text-red-100 text-sm mb-5">
               <FiPhone size={14} className="shrink-0 text-[#ffcfb0]" />
               <a
-                href="tel:+923335959318"
+                href="tel:+923048405899"
                 className="hover:text-white transition-colors"
               >
                 +923048405899
@@ -96,13 +96,13 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Shop All',               to: '/products' },
-                { label: 'All collections',        to: '/products' },
+                { label: 'Shop All', to: '/products' },
+                { label: 'All collections', to: '/products' },
                 { label: 'CG 125 Fancy Fuel Tanks', to: '/products' },
-                { label: 'CD 70 Fancy Fuel Tanks',  to: '/products' },
-                { label: 'Search',                  to: '/products' },
-                { label: 'Silencers',               to: '/products' },
-                { label: 'Profile',                 to: '/profile'  },
+                { label: 'CD 70 Fancy Fuel Tanks', to: '/products' },
+                { label: 'Search', to: '/products' },
+                { label: 'Silencers', to: '/products' },
+                { label: 'Profile', to: '/profile' },
               ].map(link => (
                 <li key={link.label}>
                   <Link
@@ -123,10 +123,10 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Refund Policy',       to: '#' },
-                { label: 'Shipping Policy',     to: '#' },
+                { label: 'Refund Policy', to: '#' },
+                { label: 'Shipping Policy', to: '#' },
                 { label: 'Contact Information', to: '#' },
-                { label: 'About Us',            to: '#' },
+                { label: 'About Us', to: '#' },
               ].map(link => (
                 <li key={link.label}>
                   <Link

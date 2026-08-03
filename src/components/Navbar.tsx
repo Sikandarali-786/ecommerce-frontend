@@ -70,13 +70,34 @@ const Navbar = () => {
     navigate('/login');
   };
 
+  // Keep searchQuery synced with URL parameter 'search'
+  useEffect(() => {
+    const searchFromUrl = searchParams.get('search') ?? '';
+    setSearchQuery(searchFromUrl);
+  }, [location.search]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+    const query = searchQuery.trim();
+    if (query) {
+      navigate(`/products?search=${encodeURIComponent(query)}`);
       setSearchOpen(false);
-      setSearchQuery('');
+    } else {
+      // If user cleared the text and submitted, reset search filter
+      const params = new URLSearchParams(location.search);
+      params.delete('search');
+      const queryString = params.toString();
+      navigate(queryString ? `/products?${queryString}` : '/products');
+      setSearchOpen(false);
     }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    const params = new URLSearchParams(location.search);
+    params.delete('search');
+    const queryString = params.toString();
+    navigate(queryString ? `/products?${queryString}` : '/products');
   };
 
   const openLocationModal = () => {
@@ -135,11 +156,21 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search for products..."
-                className="w-full rounded-full border border-white/30 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+                className="w-full rounded-full border border-white/30 bg-white px-4 py-3 pr-20 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-11 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                  title="Clear search"
+                >
+                  <FiX size={16} />
+                </button>
+              )}
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
               >
                 <FiSearch size={18} />
               </button>
@@ -472,11 +503,21 @@ const Navbar = () => {
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search for products..."
-                className="w-full rounded-full border border-slate-200 bg-white px-4 py-3 text-sm focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+                className="w-full rounded-full border border-slate-200 bg-white px-4 py-3 pr-20 text-sm focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={handleClearSearch}
+                  className="absolute right-11 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                  title="Clear search"
+                >
+                  <FiX size={16} />
+                </button>
+              )}
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
               >
                 <FiSearch size={18} />
               </button>

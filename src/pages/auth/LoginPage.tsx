@@ -48,8 +48,8 @@ const LoginPage = () => {
     : 0;
   const lockCountdown = isEmailLocked
     ? `${Math.floor(lockSecondsLeft / 3600)
-        .toString()
-        .padStart(2, '0')}:${Math.floor((lockSecondsLeft % 3600) / 60)
+      .toString()
+      .padStart(2, '0')}:${Math.floor((lockSecondsLeft % 3600) / 60)
         .toString()
         .padStart(2, '0')}:${(lockSecondsLeft % 60).toString().padStart(2, '0')}`
     : '';
@@ -123,7 +123,7 @@ const LoginPage = () => {
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
 
         {/* ── Left panel: brand ─────────────────────────────────────────── */}
-<div className="relative hidden md:flex md:w-[42%] flex-col justify-between bg-gradient-to-r from-[#24437d] to-[#cf531f] p-10 overflow-hidden">          {/* Background pattern circles */}
+        <div className="relative hidden md:flex md:w-[42%] flex-col justify-between bg-gradient-to-r from-[#24437d] to-[#cf531f] p-10 overflow-hidden">          {/* Background pattern circles */}
           <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-white/5" />
           <div className="absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-white/5" />
           <div className="absolute top-1/2 -right-10 w-40 h-40 rounded-full bg-white/5" />
@@ -133,12 +133,12 @@ const LoginPage = () => {
             <div className="flex items-center gap-3 mb-10">
               <img
                 src={logoImg}
-                alt="Afzal Bikerz Studio"
+                alt="Afzal Bikerz Store"
                 className="h-16 w-16 object-contain rounded-xl bg-white/10 p-1"
               />
               <div>
                 <p className="text-white font-bold text-base leading-tight">Afzal Bikerz</p>
-                <p className="text-red-200 text-xs">Studio</p>
+                <p className="text-red-200 text-xs">Store</p>
               </div>
             </div>
 
@@ -164,7 +164,7 @@ const LoginPage = () => {
 
           {/* Bottom: tagline */}
           <p className="relative z-10 text-red-300 text-xs">
-            © 2026 Afzal Bikerz Studio · Multan, Pakistan
+            © 2026 Afzal Bikerz Store · Multan, Pakistan
           </p>
         </div>
 
@@ -174,7 +174,7 @@ const LoginPage = () => {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 md:hidden">
             <img src={logoImg} alt="Logo" className="h-10 w-10 object-contain rounded-lg" />
-            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Studio</span>
+            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Store</span>
           </div>
 
           {/* Heading */}
