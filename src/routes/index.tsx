@@ -26,6 +26,7 @@ const AdminOrdersPage = lazy(() => import('../pages/admin/AdminOrdersPage'));
 const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const ProfilePage = lazy(() => import('../pages/profile/ProfilePage'));
+const CategoriesPage = lazy(() => import('../pages/categories/CategoriesPage'));
 
 // Wrapper component for Suspense
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
       {
         path: 'reset-password/:token',
         element: <SuspenseWrapper><ResetPasswordPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'categories',
+        element: <SuspenseWrapper><CategoriesPage /></SuspenseWrapper>,
       },
       {
         path: 'products',

@@ -4,6 +4,7 @@ import {
   FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,
 } from 'react-icons/fi';
 import { MdAdminPanelSettings } from 'react-icons/md';
+import { FaWhatsapp } from 'react-icons/fa';
 import { useState, useRef, useEffect, type CSSProperties } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
@@ -177,14 +178,17 @@ const Navbar = () => {
             </form>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 rounded-full bg-[#f97316] px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-sm sm:text-sm">
-            <span>Pakistan's #1 Motorcycle Parts Store</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="rounded-full bg-[#f97316] px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-sm">
+              Pakistan's #1 Motorcycle Parts Store
+            </div>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-white hover:bg-white/25 transition-colors"
+              className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-sm transition-all cursor-pointer"
             >
+              <FaWhatsapp size={16} />
               Order to WhatsApp
             </a>
           </div>
