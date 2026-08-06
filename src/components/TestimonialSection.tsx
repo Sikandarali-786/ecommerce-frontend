@@ -3,7 +3,7 @@ import { FaStar } from 'react-icons/fa';
 const testimonials = [
   {
     rating: 5,
-    quote: 'Afzal Bikerz Studio se jo silencer lia woh to shor kam aur style zyada nikla',
+    quote: 'Afzal Bikerz Store se jo silencer lia woh to shor kam aur style zyada nikla',
     name: 'Fahad Ali',
   },
   {

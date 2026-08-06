@@ -6,16 +6,16 @@ import logoImg from '../../assets/images/logo.png';
 import Button from '../../components/Button';
 
 const ResetPasswordPage = () => {
-  const { token }    = useParams<{ token: string }>();
-  const navigate     = useNavigate();
+  const { token } = useParams<{ token: string }>();
+  const navigate = useNavigate();
 
-  const [password,     setPassword]     = useState('');
-  const [confirm,      setConfirm]      = useState('');
-  const [showPwd,      setShowPwd]      = useState(false);
-  const [showConfirm,  setShowConfirm]  = useState(false);
-  const [isLoading,    setIsLoading]    = useState(false);
-  const [success,      setSuccess]      = useState(false);
-  const [error,        setError]        = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [showPwd, setShowPwd] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +54,7 @@ const ResetPasswordPage = () => {
         <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] px-8 py-6 flex items-center gap-4">
           <img src={logoImg} alt="Logo" className="h-12 w-12 object-contain rounded-xl bg-white/10 p-1" />
           <div>
-            <p className="text-white font-bold text-base leading-tight">Afzal Bikerz Studio</p>
+            <p className="text-white font-bold text-base leading-tight">Afzal Bikerz Store</p>
             <p className="text-red-200 text-xs">Set a new password</p>
           </div>
         </div>

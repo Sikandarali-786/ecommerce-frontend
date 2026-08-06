@@ -66,7 +66,7 @@ const RegisterPage = () => {
             <div className="flex items-center gap-3 mb-10">
               <img
                 src={logoImg}
-                alt="Afzal Bikerz Studio"
+                alt="Afzal Bikerz Store"
                 className="h-16 w-16 object-contain rounded-xl bg-white/10 p-1"
               />
               <div>
@@ -105,7 +105,7 @@ const RegisterPage = () => {
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 md:hidden">
             <img src={logoImg} alt="Logo" className="h-10 w-10 object-contain rounded-lg" />
-            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Studio</span>
+            <span className="font-bold text-[#8B0000] text-lg">Afzal Bikerz Store</span>
           </div>
 
           {/* Heading */}
