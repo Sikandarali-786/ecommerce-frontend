@@ -130,34 +130,36 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
       <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
-        <div className="mx-auto flex flex-wrap items-center gap-3 px-4 py-3 lg:flex-nowrap lg:justify-between lg:px-6 xl:px-8">
-          <div className="flex flex-wrap items-center gap-5 text-[13px]">
-            <Link to="/" className="flex items-center shrink-0 mr-4">
+        <div className="mx-auto flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-3 lg:px-6 xl:px-8">
+          
+          {/* Logo & Search input container */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto flex-1">
+            <Link to="/" className="flex items-center shrink-0">
               <img
                 src={logoImg}
                 alt="Afzal Bikerz Store"
-                className="h-16 w-auto object-contain rounded-sm"
+                className="h-14 md:h-16 w-auto object-contain rounded-sm"
               />
             </Link>
-          </div>
 
-          <div className="flex flex-1 flex-wrap items-center justify-center gap-3 min-w-70">
+            {/* Location button (Hidden on mobile) */}
             <button
               type="button"
               onClick={openLocationModal}
-              className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:border-white hover:text-slate-900 transition-colors"
+              className="hidden md:inline-flex items-center gap-2 rounded-full border border-white/30 bg-white px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm hover:border-white hover:text-slate-900 transition-colors shrink-0"
             >
               <FiMapPin size={18} className="text-[#8B0000]" />
               {locationLabel}
             </button>
 
-            <form onSubmit={handleSearch} className="relative flex-1 min-w-55">
+            {/* Search Input at the top in mobile */}
+            <form onSubmit={handleSearch} className="relative w-full flex-1">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search for products..."
-                className="w-full rounded-full border border-white/30 bg-white px-4 py-3 pr-20 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+                className="w-full rounded-full border border-white/30 bg-white px-4 py-2.5 sm:py-3 pr-20 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
               />
               {searchQuery && (
                 <button
@@ -171,27 +173,29 @@ const Navbar = () => {
               )}
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-1.5 sm:p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
               >
                 <FiSearch size={18} />
               </button>
             </form>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="rounded-full bg-[#f97316] px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-sm">
+          {/* Pakistan #1 store badge + Order to WhatsApp together */}
+          <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto shrink-0">
+            <div className="rounded-full bg-[#f97316] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm text-center">
               Pakistan's #1 Motorcycle Parts Store
             </div>
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 px-4 py-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.12em] text-white shadow-sm transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] border border-white/20 hover:opacity-90 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm transition-all cursor-pointer"
             >
               <FaWhatsapp size={16} />
               Order to WhatsApp
             </a>
           </div>
+
         </div>
       </div>
 
@@ -487,20 +491,8 @@ const Navbar = () => {
       {isMobileOpen && (
         <div className="md:hidden bg-white border-t border-slate-200 py-3 space-y-1 shadow-lg">
 
-          {/* Mobile location + search */}
-          <div className="px-4 mb-3 space-y-3">
-            <button
-              type="button"
-              onClick={openLocationModal}
-              className="w-full inline-flex items-center justify-between gap-2 rounded-full border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm hover:border-[#8B0000] hover:text-[#8B0000] transition-colors"
-            >
-              <span className="inline-flex items-center gap-2">
-                <FiMapPin size={18} className="text-[#8B0000]" />
-                {locationLabel}
-              </span>
-              <span className="text-xs text-slate-500">Change</span>
-            </button>
-
+          {/* Mobile search */}
+          <div className="px-4 mb-3">
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"

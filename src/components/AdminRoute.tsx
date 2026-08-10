@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { isAuthenticated, isAdmin } from '../utils/auth';
 
 interface AdminRouteProps {
@@ -6,12 +6,10 @@ interface AdminRouteProps {
 }
 
 const AdminRoute = ({ children }: AdminRouteProps) => {
-  if (!isAuthenticated()) {
-    return <Navigate to="/login" replace />;
-  }
+  const location = useLocation();
 
-  if (!isAdmin()) {
-    return <Navigate to="/" replace />;
+  if (!isAuthenticated() || !isAdmin()) {
+    return <Navigate to="/login" replace state={{ from: `${location.pathname}${location.search}` }} />;
   }
 
   return <>{children}</>;

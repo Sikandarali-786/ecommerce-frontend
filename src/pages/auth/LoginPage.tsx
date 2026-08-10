@@ -94,7 +94,8 @@ const LoginPage = () => {
         setToken(response.token);
         setUser(response.user);
         toast.success('Welcome back!');
-        navigate(loginState?.from || '/');
+        const defaultRedirect = response.user.role === 'admin' ? '/admin' : '/';
+        navigate(loginState?.from || defaultRedirect);
       }
     } catch (error: any) {
       const message = error.response?.data?.message || 'Login failed. Please try again.';
