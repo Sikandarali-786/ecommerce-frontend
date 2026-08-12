@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FiSearch, FiShoppingBag, FiEye, FiX, FiFilter } from 'react-icons/fi';
+import { useState, useRef, useEffect } from 'react';
+import { FiSearch, FiShoppingBag, FiEye, FiX, FiFilter, FiChevronDown } from 'react-icons/fi';
 import { useQueryClient, useMutation, useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getAllOrdersAdmin, updateOrderStatusAdmin } from '../../api/order.api';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -32,6 +32,7 @@ const AdminOrdersPage = () => {
   // ── Filter state ───────────────────────────────────────────────────────────
   const [search,       setSearch]       = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false);
   const [dateFrom,     setDateFrom]     = useState('');
   const [dateTo,       setDateTo]       = useState('');
 
@@ -39,6 +40,19 @@ const AdminOrdersPage = () => {
 
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
+
+  const statusDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target as Node)) {
+        setStatusDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // ── Fetch orders (server-side pagination + filters) ────────────────────────
   const { data, isLoading } = useQuery({
@@ -194,17 +208,64 @@ const AdminOrdersPage = () => {
             )}
           </div>
 
-          {/* Status filter */}
-          <select
-            value={filterStatus}
-            onChange={e => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-37.5"
-          >
-            <option value="all">All Statuses</option>
-            {ORDER_STATUSES.map(s => (
-              <option key={s} value={s}>{s}</option>
-            ))}
-          </select>
+          {/* Custom Status Dropdown */}
+          <div ref={statusDropdownRef} className="relative w-full sm:w-48">
+            <button
+              type="button"
+              onClick={() => setStatusDropdownOpen(!statusDropdownOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-xs"
+            >
+              <span className="font-medium">
+                {filterStatus === 'all' ? 'All Statuses' : filterStatus}
+              </span>
+              <FiChevronDown className={`text-gray-400 transition-transform duration-200 ${statusDropdownOpen ? 'rotate-180 text-blue-600' : ''}`} size={16} />
+            </button>
+
+            {statusDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-30 py-1 text-sm overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFilterStatus('all');
+                    setPage(1);
+                    setStatusDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between cursor-pointer ${
+                    filterStatus === 'all'
+                      ? 'bg-blue-50 text-blue-600 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <span>All Statuses</span>
+                  {filterStatus === 'all' && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                  )}
+                </button>
+
+                {ORDER_STATUSES.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    onClick={() => {
+                      setFilterStatus(status);
+                      setPage(1);
+                      setStatusDropdownOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between cursor-pointer ${
+                      filterStatus === status
+                        ? 'bg-blue-50 text-blue-600 font-semibold'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>{status}</span>
+                    {filterStatus === status && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Date range row */}

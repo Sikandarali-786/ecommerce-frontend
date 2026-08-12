@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FiSearch, FiUsers, FiShield, FiUser, FiLock, FiUnlock, FiTrash2 } from 'react-icons/fi';
+import { useState, useRef, useEffect } from 'react';
+import { FiSearch, FiUsers, FiShield, FiUser, FiLock, FiUnlock, FiTrash2, FiX, FiChevronDown } from 'react-icons/fi';
 import { useAllUsers, useUpdateUserRole, useToggleUserStatus, useDeleteUser } from '../../hooks/useAdmin';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
@@ -15,9 +15,22 @@ const AdminUsersPage = () => {
 
   const [search, setSearch] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'user' | 'admin'>('all');
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const users: User[] = data?.users || [];
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setRoleDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const filtered = users.filter((u) => {
     const matchSearch =
@@ -35,12 +48,12 @@ const AdminUsersPage = () => {
       header: 'User',
       cell: (user) => (
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
+          <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600 shrink-0">
             {user.name.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <p className="font-medium text-gray-900">{user.name}</p>
-            <p className="text-sm text-gray-500">{user.email}</p>
+          <div className="min-w-0">
+            <p className="font-medium text-gray-900 truncate">{user.name}</p>
+            <p className="text-sm text-gray-500 truncate">{user.email}</p>
           </div>
         </div>
       ),
@@ -68,7 +81,7 @@ const AdminUsersPage = () => {
     },
     {
       header: 'Joined',
-      cell: (user) => new Date(user.createdAt).toLocaleDateString(),
+      cell: (user) => <span className="whitespace-nowrap">{new Date(user.createdAt).toLocaleDateString()}</span>,
     },
     {
       header: 'Actions',
@@ -119,26 +132,69 @@ const AdminUsersPage = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
           <input
             type="text"
             placeholder="Search by name or email..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-9 pr-8 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              title="Clear search"
+            >
+              <FiX size={14} />
+            </button>
+          )}
         </div>
-        <select
-          value={filterRole}
-          onChange={(e) => setFilterRole(e.target.value as typeof filterRole)}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="all">All Roles</option>
-          <option value="user">Users</option>
-          <option value="admin">Admins</option>
-        </select>
+
+        {/* Custom Role Dropdown */}
+        <div ref={dropdownRef} className="relative w-full sm:w-48">
+          <button
+            type="button"
+            onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-xs"
+          >
+            <span className="font-medium">
+              {filterRole === 'all' ? 'All Roles' : filterRole === 'user' ? 'Users' : 'Admins'}
+            </span>
+            <FiChevronDown className={`text-gray-400 transition-transform duration-200 ${roleDropdownOpen ? 'rotate-180 text-blue-600' : ''}`} size={16} />
+          </button>
+
+          {roleDropdownOpen && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-xl z-30 py-1 text-sm overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+              {[
+                { value: 'all', label: 'All Roles' },
+                { value: 'user', label: 'Users' },
+                { value: 'admin', label: 'Admins' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => {
+                    setFilterRole(opt.value as typeof filterRole);
+                    setRoleDropdownOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2.5 transition-colors flex items-center justify-between cursor-pointer ${
+                    filterRole === opt.value
+                      ? 'bg-blue-50 text-blue-600 font-semibold'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <span>{opt.label}</span>
+                  {filterRole === opt.value && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Users Table */}
