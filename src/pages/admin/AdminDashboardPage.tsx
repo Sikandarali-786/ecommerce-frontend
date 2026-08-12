@@ -140,11 +140,11 @@ const AdminDashboardPage = () => {
   ];
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="">
       <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <p className="text-gray-600">Welcome back! Here's what's happening today.</p>
         </div>
 
