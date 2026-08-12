@@ -76,6 +76,7 @@ const CheckoutPage = () => {
       paymentMethod,
       subtotal: total,
       shippingCost,
+      tax: 0,
       total: grandTotal,
     };
 

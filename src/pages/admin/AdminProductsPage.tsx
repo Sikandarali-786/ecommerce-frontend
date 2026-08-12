@@ -30,13 +30,31 @@ const emptyForm: ProductFormData = {
   category: '',
 };
 
+const getPaginationRange = (currentPage: number, totalPages: number): (number | '...')[] => {
+  if (totalPages <= 1) return [1];
+  const delta = 1;
+  const range: (number | '...')[] = [];
+  const left = Math.max(2, currentPage - delta);
+  const right = Math.min(totalPages - 1, currentPage + delta);
+
+  range.push(1);
+  if (left > 2) range.push('...');
+  for (let i = left; i <= right; i++) {
+    range.push(i);
+  }
+  if (right < totalPages - 1) range.push('...');
+  if (totalPages > 1) range.push(totalPages);
+
+  return range;
+};
+
 const AdminProductsPage = () => {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
-  const [limit] = useState(20);
+  const [limit, setLimit] = useState(20);
   const [search, setSearch] = useState('');
   // Pass server-side params (search applied server-side)
-  const { data: productsData, isLoading } = useProducts({ page, limit, search });
+  const { data: productsData, isLoading, isFetching } = useProducts({ page, limit, search });
   const { data: categoriesData } = useCategories();
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -51,10 +69,17 @@ const AdminProductsPage = () => {
   const products = productsData?.products || [];
   const categories = categoriesData?.categories || [];
 
-  // Reset page when search term changes
+  // Reset page when search term or limit changes
   useEffect(() => {
     setPage(1);
-  }, [search]);
+  }, [search, limit]);
+
+  // Adjust page if current page exceeds total pages
+  useEffect(() => {
+    if (productsData?.pagination?.totalPages && page > productsData.pagination.totalPages) {
+      setPage(productsData.pagination.totalPages);
+    }
+  }, [productsData?.pagination?.totalPages, page]);
 
   // ─── Create mutation (multipart/form-data) ───────────────────────────────
   const createMutation = useMutation({
@@ -275,8 +300,19 @@ const AdminProductsPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 text-sm mt-1">{productsData?.pagination?.total ?? products.length} total products</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900">Products</h1>
+            {isFetching && !isLoading && (
+              <span className="inline-block w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" title="Refreshing products..." />
+            )}
+          </div>
+          <p className="text-gray-500 text-sm mt-1">
+            {productsData?.pagination ? (
+              `Showing ${Math.min((page - 1) * limit + 1, productsData.pagination.total)}–${Math.min(page * limit, productsData.pagination.total)} of ${productsData.pagination.total} products`
+            ) : (
+              `${products.length} products`
+            )}
+          </p>
         </div>
         <Button
           variant="primary"
@@ -294,11 +330,20 @@ const AdminProductsPage = () => {
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Search products by title or description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
           />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              title="Clear search"
+            >
+              <FiX size={16} />
+            </button>
+          )}
         </div>
       </div>
 
@@ -318,26 +363,67 @@ const AdminProductsPage = () => {
       </div>
 
       {/* Pagination Controls */}
-      {productsData?.pagination && productsData.pagination.totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-gray-600">
-            Page {productsData.pagination.page} of {productsData.pagination.totalPages}
+      {productsData?.pagination && productsData.pagination.total > 0 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
+            <span>
+              Page <span className="font-semibold text-gray-900">{productsData.pagination.page}</span> of{' '}
+              <span className="font-semibold text-gray-900">{productsData.pagination.totalPages}</span>
+            </span>
+            <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
+              <label htmlFor="admin-products-limit" className="text-xs text-gray-500">Items per page:</label>
+              <select
+                id="admin-products-limit"
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              >
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
+
+          <div className="flex items-center space-x-1">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={productsData.pagination.page === 1}
+              className="px-2.5"
             >
               Prev
             </Button>
-            <div className="text-sm text-gray-700">{productsData.pagination.page}</div>
+            {getPaginationRange(productsData.pagination.page, productsData.pagination.totalPages).map((p, idx) =>
+              p === '...' ? (
+                <span key={`ellipsis-${idx}`} className="px-2 py-1 text-gray-400 text-xs select-none">
+                  …
+                </span>
+              ) : (
+                <button
+                  key={`page-${p}`}
+                  onClick={() => setPage(p as number)}
+                  className={`min-w-8 h-8 rounded-lg text-xs font-semibold transition-colors ${
+                    p === productsData.pagination.page
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'border border-gray-200 bg-white text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  {p}
+                </button>
+              )
+            )}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setPage((p) => Math.min(productsData.pagination.totalPages, p + 1))}
               disabled={!productsData.pagination.hasMore}
+              className="px-2.5"
             >
               Next
             </Button>

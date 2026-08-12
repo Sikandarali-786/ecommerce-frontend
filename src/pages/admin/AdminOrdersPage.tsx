@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FiSearch, FiShoppingBag, FiEye, FiX, FiFilter } from 'react-icons/fi';
-import { useQueryClient, useMutation, useQuery } from '@tanstack/react-query';
+import { useQueryClient, useMutation, useQuery, keepPreviousData } from '@tanstack/react-query';
 import { getAllOrdersAdmin, updateOrderStatusAdmin } from '../../api/order.api';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Button from '../../components/Button';
@@ -49,7 +49,7 @@ const AdminOrdersPage = () => {
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
     }),
-    keepPreviousData: true,
+    placeholderData: keepPreviousData,
   });
 
   const updateStatusMutation = useMutation({

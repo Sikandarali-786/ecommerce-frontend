@@ -3,14 +3,13 @@ import {
   FiTruck, FiPhone, FiRefreshCw,
   FiCheckSquare, FiArrowRight,
 } from 'react-icons/fi';
-import { useProducts } from '../../hooks/useProducts';
+import { useSEO } from '../../hooks/useSEO';
+import { useCategories } from '../../hooks/useCategories';
+import { getImageUrl } from '../../utils/image';
 import HeroBanner from '../../components/HeroBanner';
 import DealZone from '../../components/DealZone';
 import TestimonialSection from '../../components/TestimonialSection';
 import VideoShowcase from '../../components/VideoShowcase';
-import { useSEO } from '../../hooks/useSEO';
-import { useCategories } from '../../hooks/useCategories';
-import { getImageUrl } from '../../utils/image';
 
 // ── Trust features strip ──────────────────────────────────────────────────────
 const features = [
@@ -49,9 +48,7 @@ const HomePage = () => {
     title: 'Home',
     description: "Pakistan's #1 Motorcycle Parts Store. Shop CD70 & CG125 tanks, alloy rims, silencers, LED lights, helmets & accessories. Fast delivery. 100% genuine products.",
   });
-  const { data: productsData } = useProducts();
   const { data: categoriesData, isLoading: categoriesLoading } = useCategories();
-  const allProducts = productsData?.products ?? [];
   const categories = categoriesData?.categories ?? [];
 
   return (
