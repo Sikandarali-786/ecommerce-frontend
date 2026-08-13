@@ -180,12 +180,13 @@ const Navbar = () => {
             </form>
           </div>
 
-          {/* Pakistan #1 store badge + Order to WhatsApp together */}
+          {/* Pakistan #1 store badge */}
           <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto shrink-0">
             <div className="rounded-full bg-[#f97316] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm text-center">
               Pakistan's #1 Motorcycle Parts Store
             </div>
-            <a
+            {/* WhatsApp button moved to floating global button in MainLayout */}
+            {/* <a
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
@@ -193,7 +194,7 @@ const Navbar = () => {
             >
               <FaWhatsapp size={16} />
               Order to WhatsApp
-            </a>
+            </a> */}
           </div>
 
         </div>
