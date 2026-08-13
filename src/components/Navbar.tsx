@@ -130,15 +130,15 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top info bar ──────────────────────────────────────────────── */}
       <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
-        <div className="mx-auto flex flex-col md:flex-row items-center justify-between gap-3 px-4 py-3 lg:px-6 xl:px-8">
-          
-          {/* Logo & Search input container */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto flex-1">
+        <div className="mx-auto flex flex-row items-center justify-between gap-3 px-4 py-3 lg:px-6 xl:px-8">
+
+          {/* Logo & Search input container — always flex-row */}
+          <div className="flex flex-row items-center gap-2 sm:gap-3 w-full md:w-auto flex-1 min-w-0">
             <Link to="/" className="flex items-center shrink-0">
               <img
                 src={logoImg}
                 alt="Afzal Bikerz Store"
-                className="h-14 md:h-16 w-auto object-contain rounded-sm"
+                className="h-10 sm:h-14 md:h-16 w-auto object-contain rounded-sm"
               />
             </Link>
 
@@ -152,49 +152,39 @@ const Navbar = () => {
               {locationLabel}
             </button>
 
-            {/* Search Input at the top in mobile */}
-            <form onSubmit={handleSearch} className="relative w-full flex-1">
+            {/* Search Input */}
+            <form onSubmit={handleSearch} className="relative w-full flex-1 min-w-0">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search for products..."
-                className="w-full rounded-full border border-white/30 bg-white px-4 py-2.5 sm:py-3 pr-20 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
+                className="w-full rounded-full border border-white/30 bg-white px-4 py-2 sm:py-3 pr-10 sm:pr-20 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#8B0000] focus:outline-none focus:ring-1 focus:ring-[#8B0000]"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={handleClearSearch}
-                  className="absolute right-11 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+                  className="absolute right-9 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
                   title="Clear search"
                 >
-                  <FiX size={16} />
+                  <FiX size={14} />
                 </button>
               )}
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-1.5 sm:p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-[#8B0000] p-1.5 sm:p-2 text-white hover:bg-[#7a0f07] transition-colors cursor-pointer"
               >
-                <FiSearch size={18} />
+                <FiSearch size={16} />
               </button>
             </form>
           </div>
 
-          {/* Pakistan #1 store badge */}
-          <div className="flex flex-wrap items-center justify-center gap-2 w-full md:w-auto shrink-0">
+          {/* Pakistan #1 store badge — hidden on mobile, visible on md+ */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <div className="rounded-full bg-[#f97316] px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm text-center">
               Pakistan's #1 Motorcycle Parts Store
             </div>
-            {/* WhatsApp button moved to floating global button in MainLayout */}
-            {/* <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-linear-to-r from-[#10354a] to-[#cf531f] border border-white/20 hover:opacity-90 px-3.5 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-xs md:text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm transition-all cursor-pointer"
-            >
-              <FaWhatsapp size={16} />
-              Order to WhatsApp
-            </a> */}
           </div>
 
         </div>
@@ -491,6 +481,13 @@ const Navbar = () => {
       {/* ── Mobile menu ───────────────────────────────────────────────── */}
       {isMobileOpen && (
         <div className="md:hidden bg-white border-t border-slate-200 py-3 space-y-1 shadow-lg">
+
+          {/* Pakistan #1 badge — shown in mobile menu */}
+          <div className="px-4 pb-3">
+            <div className="rounded-full bg-[#f97316] px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-white shadow-sm text-center">
+              Pakistan's #1 Motorcycle Parts Store
+            </div>
+          </div>
 
           {/* Mobile search */}
           <div className="px-4 mb-3">
