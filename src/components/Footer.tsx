@@ -123,10 +123,10 @@ const Footer = () => {
             </h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Refund Policy', to: '#' },
-                { label: 'Shipping Policy', to: '#' },
-                { label: 'Contact Information', to: '#' },
-                { label: 'About Us', to: '#' },
+                { label: 'Refund Policy', to: '/refund-policy' },
+                { label: 'Shipping Policy', to: '/shipping-policy' },
+                { label: 'Contact Information', to: '/contact' },
+                { label: 'About Us', to: '/about' },
               ].map(link => (
                 <li key={link.label}>
                   <Link

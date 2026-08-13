@@ -27,6 +27,10 @@ const AdminUsersPage = lazy(() => import('../pages/admin/AdminUsersPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 const ProfilePage = lazy(() => import('../pages/profile/ProfilePage'));
 const CategoriesPage = lazy(() => import('../pages/categories/CategoriesPage'));
+const RefundPolicyPage = lazy(() => import('../pages/RefundPolicy/RefundPolicyPage'));
+const ShippingPolicyPage = lazy(() => import('../pages/ShippingPolicy/ShippingPolicyPage'));
+const ContactPage = lazy(() => import('../pages/Contact/ContactPage'));
+const AboutPage = lazy(() => import('../pages/About/AboutPage'));
 
 // Wrapper component for Suspense
 const SuspenseWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -62,6 +66,22 @@ export const router = createBrowserRouter([
       {
         path: 'categories',
         element: <SuspenseWrapper><CategoriesPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'refund-policy',
+        element: <SuspenseWrapper><RefundPolicyPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'shipping-policy',
+        element: <SuspenseWrapper><ShippingPolicyPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'contact',
+        element: <SuspenseWrapper><ContactPage /></SuspenseWrapper>,
+      },
+      {
+        path: 'about',
+        element: <SuspenseWrapper><AboutPage /></SuspenseWrapper>,
       },
       {
         path: 'products',
