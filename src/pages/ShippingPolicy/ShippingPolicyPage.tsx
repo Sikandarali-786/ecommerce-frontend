@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fi';
 
 const ShippingPolicyPage: React.FC = () => {
-  const contactEmail = "imtiazbikerzstudio@gmail.com";
+  const contactEmail = "Afzalbikerzstudio@gmail.com";
   const contactPhone = "+923048405899";
 
   const deliverySteps = [

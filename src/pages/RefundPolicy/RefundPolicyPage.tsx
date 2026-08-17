@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fi';
 
 const RefundPolicyPage: React.FC = () => {
-  const contactEmail = "imtiazbikerzstudio@gmail.com";
+  const contactEmail = "Afzalbikerzstudio@gmail.com";
 
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8 font-sans">

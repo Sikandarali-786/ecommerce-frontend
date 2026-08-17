@@ -35,10 +35,10 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-[#10354a] to-[#1a5276]',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          Imtiaz Bikerz Studio is your go-to place for all things biking! Since{' '}
-          <strong className="text-slate-800">1998</strong>, we've been making Honda bikes awesome in{' '}
-          <strong className="text-slate-800">Attock, Punjab, Pakistan</strong>, and beyond. Meet our
-          chief, <strong className="text-slate-800">Abdulaziz Imtiaz</strong>, the brains behind our
+          Afzal Bikerz Store is your go-to place for all things biking! Since{' '}
+          <strong className="text-slate-800">1983</strong>, we've been making Honda bikes awesome in{' '}
+          <strong className="text-slate-800">Multan, Punjab, Pakistan</strong>, and beyond. Meet our
+          chief, <strong className="text-slate-800">MR AL-Haaj Muhammad Afzal Qureshi</strong>, the brains behind our
           fantastic bike magic!
         </p>
       ),
@@ -52,13 +52,13 @@ const AboutPage: React.FC = () => {
       content: (
         <p className="text-slate-600 leading-relaxed">
           Dedicated to elevating your biking experience, we strive to provide high-quality products
-          that blend innovation with functionality. Imtiaz Bikerz Studio is not just a business;
+          that blend innovation with functionality. Afzal Bikerz Store is not just a business;
           it's a commitment to the biking community. Imagine having the coolest bike in town! We
-          deliver high-quality <strong className="text-slate-800">bike outfits</strong>,{' '}
-          <strong className="text-slate-800">modification parts</strong>, and{' '}
-          <strong className="text-slate-800">accessories</strong> throughout Pakistan. From{' '}
+          Provide high-quality <strong className="text-slate-800">bike Spare Parts and </strong>,{' '}
+          <strong className="text-slate-800">modification parts</strong>{' '}
+          <strong className="text-slate-800">accessories</strong> Across Pakistan. From{' '}
           <strong className="text-slate-800">shiny fuel tanks</strong> to{' '}
-          <strong className="text-slate-800">super cool helmets</strong>, we've got everything to
+          <strong className="text-slate-800">super cool helmets</strong>, we've got Each and everything to
           make your bike stand out!
         </p>
       ),
@@ -71,9 +71,8 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-violet-600 to-purple-600',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          Imtiaz Bikerz Studio lives in the heart of{' '}
-          <strong className="text-slate-800">Attock, Punjab, Pakistan</strong> — our studio stands
-          as a testament to our roots. Imtiaz Bikerz Studio is more than just a destination. It's a
+          Afzal Bikerz Store lives in the heart of{' '}
+          <strong className="text-slate-800">Multan, Punjab, Pakistan</strong> — This store of ours reflects our forefathers. Afzal Bikerz Store is more than just a destination. It's a
           hub where bike enthusiasts converge to explore the latest trends and innovations in the
           biking world.
         </p>
@@ -87,9 +86,9 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-amber-500 to-yellow-500',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          Imtiaz Bikerz Studio specializes in{' '}
-          <strong className="text-slate-800">Honda 125 Genuine Spare Parts</strong> and{' '}
-          <strong className="text-slate-800">Honda CD 70 Genuine Parts</strong>. We understand the
+          Afzal Bikerz Studio specializes in{' '}
+          <strong className="text-slate-800">All Bikes</strong> and{' '}
+          <strong className="text-slate-800">Honda CD 70 or CG 125 Genuine Parts</strong>. We understand the
           value of authenticity, and our commitment to providing genuine parts sets us apart in the
           market. The real deal! No fuss, just genuine parts for your beloved ride.
         </p>
@@ -103,10 +102,8 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-emerald-600 to-teal-600',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          At Imtiaz Bikerz Studio, quality is non-negotiable. We source our products from reputable
-          suppliers around the globe, ensuring that every item meets the highest standards. Our team
-          of experts meticulously inspects each product to guarantee durability, performance, and
-          style. We're like biking superheroes as we deliver your gear in a flash!
+          At Afzal Bikerz Studio, quality is non-negotiable. At Afzal Bikerz Studio, quality is non-negotiable. We source our products from reputable suppliers around the globe,
+           We fully understand the importance of genuine parts, and our commitment to supplying them sets us apart from others in the market. we deliver your gear in a flash!
         </p>
       ),
     },
@@ -131,7 +128,7 @@ const AboutPage: React.FC = () => {
           </p>
           <p className="text-slate-600 leading-relaxed">
             We understand that the love for biking knows no boundaries. That's why we extend our
-            services beyond Attock, reaching every corner of Pakistan. Imtiaz Bikerz Studio is
+            services beyond Attock, reaching every corner of Pakistan. Afzal Bikerz Studio is
             committed to bringing the best biking experience to enthusiasts across the nation.
           </p>
         </>
@@ -139,13 +136,13 @@ const AboutPage: React.FC = () => {
     },
     {
       icon: FiUsers,
-      title: 'Join the Imtiaz Bikerz Community',
+      title: 'Join the Afzal Bikerz Community',
       color: 'text-rose-700',
       bg: 'bg-rose-50',
       iconBg: 'from-rose-500 to-pink-500',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          Imtiaz Bikerz Studio is not just a store; it's a community of like-minded individuals who
+          Afzal Bikerz Store is not just a store; it's a community of like-minded individuals who
           share a passion for biking. Connect with us on social media, participate in events, and
           stay updated on the latest trends in the biking world.
         </p>
@@ -173,7 +170,7 @@ const AboutPage: React.FC = () => {
               <FiZap className="w-3.5 h-3.5" /> Since 1998
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 uppercase leading-tight">
-              Welcome to Imtiaz Bikerz Studio
+              Welcome to Afzal Bikerz Studio
             </h1>
             <div className="w-16 h-1 bg-[#ffcfb0] rounded-full mx-auto mb-5" />
             <p className="text-slate-100 text-base sm:text-lg italic font-light tracking-wide">
@@ -209,15 +206,15 @@ const AboutPage: React.FC = () => {
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Our Product Range</h2>
           </div>
           <p className="text-slate-600 leading-relaxed mb-6">
-            Imtiaz Bikerz Studio is your one-stop destination for all your biking needs. Whether
-            you're looking for customized fuel tanks to express your individuality or{' '}
+            Afzal Bikerz Store is your one-stop destination for all your biking needs. Whether
+            you're looking for customized Spare parts tanks to express your individuality or{' '}
             <strong className="text-slate-800">genuine fuel tanks</strong> to ensure optimal
             performance, we have it all. <strong className="text-slate-800">Indicators</strong>,{' '}
             <strong className="text-slate-800">silencers</strong>, and{' '}
-            <strong className="text-slate-800">helmets</strong> — each product in our inventory is
+            <strong className="text-slate-800">Modification Lights</strong> — each product in our inventory is
             curated with precision and passion. Living far away? No worries! We deliver anywhere in
-            Pakistan. Just imagine your dream bike accessories at your doorstep with Imtiaz Bikerz
-            Studio!
+            Pakistan. Just imagine your dream bike accessories at your doorstep with Afzal Bikerz
+            Store!
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {products.map((p) => (
@@ -239,7 +236,7 @@ const AboutPage: React.FC = () => {
           <div className="relative z-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-3 tracking-tight">Ready, Set, Ride! 🏍️</h2>
             <p className="text-slate-100 text-sm sm:text-base leading-relaxed max-w-lg mx-auto mb-6">
-              Your dream biking adventure starts with Imtiaz Bikerz Studio. Don't miss out — let the
+              Your dream biking adventure starts with Afzal Bikerz Studio. Don't miss out — let the
               biking magic begin!
             </p>
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
@@ -257,7 +254,7 @@ const AboutPage: React.FC = () => {
               </Link>
             </div>
             <p className="mt-6 text-[#ffcfb0] text-xs italic font-medium">
-              Imtiaz Bikerz Studio — Your Journey Begins Here.
+              Afzal Bikerz Studio — Your Journey Begins Here.
             </p>
           </div>
         </div>
