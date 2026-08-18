@@ -47,3 +47,24 @@ export const deleteReview = async (
   );
   return res.data;
 };
+
+export interface TestimonialItem {
+  _id: string;
+  rating: number;
+  quote: string;
+  name: string;
+  productTitle?: string | null;
+  isReal?: boolean;
+}
+
+export interface TestimonialsResponse {
+  success: boolean;
+  testimonials: TestimonialItem[];
+}
+
+export const getHomepageTestimonials = async (): Promise<TestimonialsResponse> => {
+  const res = await axiosInstance.get<TestimonialsResponse>(
+    API_ENDPOINTS.REVIEW.TESTIMONIALS,
+  );
+  return res.data;
+};

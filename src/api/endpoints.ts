@@ -70,8 +70,9 @@ export const API_ENDPOINTS = {
 
   // Review endpoints
   REVIEW: {
-    GET_ALL:  (productId: string) => `/product/${productId}/reviews`,
-    UPSERT:   (productId: string) => `/product/${productId}/reviews`,
-    DELETE:   (productId: string, reviewId: string) => `/product/${productId}/reviews/${reviewId}`,
+    GET_ALL:      (productId: string) => `/product/${productId}/reviews`,
+    UPSERT:       (productId: string) => `/product/${productId}/reviews`,
+    DELETE:       (productId: string, reviewId: string) => `/product/${productId}/reviews/${reviewId}`,
+    TESTIMONIALS: '/testimonials',
   },
 } as const;
