@@ -1,11 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import {
   FiPhone,
   FiMail,
   FiMapPin,
   FiBriefcase,
-  FiChevronRight,
   FiMessageCircle,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
@@ -60,13 +58,6 @@ const ContactPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-4xl mx-auto space-y-8">
-
-        {/* Breadcrumb */}
-        <nav className="flex items-center space-x-2 text-sm text-slate-500">
-          <Link to="/" className="hover:text-[#cf531f] transition-colors">Home</Link>
-          <FiChevronRight className="w-4 h-4 text-slate-400" />
-          <span className="font-medium text-slate-800">Contact Information</span>
-        </nav>
 
         {/* Hero Header */}
         <div className="bg-gradient-to-r from-[#10354a] to-[#cf531f] rounded-2xl p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
@@ -135,7 +126,7 @@ const ContactPage: React.FC = () => {
             </p>
           </div>
           <a
-            href="https://wa.me/923135070072"
+            href="https://wa.me/923048405899"
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 px-6 py-3 rounded-xl bg-green-500 text-white font-bold text-sm hover:bg-green-600 transition-colors shadow-md"
@@ -162,9 +153,8 @@ const ContactPage: React.FC = () => {
               >
                 <span className="text-sm font-medium text-slate-700">{row.day}</span>
                 <span
-                  className={`text-sm font-semibold ${
-                    row.hours === 'Closed' ? 'text-red-500' : 'text-[#cf531f]'
-                  }`}
+                  className={`text-sm font-semibold ${row.hours === 'Closed' ? 'text-red-500' : 'text-[#cf531f]'
+                    }`}
                 >
                   {row.hours}
                 </span>
