@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiShield, FiTruck, FiStar } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { registerUser } from '../../api';
-import { setToken, setUser } from '../../utils/auth';
 import { registerSchema, type RegisterFormData } from '../../schemas/auth.schema';
 import logoImg from '../../assets/images/logo.png';
 import FormField from '../../components/FormField';
@@ -37,10 +36,9 @@ const RegisterPage = () => {
       const { confirmPassword: _, ...registerData } = data;
       const response = await registerUser(registerData);
       if (response.success) {
-        setToken(response.token);
-        setUser(response.user);
-        toast.success('Account created successfully!');
-        navigate('/');
+        localStorage.setItem('justRegisteredUser', 'true');
+        toast.success('Account created successfully! Please sign in.');
+        navigate('/login');
       }
     } catch (error: any) {
       const message = error.response?.data?.message || 'Registration failed. Please try again.';

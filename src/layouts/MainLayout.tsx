@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import ScrollToTop from '../components/ScrollToTop';
 import ScrollRestoration from '../components/ScrollRestoration';
+import FirstTimePopup from '../components/FirstTimePopup';
 import { FaWhatsapp } from 'react-icons/fa';
 
 const WHATSAPP_NUMBER = '923048405899';
@@ -18,6 +19,7 @@ const MainLayout = () => {
       </main>
       <Footer />
       <ScrollToTop />
+      <FirstTimePopup />
 
       {/* ── Floating WhatsApp Button ─────────────────────────────────────── */}
       <a
