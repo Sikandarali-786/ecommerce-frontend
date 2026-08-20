@@ -18,6 +18,8 @@ interface Slide {
   cta: string;
   secondaryCta?: string;
   ctaPath: string;
+  tags?: { label: string; path: string }[];
+  alignRight?: boolean;
   overlayFrom: string;
   overlayTo: string;
 }
@@ -54,10 +56,16 @@ Bike Accessories`,
     badge: 'Hot Deals',
     heading: 'Performance Silencers',
     subheading: 'Enhance exhaust sound and performance with our premium silencer range.',
-    cta: 'Shop Silencers',
-    ctaPath: '/products',
-    overlayFrom: 'from-black/65',
-    overlayTo: 'to-transparent',
+    cta: 'Shop All Silencers',
+    ctaPath: '/products?category=Silencers',
+    tags: [
+      { label: 'Ahl3', path: '/products?search=Ahl3' },
+      { label: 'Whistler', path: '/products?search=Whistler' },
+      { label: 'Badshah', path: '/products?search=Badshah' },
+      { label: 'Beat', path: '/products?search=Beast' },
+    ],
+    overlayFrom: 'from-black/80',
+    overlayTo: 'to-black/50',
   },
   {
     id: 4,
@@ -72,7 +80,7 @@ Bike Accessories`,
   },
 ];
 
-const AUTOPLAY_INTERVAL = 2000;
+const AUTOPLAY_INTERVAL = 4000;
 
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);
@@ -116,7 +124,7 @@ const HeroBanner = () => {
   return (
     <section
       className="relative w-full overflow-hidden bg-black"
-      style={{ height: 'clamp(320px, 55vw, 600px)' }}
+      style={{ minHeight: '420px', height: 'clamp(420px, 55vw, 600px)' }}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-label="Hero banner"
@@ -137,33 +145,31 @@ const HeroBanner = () => {
             loading={i === 0 ? 'eager' : 'lazy'}
           />
           {/* Gradient overlay */}
-          <div className={`absolute inset-0 bg-linear-to-r ${s.overlayFrom} ${s.overlayTo}`} />
+          <div className={`absolute inset-0 bg-gradient-to-r ${s.overlayFrom} ${s.overlayTo}`} />
         </div>
       ))}
 
       {/* ── Content ───────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-10 flex items-center px-5 md:px-12 lg:px-20">
+      <div className="absolute inset-0 z-10 flex flex-col md:flex-row items-start md:items-center justify-between px-5 md:px-12 lg:px-20 py-8 md:py-0 gap-6">
+        {/* Left Side Content */}
         <div
-          key={current}
-       className="max-w-2xl text-white"
+          key={`left-${current}`}
+          className="max-w-xl text-white flex flex-col items-start text-left"
           style={{ animation: 'slideUp 0.6s ease forwards' }}
         >
           {/* Badge */}
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-white">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-white">
             <span className="mr-2 text-red-600">//</span>
-
             {slide.badge}
-
             <span className="ml-2 text-red-600">//</span>
           </p>
 
           {/* Heading */}
-          <h1 className="mb-5 text-4xl sm:text-5xl lg:text-7xl font-black uppercase italic leading-[0.9]">
+          <h1 className="mb-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic leading-[0.95]">
             {slide.heading.split("\n").map((line, index) => (
               <span
                 key={index}
-                className={`block ${index % 2 === 0 ? "text-white" : "text-red-600"
-                  }`}
+                className={`block ${index % 2 === 0 ? "text-white" : "text-red-600"}`}
               >
                 {line}
               </span>
@@ -172,7 +178,7 @@ const HeroBanner = () => {
 
           {/* Features */}
           {slide.subheading && (
-            <div className="mb-6 flex flex-wrap items-center gap-3 text-sm sm:text-base text-white/90">
+            <div className="mb-5 flex flex-wrap items-center gap-3 text-sm sm:text-base text-white/90 justify-start">
               {slide.subheading.split("|").map((item, index) => (
                 <span key={index}>
                   {item.trim()}
@@ -183,13 +189,13 @@ const HeroBanner = () => {
 
           {/* Optional Box */}
           {slide.boxTitle && (
-            <div className="mb-8 max-w-sm rounded border border-white/30 bg-black/20 p-5 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold uppercase">
+            <div className="mb-6 max-w-sm rounded-xl border border-white/30 bg-black/40 p-4 backdrop-blur-sm">
+              <h3 className="text-xl font-bold uppercase">
                 {slide.boxTitle}
               </h3>
 
               {slide.boxSubtitle && (
-                <p className="mt-2 text-lg italic text-red-500">
+                <p className="mt-1 text-md italic text-red-500">
                   {slide.boxSubtitle}
                 </p>
               )}
@@ -197,7 +203,7 @@ const HeroBanner = () => {
           )}
 
           {/* Buttons */}
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4 justify-start">
             {slide.secondaryCta && (
               <Link
                 to={slide.ctaPath}
@@ -210,13 +216,41 @@ const HeroBanner = () => {
 
             <Link
               to={slide.ctaPath}
-              className="inline-flex items-center gap-2 bg-linear-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
             >
               {slide.cta}
               <FiArrowRight size={16} />
             </Link>
           </div>
         </div>
+
+        {/* Right Side Content (Marquee Buttons Box) */}
+        {slide.tags && slide.tags.length > 0 && (
+          <div
+            key={`right-${current}`}
+            className="w-full md:w-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden p-3.5 sm:p-4 rounded-2xl bg-black/ border border-white/20 backdrop-blur-md shadow-2xl self-start md:self-center mt-2 md:mt-0"
+            style={{ animation: 'slideUp 0.6s ease forwards' }}
+          >
+            <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-red-500 mb-2.5 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+              Select Silencer Model:
+            </p>
+
+            <div className="overflow-hidden w-full relative">
+              <div className="animate-marquee flex flex-row items-center gap-2.5">
+                {[...slide.tags, ...slide.tags].map((tag, idx) => (
+                  <Link
+                    key={idx}
+                    to={tag.path}
+                    className="flex items-center justify-center px-4 py-2 rounded-xl bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:from-red-600 hover:to-red-700 border border-white/20 hover:border-white text-white font-extrabold text-xs uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 active:scale-95 text-center whitespace-nowrap"
+                  >
+                    {tag.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ── Prev / Next arrows ────────────────────────────────────────── */}
@@ -243,8 +277,8 @@ const HeroBanner = () => {
             onClick={() => goTo(i)}
             aria-label={`Go to slide ${i + 1}`}
             className={`transition-all rounded-full ${i === current
-                ? 'bg-white w-7 h-2.5'
-                : 'bg-white/50 hover:bg-white/80 w-2.5 h-2.5'
+              ? 'bg-white w-7 h-2.5'
+              : 'bg-white/50 hover:bg-white/80 w-2.5 h-2.5'
               }`}
           />
         ))}
@@ -252,7 +286,7 @@ const HeroBanner = () => {
 
       {/* ── Progress bar ──────────────────────────────────────────────── */}
       {!isPaused && (
-        <div className="absolute bottom-0 left-0 z-20 h-0.5 bg-linear-to-r from-[#10354a] to-[#cf531f]"
+        <div className="absolute bottom-0 left-0 z-20 h-0.5 bg-gradient-to-r from-[#10354a] to-[#cf531f]"
           style={{
             animation: `progressBar ${AUTOPLAY_INTERVAL}ms linear`,
             animationIterationCount: 1,
@@ -269,6 +303,18 @@ const HeroBanner = () => {
         @keyframes progressBar {
           from { width: 0%; }
           to   { width: 100%; }
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          display: flex;
+          width: max-content;
+          animation: marquee 14s linear infinite;
+        }
+        .animate-marquee:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </section>
