@@ -124,7 +124,8 @@ const LoginPage = () => {
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
 
         {/* ── Left panel: brand ─────────────────────────────────────────── */}
-        <div className="relative hidden md:flex md:w-[42%] flex-col justify-between bg-gradient-to-r from-[#24437d] to-[#cf531f] p-10 overflow-hidden">          {/* Background pattern circles */}
+        <div className="relative hidden md:flex md:w-[42%] flex-col justify-between bg-gradient-to-r from-[#24437d] to-[#cf531f] p-10 overflow-hidden">
+          {/* Background pattern circles */}
           <div className="absolute -top-16 -left-16 w-56 h-56 rounded-full bg-white/5" />
           <div className="absolute -bottom-20 -right-10 w-72 h-72 rounded-full bg-white/5" />
           <div className="absolute top-1/2 -right-10 w-40 h-40 rounded-full bg-white/5" />

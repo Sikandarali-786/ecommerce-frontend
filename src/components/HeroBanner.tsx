@@ -4,8 +4,8 @@ import { FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 import tankImg from '../assets/images/fueltank_banner.png';
 import rimsImg from '../assets/images/rimlight_banner.png';
-import silencersImg from '../assets/images/silencer_banner.png';
-import decorationImg from '../assets/images/banner 4.jpeg';
+import silencersImg from '../assets/images/banner 4.jpeg';
+import decorationImg from '../assets/images/decoration.jpeg';
 
 interface Slide {
   id: number;
@@ -165,7 +165,7 @@ const HeroBanner = () => {
           </p>
 
           {/* Heading */}
-          <h1 className="mb-4 text-4xl sm:text-5xl lg:text-6xl font-black uppercase italic leading-[0.95]">
+          <h1 className="mb-5 text-3xl sm:text-4xl lg:text-6xl font-black uppercase italic leading-[0.9]">
             {slide.heading.split("\n").map((line, index) => (
               <span
                 key={index}

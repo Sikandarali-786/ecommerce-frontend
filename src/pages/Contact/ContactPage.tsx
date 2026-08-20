@@ -33,7 +33,7 @@ const ContactPage: React.FC = () => {
     {
       icon: FiMail,
       label: 'Email',
-      value: 'Afzalbikerzstudio@gmail.com',
+      value: 'Afzalbikerzstore@gmail.com',
       color: 'from-[#cf531f] to-orange-500',
       bg: 'bg-orange-50',
       border: 'border-orange-100',
@@ -143,9 +143,9 @@ const ContactPage: React.FC = () => {
           </h2>
           <div className="space-y-3">
             {[
-              { day: 'Monday – Friday', hours: '9:00 AM – 7:00 PM' },
-              { day: 'Saturday', hours: '10:00 AM – 6:00 PM' },
-              { day: 'Sunday', hours: 'Closed' },
+              { day: 'Monday – Thursday', hours: '9:00 AM – 8:30 PM' },
+              { day: 'Friday', hours: 'Closed' },
+              { day: 'Saturday – Sunday', hours: '10:00 AM – 9:00 PM' },
             ].map((row) => (
               <div
                 key={row.day}

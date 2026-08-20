@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fi';
 
 const RefundPolicyPage: React.FC = () => {
-  const contactEmail = "Afzalbikerzstudio@gmail.com";
+  const contactEmail = "Afzalbikerzstore@gmail.com";
 
   return (
     <div className="min-h-screen bg-slate-50/50 py-10 px-4 sm:px-6 lg:px-8 font-sans">
@@ -73,7 +73,7 @@ const RefundPolicyPage: React.FC = () => {
               <FiMapPin className="w-5 h-5 text-[#cf531f] shrink-0 mt-0.5" />
               <div className="text-sm">
                 <span className="font-bold text-slate-900 block mb-1">Return Shipping Address:</span>
-                <span className="text-slate-600 italic block mb-1">[INSERT RETURN ADDRESS]</span>
+                <span className="text-slate-600 italic block mb-1"></span>
                 <span className="text-xs text-slate-500">(Zam Zam Autos Decoration Hussain a Gahi Road Multan)</span>
               </div>
             </div>

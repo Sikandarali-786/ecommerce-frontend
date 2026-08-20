@@ -38,7 +38,7 @@ const AboutPage: React.FC = () => {
           Afzal Bikerz Store is your go-to place for all things biking! Since{' '}
           <strong className="text-slate-800">1983</strong>, we've been making Honda bikes awesome in{' '}
           <strong className="text-slate-800">Multan, Punjab, Pakistan</strong>, and beyond. Meet our
-          chief, <strong className="text-slate-800">MR AL-Haaj Muhammad Afzal Qureshi</strong>, the brains behind our
+          chief, <strong className="text-slate-800">AL-Haaj Muhammad Afzal Qureshi</strong>, the brains behind our
           fantastic bike magic!
         </p>
       ),
@@ -160,10 +160,10 @@ const AboutPage: React.FC = () => {
             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
           <div className="relative z-10 text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold tracking-widest uppercase mb-5 text-[#ffcfb0]">
-              <FiZap className="w-3.5 h-3.5" /> Since 1998
+              <FiZap className="w-3.5 h-3.5" /> Since 1983
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 uppercase leading-tight">
-              Welcome to Afzal Bikerz Studio
+              Welcome to Afzal Bikerz Store
             </h1>
             <div className="w-16 h-1 bg-[#ffcfb0] rounded-full mx-auto mb-5" />
             <p className="text-slate-100 text-base sm:text-lg italic font-light tracking-wide">
