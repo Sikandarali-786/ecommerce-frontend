@@ -24,6 +24,8 @@ const ContactPage: React.FC = () => {
       icon: FiPhone,
       label: 'Phone Number',
       value: '03048405899',
+      value1: '03700780090',
+      value2: '03007307182',
       color: 'from-emerald-600 to-teal-600',
       bg: 'bg-emerald-50',
       border: 'border-emerald-100',
@@ -43,7 +45,7 @@ const ContactPage: React.FC = () => {
     {
       icon: FiMapPin,
       label: 'Physical Address',
-      value: 'Zam Zam Autoz Hussain a Gahi Road ,Multan ,Pakistan',
+      value: 'Zam Zam Autoz Hussain aGahi Road ,Multan ,Pakistan',
       color: 'from-violet-600 to-purple-600',
       bg: 'bg-violet-50',
       border: 'border-violet-100',
@@ -97,6 +99,12 @@ const ContactPage: React.FC = () => {
               {/* Value */}
               <p className={`text-base sm:text-lg font-semibold ${item.textColor} leading-snug break-words`}>
                 {item.value}
+              </p>
+ <p className={`text-base sm:text-lg font-semibold ${item.textColor} leading-snug break-words`}>
+                {item.value1}
+              </p>
+ <p className={`text-base sm:text-lg font-semibold ${item.textColor} leading-snug break-words`}>
+                {item.value2}
               </p>
 
               {/* Action Button */}

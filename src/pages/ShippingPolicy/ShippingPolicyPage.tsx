@@ -99,7 +99,7 @@ const ShippingPolicyPage: React.FC = () => {
               <FiMapPin className="w-5 h-5 text-[#cf531f] shrink-0 mt-0.5" />
               <div className="text-sm">
                 <span className="font-bold text-slate-900 block mb-1">Our Store Location:</span>
-                <span className="text-slate-600">Zam Zam Autos Decoration, Hussain a Gahi Road, Multan</span>
+                <span className="text-slate-600">Zam Zam Autos Decoration Hussain aGahi Road, Multan</span>
               </div>
             </div>
           </section>

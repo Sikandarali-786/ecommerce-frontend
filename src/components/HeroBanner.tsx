@@ -5,7 +5,7 @@ import { FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import tankImg from '../assets/images/fueltank_banner.png';
 import rimsImg from '../assets/images/rimlight_banner.png';
 import silencersImg from '../assets/images/banner 4.jpeg';
-import decorationImg from '../assets/images/decoration.jpeg';
+import decorationImg from '../assets/images/Untitled (1).png';
 
 interface Slide {
   id: number;

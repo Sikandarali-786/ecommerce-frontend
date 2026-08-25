@@ -74,7 +74,7 @@ const RefundPolicyPage: React.FC = () => {
               <div className="text-sm">
                 <span className="font-bold text-slate-900 block mb-1">Return Shipping Address:</span>
                 <span className="text-slate-600 italic block mb-1"></span>
-                <span className="text-xs text-slate-500">(Zam Zam Autos Decoration Hussain a Gahi Road Multan)</span>
+                <span className="text-xs text-slate-500">(Zam Zam Autos Decoration Hussain aGahi Road Multan)</span>
               </div>
             </div>
 

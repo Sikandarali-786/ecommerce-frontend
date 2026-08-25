@@ -36,7 +36,7 @@ const AboutPage: React.FC = () => {
       content: (
         <p className="text-slate-600 leading-relaxed">
           Afzal Bikerz Store is your go-to place for all things biking! Since{' '}
-          <strong className="text-slate-800">1983</strong>, we've been making Honda bikes awesome in{' '}
+          <strong className="text-slate-800">1980</strong>, we've been making Honda bikes awesome in{' '}
           <strong className="text-slate-800">Multan, Punjab, Pakistan</strong>, and beyond. Meet our
           chief, <strong className="text-slate-800">AL-Haaj Muhammad Afzal Qureshi</strong>, the brains behind our
           fantastic bike magic!
@@ -86,7 +86,7 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-amber-500 to-yellow-500',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          Afzal Bikerz Studio specializes in{' '}
+          Afzal Bikerz Store specializes in{' '}
           <strong className="text-slate-800">All Bikes</strong> and{' '}
           <strong className="text-slate-800">Honda CD 70 or CG 125 Genuine Parts</strong>. We understand the
           value of authenticity, and our commitment to providing genuine parts sets us apart in the
@@ -102,7 +102,7 @@ const AboutPage: React.FC = () => {
       iconBg: 'from-emerald-600 to-teal-600',
       content: (
         <p className="text-slate-600 leading-relaxed">
-          At Afzal Bikerz Studio, quality is non-negotiable. At Afzal Bikerz Studio, quality is non-negotiable. We source our products from reputable suppliers around the globe,
+          At Afzal Bikerz Store, quality is non-negotiable. At Afzal Bikerz Store, quality is non-negotiable. We source our products from reputable suppliers around the globe,
            We fully understand the importance of genuine parts, and our commitment to supplying them sets us apart from others in the market. we deliver your gear in a flash!
         </p>
       ),
@@ -128,7 +128,7 @@ const AboutPage: React.FC = () => {
           </p>
           <p className="text-slate-600 leading-relaxed">
             We understand that the love for biking knows no boundaries. That's why we extend our
-            services beyond Attock, reaching every corner of Pakistan. Afzal Bikerz Studio is
+            services beyond Multan, reaching every corner of Pakistan. Afzal Bikerz Store is
             committed to bringing the best biking experience to enthusiasts across the nation.
           </p>
         </>
@@ -160,7 +160,7 @@ const AboutPage: React.FC = () => {
             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '28px 28px' }} />
           <div className="relative z-10 text-center max-w-2xl mx-auto">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-xs font-semibold tracking-widest uppercase mb-5 text-[#ffcfb0]">
-              <FiZap className="w-3.5 h-3.5" /> Since 1983
+              <FiZap className="w-3.5 h-3.5" /> Since 1980
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 uppercase leading-tight">
               Welcome to Afzal Bikerz Store
@@ -229,7 +229,7 @@ const AboutPage: React.FC = () => {
           <div className="relative z-10">
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-3 tracking-tight">Ready, Set, Ride! 🏍️</h2>
             <p className="text-slate-100 text-sm sm:text-base leading-relaxed max-w-lg mx-auto mb-6">
-              Your dream biking adventure starts with Afzal Bikerz Studio. Don't miss out — let the
+              Your dream biking adventure starts with Afzal Bikerz Store. Don't miss out — let the
               biking magic begin!
             </p>
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
@@ -247,7 +247,7 @@ const AboutPage: React.FC = () => {
               </Link>
             </div>
             <p className="mt-6 text-[#ffcfb0] text-xs italic font-medium">
-              Afzal Bikerz Studio — Your Journey Begins Here.
+              Afzal Bikerz Store — Your Journey Begins Here.
             </p>
           </div>
         </div>
