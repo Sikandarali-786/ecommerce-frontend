@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { FiShoppingCart, FiCreditCard, FiTruck, FiLock } from 'react-icons/fi';
+import { FiShoppingCart, FiCreditCard, FiTruck } from 'react-icons/fi';
 import { useCart } from '../../hooks/useCart';
 import { useCreateOrder } from '../../hooks/useOrders';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -15,7 +15,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { data, isLoading } = useCart();
   const createOrderMutation = useCreateOrder();
-  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'Card'>('COD');
+  const [paymentMethod, setPaymentMethod] = useState<'COD' | 'Advance Payment'>('COD');
 
   const {
     register,
@@ -55,7 +55,8 @@ const CheckoutPage = () => {
   }
 
   const shippingCost = total > 100 ? 0 : total * 0.1; // 10% shipping when subtotal <= 100
-  const grandTotal = total + shippingCost;
+  const discount = paymentMethod === 'Advance Payment' ? total * 0.01 : 0;
+  const grandTotal = Math.max(0, total + shippingCost - discount);
 
   const onSubmit = async (formData: CheckoutFormData) => {
     const orderData = {
@@ -76,6 +77,7 @@ const CheckoutPage = () => {
       paymentMethod,
       subtotal: total,
       shippingCost,
+      discount,
       tax: 0,
       total: grandTotal,
     };
@@ -111,9 +113,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('fullName')}
                       type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.fullName ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.fullName ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="Enter your full name"
                     />
                     {errors.fullName && (
@@ -128,9 +129,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('email')}
                       type="email"
-                      className={`w-full px-3 py-2 border ${
-                        errors.email ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="Enter your email"
                     />
                     {errors.email && (
@@ -145,9 +145,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('phone')}
                       type="tel"
-                      className={`w-full px-3 py-2 border ${
-                        errors.phone ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="Enter your phone number"
                     />
                     {errors.phone && (
@@ -162,9 +161,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('country')}
                       type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.country ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.country ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="Pakistan"
                     />
                     {errors.country && (
@@ -172,22 +170,7 @@ const CheckoutPage = () => {
                     )}
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Address *
-                    </label>
-                    <input
-                      {...register('address')}
-                      type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.address ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      placeholder="Enter your address"
-                    />
-                    {errors.address && (
-                      <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
-                    )}
-                  </div>
+
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -196,9 +179,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('city')}
                       type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.city ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.city ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="New York"
                     />
                     {errors.city && (
@@ -213,9 +195,8 @@ const CheckoutPage = () => {
                     <input
                       {...register('state')}
                       type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.state ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.state ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="NY"
                     />
                     {errors.state && (
@@ -223,16 +204,31 @@ const CheckoutPage = () => {
                     )}
                   </div>
 
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Address *
+                    </label>
+                    <input
+                      {...register('address')}
+                      type="text"
+                      className={`w-full px-3 py-2 border ${errors.address ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      placeholder="Enter your address"
+                    />
+                    {errors.address && (
+                      <p className="mt-1 text-sm text-red-600">{errors.address.message}</p>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      ZIP/Postal Code *
+                      ZIP/Postal Code * (Optional)
                     </label>
                     <input
                       {...register('zipCode')}
                       type="text"
-                      className={`w-full px-3 py-2 border ${
-                        errors.zipCode ? 'border-red-500' : 'border-gray-300'
-                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      className={`w-full px-3 py-2 border ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
+                        } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                       placeholder="10001"
                     />
                     {errors.zipCode && (
@@ -250,7 +246,7 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="space-y-3">
-                  <label className="flex items-center space-x-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                  <label className={`flex items-center space-x-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-blue-600 bg-blue-50/50' : 'border-gray-300 hover:border-gray-400'}`}>
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -265,24 +261,40 @@ const CheckoutPage = () => {
                     </div>
                   </label>
 
-                  <label className="flex items-center space-x-3 p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:border-blue-500 transition-colors opacity-50">
+                  <label className={`flex items-start space-x-3 p-4 border-2 rounded-lg cursor-pointer transition-colors ${paymentMethod === 'Advance Payment' ? 'border-emerald-600 bg-emerald-50/50' : 'border-gray-300 hover:border-gray-400'}`}>
                     <input
                       type="radio"
                       name="paymentMethod"
-                      value="Card"
-                      disabled
-                      className="w-4 h-4 text-blue-600"
+                      value="Advance Payment"
+                      checked={paymentMethod === 'Advance Payment'}
+                      onChange={() => setPaymentMethod('Advance Payment')}
+                      className="w-4 h-4 text-emerald-600 mt-1"
                     />
                     <div className="flex-1">
-                      <p className="font-semibold text-gray-900">Credit/Debit Card</p>
-                      <p className="text-sm text-gray-600">Coming soon</p>
+                      <div className="flex items-center justify-between">
+                        <p className="font-semibold text-gray-900">Advance Payment / EasyPaisa</p>
+                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded-full font-bold">
+                          🎉 1% DISCOUNT
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600">Pay via EasyPaisa / Bank Transfer & get 1% discount</p>
                     </div>
                   </label>
-                </div>
 
-                <div className="flex items-center space-x-2 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg mt-4">
-                  <FiLock className="text-blue-600" />
-                  <span>Your order information is secure</span>
+                  {paymentMethod === 'Advance Payment' && (
+                    <div className="bg-emerald-50 border border-emerald-300 rounded-lg p-4 mt-3">
+                      <p className="font-bold text-emerald-900 text-sm mb-2 flex items-center gap-1.5">
+                        <span>📱 EasyPaisa Payment Details</span>
+                      </p>
+                      <div className="space-y-1.5 text-xs bg-white p-3 rounded border border-emerald-200 shadow-sm text-gray-800">
+                        <p><span className="font-semibold text-gray-600">Account Title:</span> <span className="font-bold text-gray-900">Afzal Bikerz Store</span></p>
+                        <p><span className="font-semibold text-gray-600">EasyPaisa No:</span> <span className="font-bold text-emerald-700 font-mono text-sm">03048405899</span> / <span className="font-bold text-emerald-700 font-mono text-sm">03700780090</span></p>
+                      </div>
+                      <p className="text-xs text-emerald-800 mt-2 leading-relaxed">
+                        👉 Payment transfer karne ke baad screenshot humare WhatsApp <strong>(0304-8405899)</strong> par bhej dein.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -327,6 +339,12 @@ const CheckoutPage = () => {
                     <span>Subtotal</span>
                     <span className="font-semibold">{total.toFixed(2)}</span>
                   </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-emerald-600 font-semibold">
+                      <span>1% Advance Discount</span>
+                      <span>-{discount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping {shippingCost === 0 ? '' : '(10%)'}</span>
                     <span className="font-semibold">
