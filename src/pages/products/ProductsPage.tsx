@@ -123,17 +123,26 @@ const ProductsPage = () => {
 
   // Sync URL params → state
   useEffect(() => {
-    const slugFromUrl   = searchParams.get('category') ?? '';
-    const searchFromUrl = searchParams.get('search')   ?? '';
+    const slugFromUrl     = searchParams.get('category') ?? '';
+    const searchFromUrl   = searchParams.get('search')   ?? '';
+    const maxPriceFromUrl = searchParams.get('maxPrice') ?? '';
+    const minPriceFromUrl = searchParams.get('minPrice') ?? '';
+    const sortByFromUrl   = searchParams.get('sortBy')   ?? '';
 
     if (searchFromUrl) setSearchInput(searchFromUrl);
 
+    let catId = '';
     if (slugFromUrl && categoriesData?.categories) {
       const matched = categoriesData.categories.find(c => c.slug === slugFromUrl);
-      setFilters(prev => ({ ...prev, category: matched?._id ?? '' }));
-    } else if (!slugFromUrl) {
-      setFilters(prev => ({ ...prev, category: '' }));
+      catId = matched?._id ?? '';
     }
+
+    setFilters({
+      category: catId,
+      minPrice: minPriceFromUrl,
+      maxPrice: maxPriceFromUrl,
+      sortBy:   sortByFromUrl,
+    });
   }, [searchParams, categoriesData]);
 
   // Build query params
@@ -152,6 +161,12 @@ const ProductsPage = () => {
   const activeCategoryName =
     filters.category && categoriesData?.categories
       ? (categoriesData.categories.find(c => c._id === filters.category)?.name ?? '')
+      : filters.maxPrice === '999' || filters.maxPrice === '1000'
+      ? 'Under Rs. 999 (Budget Deals)'
+      : filters.maxPrice
+      ? `Products Under Rs. ${filters.maxPrice}`
+      : filters.minPrice
+      ? `Products Above Rs. ${filters.minPrice}`
       : '';
 
   const handleFilterChange = useCallback((newFilters: FilterState) => {

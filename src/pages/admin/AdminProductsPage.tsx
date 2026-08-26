@@ -19,6 +19,7 @@ interface ProductFormData {
   description: string;
   price: string;
   stock: string;
+  weight: string;
   category: string;
 }
 
@@ -27,6 +28,7 @@ const emptyForm: ProductFormData = {
   description: '',
   price: '',
   stock: '',
+  weight: '1',
   category: '',
 };
 
@@ -172,6 +174,7 @@ const AdminProductsPage = () => {
       description: product.description,
       price: String(product.price),
       stock: String(product.stock),
+      weight: String(product.weight ?? 1),
       category: typeof product.category === 'object' ? product.category._id : product.category,
     });
     setExistingImages(product.images || []);
@@ -201,6 +204,7 @@ const AdminProductsPage = () => {
     formData.append('description', form.description);
     formData.append('price', form.price);
     formData.append('stock', form.stock);
+    formData.append('weight', form.weight || '1');
     formData.append('category', form.category);
 
     // Attach image files
@@ -252,6 +256,14 @@ const AdminProductsPage = () => {
       header: 'Price',
       cell: (product) => (
         <span className="font-semibold text-gray-900">{product.price.toFixed(2)}</span>
+      ),
+    },
+    {
+      header: 'Weight',
+      cell: (product) => (
+        <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded-md border border-slate-200">
+          {product.weight ?? 1} kg
+        </span>
       ),
     },
     {
@@ -469,8 +481,8 @@ const AdminProductsPage = () => {
                 />
               </div>
 
-              {/* Price & Stock */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Price, Weight & Stock */}
+              <div className="grid grid-cols-3 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Price *</label>
                   <input
@@ -482,6 +494,19 @@ const AdminProductsPage = () => {
                     onChange={(e) => setForm({ ...form, price: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="0.00"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg) *</label>
+                  <input
+                    type="number"
+                    required
+                    min="0.1"
+                    step="0.1"
+                    value={form.weight}
+                    onChange={(e) => setForm({ ...form, weight: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="1.0"
                   />
                 </div>
                 <div>

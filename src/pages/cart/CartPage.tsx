@@ -8,6 +8,7 @@ import ConfirmModal from '../../components/ConfirmModal';
 import Button from '../../components/Button';
 import type { Category } from '../../types';
 import { getImageUrl } from '../../utils/image';
+import { calculateCartWeight, calculateShippingCost, getShippingTierLabel } from '../../utils/shipping';
 
 const CartPage = () => {
   const { data, isLoading, isError } = useCart();
@@ -70,9 +71,9 @@ const CartPage = () => {
   const total = data?.total || 0;
   const items = cart?.items || [];
 
-  const shippingCost = total > 100 ? 0 : 10;
-  const tax          = parseFloat((total * 0.1).toFixed(2));
-  const grandTotal   = total + shippingCost + tax;
+  const totalWeight  = calculateCartWeight(items);
+  const shippingCost = calculateShippingCost(totalWeight);
+  const grandTotal   = total + shippingCost;
 
   const handleUpdateQuantity = (productId: string, newQty: number) => {
     if (newQty < 1) return;
@@ -244,41 +245,37 @@ const CartPage = () => {
               <div className="space-y-3 text-sm mb-5">
                 <div className="flex justify-between text-gray-600">
                   <span>Subtotal ({items.length} items)</span>
-                  <span className="font-semibold text-gray-900">{total.toFixed(2)}</span>
+                  <span className="font-semibold text-gray-900">PKR {total.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Shipping</span>
+                  <span>Total Weight</span>
+                  <span className="font-semibold text-gray-900">{totalWeight} kg ({getShippingTierLabel(totalWeight)})</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping Charges</span>
                   <span className="font-semibold text-gray-900">
                     {shippingCost === 0
                       ? <span className="text-green-600">FREE</span>
-                      : shippingCost.toFixed(2)
+                      : `PKR ${shippingCost.toLocaleString()}`
                     }
                   </span>
                 </div>
-                <div className="flex justify-between text-gray-600">
-                  <span>Tax (10%)</span>
-                  <span className="font-semibold text-gray-900">{tax.toFixed(2)}</span>
-                </div>
                 <div className="border-t pt-3 flex justify-between text-base font-bold text-gray-900">
                   <span>Total</span>
-                  <span className="text-blue-600">{grandTotal.toFixed(2)}</span>
+                  <span className="text-blue-600">PKR {grandTotal.toLocaleString()}</span>
                 </div>
               </div>
 
-              {/* Free shipping nudge */}
-              {total < 100 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 mb-5">
-                  <p className="text-xs text-amber-800 font-medium">
-                    🚚 Add <span className="font-bold">{(100 - total).toFixed(2)}</span> more for free shipping!
-                  </p>
-                  <div className="mt-1.5 h-1.5 bg-amber-200 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-amber-500 rounded-full transition-all"
-                      style={{ width: `${Math.min(100, (total / 100) * 100)}%` }}
-                    />
-                  </div>
-                </div>
-              )}
+              {/* Shipping Weight Slab Info Banner */}
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5 mb-5 text-xs text-slate-600">
+                <p className="font-bold text-slate-800 mb-1">📦 Weight-Based Shipping Rates:</p>
+                <ul className="space-y-0.5 list-disc list-inside text-[11px] text-slate-600">
+                  <li>Up to 1 kg: PKR 350</li>
+                  <li>1 kg – 3 kg: PKR 650</li>
+                  <li>3 kg – 5 kg: PKR 1,250</li>
+                  <li>Above 5 kg: PKR 1,500</li>
+                </ul>
+              </div>
 
               <Link
                 to="/checkout"

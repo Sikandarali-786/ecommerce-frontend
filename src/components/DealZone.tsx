@@ -45,7 +45,7 @@ const deals = [
     description: "Discover the newest LED lights, fancy tanks, alloy rims & custom accessories.",
     accentGradient: "from-slate-800 to-slate-950",
     shadowColor: "hover:shadow-blue-500/20",
-    link: "/products",
+    link: "/products?sortBy=newest",
   },
 ];
 

@@ -9,6 +9,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import { checkoutSchema, type CheckoutFormData } from '../../schemas/checkout.schema';
 import { getImageUrl } from '../../utils/image';
+import { calculateCartWeight, calculateShippingCost, getShippingTierLabel } from '../../utils/shipping';
 import Button from '../../components/Button';
 
 const CheckoutPage = () => {
@@ -54,9 +55,10 @@ const CheckoutPage = () => {
     );
   }
 
-  const shippingCost = total > 100 ? 0 : total * 0.1; // 10% shipping when subtotal <= 100
-  const discount = paymentMethod === 'Advance Payment' ? total * 0.01 : 0;
-  const grandTotal = Math.max(0, total + shippingCost - discount);
+  const totalWeight  = calculateCartWeight(items);
+  const shippingCost = calculateShippingCost(totalWeight);
+  const discount     = paymentMethod === 'Advance Payment' ? total * 0.01 : 0;
+  const grandTotal   = Math.max(0, total + shippingCost - discount);
 
   const onSubmit = async (formData: CheckoutFormData) => {
     const orderData = {
@@ -72,7 +74,7 @@ const CheckoutPage = () => {
         city: formData.city,
         state: formData.state,
         country: formData.country,
-        zipCode: formData.zipCode,
+        zipCode: formData.zipCode || '',
       },
       paymentMethod,
       subtotal: total,
@@ -337,34 +339,29 @@ const CheckoutPage = () => {
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-semibold">{total.toFixed(2)}</span>
+                    <span className="font-semibold">PKR {total.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Total Weight</span>
+                    <span className="font-semibold">{totalWeight} kg ({getShippingTierLabel(totalWeight)})</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Shipping Charges</span>
+                    <span className="font-semibold text-gray-900">
+                      {shippingCost === 0 ? 'FREE' : `PKR ${shippingCost.toLocaleString()}`}
+                    </span>
                   </div>
                   {discount > 0 && (
                     <div className="flex justify-between text-emerald-600 font-semibold">
                       <span>1% Advance Discount</span>
-                      <span>-{discount.toFixed(2)}</span>
+                      <span>-PKR {discount.toFixed(2)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between text-gray-600">
-                    <span>Shipping {shippingCost === 0 ? '' : '(10%)'}</span>
-                    <span className="font-semibold">
-                      {shippingCost === 0 ? 'FREE' : shippingCost.toFixed(2)}
-                    </span>
-                  </div>
                   <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
-                    <span className="text-blue-600">{grandTotal.toFixed(2)}</span>
+                    <span className="text-blue-600">PKR {grandTotal.toLocaleString()}</span>
                   </div>
                 </div>
-
-                {/* Free Shipping Notice */}
-                {total < 100 && (
-                  <div className="mt-4 p-3 bg-orange-50 rounded-lg">
-                    <p className="text-sm text-orange-800">
-                      Add {(100 - total).toFixed(2)} more to get FREE shipping!
-                    </p>
-                  </div>
-                )}
 
                 {/* Place Order Button */}
                 <Button
@@ -375,7 +372,7 @@ const CheckoutPage = () => {
                   loading={createOrderMutation.isPending}
                   className="mt-6"
                 >
-                  {`Place Order — ${grandTotal.toFixed(2)}`}
+                  {`Place Order — PKR ${grandTotal.toLocaleString()}`}
                 </Button>
 
                 <p className="text-xs text-gray-500 text-center mt-4">

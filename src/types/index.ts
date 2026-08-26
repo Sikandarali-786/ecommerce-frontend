@@ -44,6 +44,7 @@ export interface Product {
   description: string;
   price: number;
   stock: number;
+  weight?: number;
   images: string[];
   category: Category | string;
   createdBy: User | string;

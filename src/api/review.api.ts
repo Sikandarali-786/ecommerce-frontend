@@ -54,6 +54,7 @@ export interface TestimonialItem {
   quote: string;
   name: string;
   productTitle?: string | null;
+  productImage?: string | null;
   isReal?: boolean;
 }
 

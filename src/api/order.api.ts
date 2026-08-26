@@ -25,11 +25,12 @@ export interface Order {
   user: string | { _id: string; name: string; email: string };
   items: OrderItem[];
   shippingInfo: ShippingInfo;
-  paymentMethod: 'COD' | 'Card' | 'PayPal';
+  paymentMethod: string;
   paymentStatus: 'Pending' | 'Paid' | 'Failed';
   orderStatus: 'Processing' | 'Confirmed' | 'Shipped' | 'Delivered' | 'Cancelled';
   subtotal: number;
   shippingCost: number;
+  discount?: number;
   tax: number;
   total: number;
   orderDate: string;
@@ -44,9 +45,10 @@ export interface CreateOrderData {
     quantity: number;
   }>;
   shippingInfo: ShippingInfo;
-  paymentMethod?: 'COD' | 'Card' | 'PayPal';
+  paymentMethod?: string;
   subtotal: number;
   shippingCost: number;
+  discount?: number;
   tax: number;
   total: number;
 }
@@ -117,8 +119,8 @@ export interface AdminOrdersResponse {
 }
 
 export interface UpdateOrderStatusData {
-  orderStatus?: Order['orderStatus'];
-  paymentStatus?: Order['paymentStatus'];
+  orderStatus?: string;
+  paymentStatus?: string;
 }
 
 /**

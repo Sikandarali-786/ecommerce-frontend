@@ -370,7 +370,7 @@ const AdminOrdersPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setPage((p) => Math.min(data.pagination.totalPages, p + 1))}
+              onClick={() => setPage((p) => data.pagination ? Math.min(data.pagination.totalPages, p + 1) : p)}
               disabled={!data.pagination.hasMore}
             >
               Next
@@ -440,17 +440,23 @@ const AdminOrdersPage = () => {
 
               {/* Totals */}
               <div className="border-t pt-3 space-y-1.5 text-sm">
-                {[
-                  { label: 'Subtotal',  value: selectedOrder.subtotal.toFixed(2) },
-                  { label: 'Shipping',  value: selectedOrder.shippingCost === 0 ? 'FREE' : selectedOrder.shippingCost.toFixed(2) },
-                  { label: 'Tax',       value: selectedOrder.tax.toFixed(2) },
-                ].map(r => (
-                  <div key={r.label} className="flex justify-between text-gray-600">
-                    <span>{r.label}</span><span>{r.value}</span>
+                <div className="flex justify-between text-gray-600">
+                  <span>Subtotal</span>
+                  <span>PKR {selectedOrder.subtotal.toLocaleString()}</span>
+                </div>
+                {Boolean(selectedOrder.discount && selectedOrder.discount > 0) && (
+                  <div className="flex justify-between text-emerald-600 font-semibold">
+                    <span>Advance Discount</span>
+                    <span>-PKR {selectedOrder.discount?.toLocaleString()}</span>
                   </div>
-                ))}
+                )}
+                <div className="flex justify-between text-gray-600">
+                  <span>Shipping Charges</span>
+                  <span>{selectedOrder.shippingCost === 0 ? 'FREE' : `PKR ${selectedOrder.shippingCost.toLocaleString()}`}</span>
+                </div>
                 <div className="flex justify-between font-bold text-gray-900 text-base border-t pt-2">
-                  <span>Total</span><span>{selectedOrder.total.toFixed(2)}</span>
+                  <span>Total</span>
+                  <span>PKR {selectedOrder.total.toLocaleString()}</span>
                 </div>
               </div>
 

@@ -102,7 +102,7 @@ export const useToggleUserStatus = () => {
 export const useAdminOrders = () => {
   return useQuery({
     queryKey: adminKeys.orders(),
-    queryFn: getAllOrdersAdmin,
+    queryFn: () => getAllOrdersAdmin(),
     retry: 1,
   });
 };

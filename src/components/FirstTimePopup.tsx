@@ -20,7 +20,7 @@ const FirstTimePopup = () => {
     // Popup is for logged-in users who haven't seen the gift offer yet
     if (!currentUser) return;
 
-    const userKey = `hasSeenGiftOffer_${currentUser._id || currentUser.id || currentUser.email}`;
+    const userKey = `hasSeenGiftOffer_${currentUser._id || currentUser.email}`;
     const hasSeen = localStorage.getItem(userKey) === 'true';
 
     // Show popup if new registration login OR if this user account hasn't seen it yet
@@ -35,7 +35,7 @@ const FirstTimePopup = () => {
   const handleClose = () => {
     const currentUser = getUser();
     if (currentUser) {
-      const userKey = `hasSeenGiftOffer_${currentUser._id || currentUser.id || currentUser.email}`;
+      const userKey = `hasSeenGiftOffer_${currentUser._id || currentUser.email}`;
       localStorage.setItem(userKey, 'true');
     }
     localStorage.removeItem('justRegisteredUser');

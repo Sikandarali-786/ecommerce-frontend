@@ -17,8 +17,18 @@ const BACKEND_URL = ((import.meta.env.VITE_API_BASE_URL as string) ?? '')
 export const getImageUrl = (path: string | undefined | null): string => {
   if (!path) return 'https://placehold.co/400x400?text=No+Image';
 
-  // Already a full URL (Cloudinary or legacy localhost URL)
-  if (path.startsWith('http://') || path.startsWith('https://')) {
+  // Already a full URL or data/blob URI
+  if (
+    path.startsWith('http://') ||
+    path.startsWith('https://') ||
+    path.startsWith('data:') ||
+    path.startsWith('blob:')
+  ) {
+    return path;
+  }
+
+  // Vite frontend static asset path
+  if (path.startsWith('/src/') || path.startsWith('/assets/')) {
     return path;
   }
 

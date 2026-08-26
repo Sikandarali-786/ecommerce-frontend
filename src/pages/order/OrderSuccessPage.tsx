@@ -141,21 +141,23 @@ const OrderSuccessPage = () => {
           <div className="space-y-2">
             <div className="flex justify-between text-gray-600">
               <span>Subtotal</span>
-              <span className="font-semibold">{order.subtotal.toFixed(2)}</span>
+              <span className="font-semibold">PKR {order.subtotal.toLocaleString()}</span>
             </div>
+            {Boolean(order.discount && order.discount > 0) && (
+              <div className="flex justify-between text-emerald-600 font-semibold">
+                <span>Advance Discount</span>
+                <span>-PKR {order.discount?.toLocaleString()}</span>
+              </div>
+            )}
             <div className="flex justify-between text-gray-600">
-              <span>Shipping</span>
-              <span className="font-semibold">
-                {order.shippingCost === 0 ? 'FREE' : order.shippingCost.toFixed(2)}
+              <span>Shipping Charges</span>
+              <span className="font-semibold text-gray-900">
+                {order.shippingCost === 0 ? 'FREE' : `PKR ${order.shippingCost.toLocaleString()}`}
               </span>
-            </div>
-            <div className="flex justify-between text-gray-600">
-              <span>Tax</span>
-              <span className="font-semibold">{order.tax.toFixed(2)}</span>
             </div>
             <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
               <span>Total</span>
-              <span className="text-blue-600">{order.total.toFixed(2)}</span>
+              <span className="text-blue-600">PKR {order.total.toLocaleString()}</span>
             </div>
           </div>
         </div>

@@ -4,8 +4,7 @@ import {
   FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,
 } from 'react-icons/fi';
 import { MdAdminPanelSettings } from 'react-icons/md';
-import { FaWhatsapp } from 'react-icons/fa';
-import { useState, useRef, useEffect, type CSSProperties } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
 import { useCategories } from '../hooks/useCategories';
@@ -19,13 +18,9 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [locationModalOpen, setLocationModalOpen] = useState(false);
-  const [locationLabel, setLocationLabel] = useState(' Pakistan');
-  const [locationInput, setLocationInput] = useState('Hussain Agahi Market, Multan');
-  const [locationPin, setLocationPin] = useState({ lat: 30.1959895, lng: 71.4750566 });
-  const googleMapsEmbedUrl = `https://www.google.com/maps?q=${locationPin.lat},${locationPin.lng}&z=17&output=embed`;
+  const [locationLabel] = useState(' Pakistan');
+  const googleMapsEmbedUrl = `https://www.google.com/maps?q=30.1959895,71.4750566&z=17&output=embed`;
   const googleMapsLink = 'https://maps.app.goo.gl/ECdA7b4iphZjXf2e9';
-  const whatsappNumber = '923048405899'; // replace with your WhatsApp number
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent('Hi, I want to place an order from Afzal Bikerz Store.')}`;
   const userMenuRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const authenticated = isAuthenticated();
@@ -107,11 +102,6 @@ const Navbar = () => {
 
   const closeLocationModal = () => {
     setLocationModalOpen(false);
-  };
-
-  const confirmLocation = () => {
-    setLocationLabel(`Other · ${locationInput}`);
-    closeLocationModal();
   };
 
   const isActive = (path: string) =>
