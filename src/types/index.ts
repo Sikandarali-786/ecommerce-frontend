@@ -43,6 +43,7 @@ export interface Product {
   title: string;
   description: string;
   price: number;
+  originalPrice?: number;
   stock: number;
   weight?: number;
   images: string[];

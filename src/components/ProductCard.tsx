@@ -69,8 +69,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
       >
         {/* Top Badges & Wishlist Bar */}
         <div className="absolute top-3 inset-x-3 z-30 flex items-center justify-between pointer-events-none">
-          {/* Stock Badge */}
-          <div>
+          {/* Stock & Discount Badge */}
+          <div className="flex items-center gap-1.5 flex-wrap">
             {product.stock === 0 ? (
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-red-600 text-white shadow-xs">
                 Out of Stock
@@ -82,6 +82,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
             ) : (
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/90 text-white shadow-xs backdrop-blur-md">
                 In Stock
+              </span>
+            )}
+
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-600 text-white shadow-sm animate-pulse">
+                {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
               </span>
             )}
           </div>
@@ -166,9 +172,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
             <div>
               <span className="block text-[10px] uppercase font-bold text-slate-400 tracking-wider">Price</span>
-              <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-                PKR {product.price.toLocaleString()}
-              </span>
+              <div className="flex items-baseline gap-1.5 flex-wrap">
+                <span className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                  PKR {product.price.toLocaleString()}
+                </span>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="text-xs font-semibold text-slate-400 line-through">
+                    PKR {product.originalPrice.toLocaleString()}
+                  </span>
+                )}
+              </div>
             </div>
 
             <button

@@ -18,6 +18,7 @@ interface Slide {
   cta: string;
   secondaryCta?: string;
   ctaPath: string;
+  tagsTitle?: string;
   tags?: { label: string; path: string }[];
   alignRight?: boolean;
   overlayFrom: string;
@@ -32,6 +33,12 @@ const slides: Slide[] = [
     subheading: 'Top-quality CD70 & CG125 fuel tanks built for performance and durability.',
     cta: 'Shop Tanks',
     ctaPath: '/products',
+    tagsTitle: 'Select Tank Model:',
+    tags: [
+      { label: 'Customize Fuel Tanks', path: '/products?search=Customize' },
+      { label: 'Genuine Fuel Tanks', path: '/products?search=Genuine' },
+      { label: 'Fancy Fuel Tanks', path: '/products?search=Fancy' },
+    ],
     overlayFrom: 'from-black/70',
     overlayTo: 'to-transparent',
   },
@@ -58,6 +65,7 @@ Bike Accessories`,
     subheading: 'Enhance exhaust sound and performance with our premium silencer range.',
     cta: 'Shop All Silencers',
     ctaPath: '/products?category=Silencers',
+    tagsTitle: 'Select Silencer Model:',
     tags: [
       { label: 'Ahl3', path: '/products?search=Ahl3' },
       { label: 'Whistler', path: '/products?search=Whistler' },
@@ -233,7 +241,7 @@ const HeroBanner = () => {
           >
             <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-red-500 mb-2.5 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
-              Select Silencer Model:
+              {slide.tagsTitle || 'Select Model:'}
             </p>
 
             <div className="overflow-hidden w-full relative">

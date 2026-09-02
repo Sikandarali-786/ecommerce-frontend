@@ -197,10 +197,20 @@ const ProductDetailPage = () => {
               </h1>
 
               {/* Price */}
-              <div className="flex items-baseline gap-3 mb-4">
+              <div className="flex items-baseline gap-3 mb-4 flex-wrap">
                 <span className="text-3xl font-bold text-gray-900">
-                  {product.price.toFixed(2)}
+                  PKR {product.price.toLocaleString()}
                 </span>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <>
+                    <span className="text-lg font-medium text-gray-400 line-through">
+                      PKR {product.originalPrice.toLocaleString()}
+                    </span>
+                    <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                      {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                    </span>
+                  </>
+                )}
               </div>
 
               {/* Stock badge */}
@@ -314,7 +324,7 @@ const ProductDetailPage = () => {
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <dt className="text-sm text-gray-500">Price</dt>
-              <dd className="text-sm font-semibold text-gray-900">{product.price.toFixed(2)}</dd>
+              <dd className="text-sm font-semibold text-gray-900">PKR {product.price.toLocaleString()}</dd>
             </div>
             <div className="flex justify-between py-2 border-b border-gray-100">
               <dt className="text-sm text-gray-500">Condition</dt>

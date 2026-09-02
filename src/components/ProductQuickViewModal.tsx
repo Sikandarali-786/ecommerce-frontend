@@ -135,9 +135,21 @@ const ProductQuickViewModal = ({
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-3xl font-bold text-slate-900">
-                    {product.price.toFixed(2)}
-                  </span>
+                  <div className="flex items-baseline gap-2.5 flex-wrap">
+                    <span className="text-3xl font-bold text-slate-900">
+                      PKR {product.price.toLocaleString()}
+                    </span>
+                    {product.originalPrice && product.originalPrice > product.price && (
+                      <>
+                        <span className="text-base font-semibold text-slate-400 line-through">
+                          PKR {product.originalPrice.toLocaleString()}
+                        </span>
+                        <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
+                          {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                        </span>
+                      </>
+                    )}
+                  </div>
                   <span className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
                     {stockLabel}
                   </span>
