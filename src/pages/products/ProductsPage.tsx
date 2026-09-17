@@ -129,7 +129,7 @@ const ProductsPage = () => {
     const minPriceFromUrl = searchParams.get('minPrice') ?? '';
     const sortByFromUrl   = searchParams.get('sortBy')   ?? '';
 
-    if (searchFromUrl) setSearchInput(searchFromUrl);
+    setSearchInput(searchFromUrl);
 
     let catId = '';
     if (slugFromUrl && categoriesData?.categories) {
