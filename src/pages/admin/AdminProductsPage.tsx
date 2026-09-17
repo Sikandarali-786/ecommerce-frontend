@@ -88,9 +88,7 @@ const AdminProductsPage = () => {
   // ─── Create mutation (multipart/form-data) ───────────────────────────────
   const createMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const res = await axiosInstance.post(API_ENDPOINTS.PRODUCT.CREATE, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await axiosInstance.post(API_ENDPOINTS.PRODUCT.CREATE, formData);
       return res.data;
     },
     onSuccess: () => {
@@ -104,9 +102,7 @@ const AdminProductsPage = () => {
   // ─── Update mutation (multipart/form-data) ───────────────────────────────
   const updateMutation = useMutation({
     mutationFn: async ({ id, formData }: { id: string; formData: FormData }) => {
-      const res = await axiosInstance.put(API_ENDPOINTS.PRODUCT.UPDATE(id), formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const res = await axiosInstance.put(API_ENDPOINTS.PRODUCT.UPDATE(id), formData);
       return res.data;
     },
     onSuccess: () => {

@@ -24,10 +24,7 @@ export const getAllCategories = async (): Promise<CategoriesResponse> => {
 export const createCategory = async (data: FormData): Promise<CreateCategoryResponse> => {
   const response = await axiosInstance.post<CreateCategoryResponse>(
     API_ENDPOINTS.CATEGORY.CREATE,
-    data,
-    {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }
+    data
   );
   return response.data;
 };
@@ -47,10 +44,7 @@ export const updateCategory = async (
 ): Promise<CategoryMutationResponse> => {
   const response = await axiosInstance.put<CategoryMutationResponse>(
     API_ENDPOINTS.CATEGORY.UPDATE(id),
-    data,
-    {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }
+    data
   );
   return response.data;
 };

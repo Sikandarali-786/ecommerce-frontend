@@ -7,8 +7,9 @@ export interface CreateProductData {
   description: string;
   price: number;
   stock: number;
-  images?: string[];
   category: string;
+  weight?: number;
+  originalPrice?: number;
 }
 
 export interface UpdateProductData extends Partial<CreateProductData> {}
@@ -68,9 +69,9 @@ export const getProductById = async (id: string): Promise<SingleProductResponse>
 };
 
 /**
- * Create a new product (admin only)
+ * Create a new product (admin only) - with file upload support
  */
-export const createProduct = async (data: CreateProductData): Promise<ProductResponse> => {
+export const createProduct = async (data: FormData): Promise<ProductResponse> => {
   const response = await axiosInstance.post<ProductResponse>(
     API_ENDPOINTS.PRODUCT.CREATE,
     data
@@ -79,11 +80,11 @@ export const createProduct = async (data: CreateProductData): Promise<ProductRes
 };
 
 /**
- * Update a product (admin only)
+ * Update a product (admin only) - with file upload support
  */
 export const updateProduct = async (
   id: string,
-  data: UpdateProductData
+  data: FormData
 ): Promise<ProductResponse> => {
   const response = await axiosInstance.put<ProductResponse>(
     API_ENDPOINTS.PRODUCT.UPDATE(id),
