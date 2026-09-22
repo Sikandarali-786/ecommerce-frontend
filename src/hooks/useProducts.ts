@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from '../api';
-import type { CreateProductData, UpdateProductData, ProductQueryParams } from '../api/product.api';
+import type { ProductQueryParams } from '../api/product.api';
 import toast from 'react-hot-toast';
 
 // Query keys
@@ -49,7 +49,7 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreateProductData) => createProduct(data),
+    mutationFn: (data: FormData) => createProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
       toast.success('Product created successfully');
@@ -67,7 +67,7 @@ export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateProductData }) =>
+    mutationFn: ({ id, data }: { id: string; data: FormData }) =>
       updateProduct(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: productKeys.lists() });
