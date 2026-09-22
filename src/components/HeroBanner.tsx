@@ -131,8 +131,7 @@ const HeroBanner = () => {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black"
-      style={{ minHeight: '420px', height: 'clamp(420px, 55vw, 600px)' }}
+      className="hero-banner relative w-full overflow-hidden bg-black min-h-125 h-[clamp(500px,100vw,600px)] md:min-h-105 md:h-[clamp(420px,55vw,600px)]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       aria-label="Hero banner"
@@ -158,22 +157,22 @@ const HeroBanner = () => {
       ))}
 
       {/* ── Content ───────────────────────────────────────────────────── */}
-      <div className="absolute inset-0 z-10 flex flex-col md:flex-row items-start md:items-center justify-between px-5 md:px-12 lg:px-20 py-8 md:py-0 gap-6">
+      <div className="absolute inset-0 z-10 flex flex-col md:flex-row items-start md:items-center justify-between px-4 sm:px-5 md:px-12 lg:px-20 py-7 sm:py-8 md:py-0 gap-5 md:gap-6">
         {/* Left Side Content */}
         <div
           key={`left-${current}`}
-          className="max-w-xl text-white flex flex-col items-start text-left"
+          className="max-w-xl text-white flex flex-col items-start text-left pr-7 md:pr-0"
           style={{ animation: 'slideUp 0.6s ease forwards' }}
         >
           {/* Badge */}
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-white">
+          <p className="mb-2.5 sm:mb-3 text-[10px] sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white">
             <span className="mr-2 text-red-600">//</span>
             {slide.badge}
             <span className="ml-2 text-red-600">//</span>
           </p>
 
           {/* Heading */}
-          <h1 className="mb-5 text-3xl sm:text-4xl lg:text-6xl font-black uppercase italic leading-[0.9]">
+          <h1 className="mb-3 sm:mb-5 text-[2rem] sm:text-4xl lg:text-6xl font-black uppercase italic leading-[0.92]">
             {slide.heading.split("\n").map((line, index) => (
               <span
                 key={index}
@@ -186,7 +185,7 @@ const HeroBanner = () => {
 
           {/* Features */}
           {slide.subheading && (
-            <div className="mb-5 flex flex-wrap items-center gap-3 text-sm sm:text-base text-white/90 justify-start">
+            <div className="mb-4 sm:mb-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-base text-white/90 justify-start max-w-[19rem]">
               {slide.subheading.split("|").map((item, index) => (
                 <span key={index}>
                   {item.trim()}
@@ -211,11 +210,11 @@ const HeroBanner = () => {
           )}
 
           {/* Buttons */}
-          <div className="flex flex-wrap items-center gap-4 justify-start">
+          <div className="flex w-full flex-wrap items-center gap-2.5 sm:gap-4 justify-start">
             {slide.secondaryCta && (
               <Link
                 to={slide.ctaPath}
-                className="inline-flex items-center gap-2 rounded-lg border border-white/40 px-6 py-3 font-bold text-sm uppercase text-white transition hover:border-red-500 hover:text-red-500"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/40 px-4 sm:px-6 py-2.5 sm:py-3 font-bold text-xs sm:text-sm uppercase text-white transition hover:border-red-500 hover:text-red-500"
               >
                 {slide.secondaryCta}
                 <FiArrowRight size={16} />
@@ -224,7 +223,7 @@ const HeroBanner = () => {
 
             <Link
               to={slide.ctaPath}
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-6 py-3 rounded-lg font-bold text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:opacity-90 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
             >
               {slide.cta}
               <FiArrowRight size={16} />
@@ -236,7 +235,7 @@ const HeroBanner = () => {
         {slide.tags && slide.tags.length > 0 && (
           <div
             key={`right-${current}`}
-            className="w-full md:w-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden p-3.5 sm:p-4 rounded-2xl bg-black/ border border-white/20 backdrop-blur-md shadow-2xl self-start md:self-center mt-2 md:mt-0"
+                className="w-[calc(100%-1.5rem)] md:w-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden p-3 sm:p-4 rounded-2xl bg-black/55 border border-white/20 backdrop-blur-md shadow-2xl self-start md:self-center mt-0 md:mt-0"
             style={{ animation: 'slideUp 0.6s ease forwards' }}
           >
             <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-red-500 mb-2.5 flex items-center gap-2">
@@ -244,13 +243,13 @@ const HeroBanner = () => {
               {slide.tagsTitle || 'Select Model:'}
             </p>
 
-            <div className="overflow-hidden w-full relative">
+                <div className="overflow-x-auto scrollbar-hide w-full relative">
               <div className="animate-marquee flex flex-row items-center gap-2.5">
                 {[...slide.tags, ...slide.tags].map((tag, idx) => (
                   <Link
                     key={idx}
                     to={tag.path}
-                    className="flex items-center justify-center px-4 py-2 rounded-xl bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:from-red-600 hover:to-red-700 border border-white/20 hover:border-white text-white font-extrabold text-xs uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 active:scale-95 text-center whitespace-nowrap"
+                        className="flex shrink-0 items-center justify-center px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:from-red-600 hover:to-red-700 border border-white/20 hover:border-white text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 active:scale-95 text-center whitespace-nowrap"
                   >
                     {tag.label}
                   </Link>
@@ -264,14 +263,14 @@ const HeroBanner = () => {
       {/* ── Prev / Next arrows ────────────────────────────────────────── */}
       <button
         onClick={prev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
         aria-label="Previous slide"
       >
         <FiChevronLeft size={22} />
       </button>
       <button
         onClick={next}
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
         aria-label="Next slide"
       >
         <FiChevronRight size={22} />
