@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
 import { useCategories } from '../hooks/useCategories';
-import logoImg from '../assets/images/logo.png';
+import logoImg from '../assets/images/logo-afzal-bikerz.png';
 
 const Navbar = () => {
   const navigate = useNavigate();
