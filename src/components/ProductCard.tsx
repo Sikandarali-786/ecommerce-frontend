@@ -6,6 +6,7 @@ import { useAddToCart } from '../hooks/useCart';
 import { useAddToWishlist, useRemoveFromWishlist, useIsInWishlist } from '../hooks/useWishlist';
 import type { Product } from '../types';
 import { getImageUrl } from '../utils/image';
+import logoImg from '../assets/images/logo-afzal-bikerz.png';
 import ProductQuickViewModal from './ProductQuickViewModal';
 
 interface ProductCardProps {
@@ -110,6 +111,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Product Image Container */}
         <div className="relative h-52 w-full flex items-center justify-center bg-slate-50/50 p-6 overflow-hidden">
+          <img
+            src={logoImg}
+            alt="Afzal Bikerz"
+            className="pointer-events-none absolute left-1/2 top-2 z-10 h-8 w-auto -translate-x-1/2 object-contain opacity-85 drop-shadow-sm"
+          />
+
           {/* Quick View Button overlay on hover */}
           <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
@@ -188,7 +195,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
               type="button"
               onClick={handleAddToCart}
               disabled={product.stock === 0 || addToCartMutation.isPending}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-[#10354a] to-[#cf531f] text-white text-xs font-bold hover:opacity-95 shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-95 shrink-0"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-xs font-bold hover:opacity-95 shadow-sm hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer active:scale-95 shrink-0"
               title="Add to cart"
             >
               <FiShoppingCart size={15} />

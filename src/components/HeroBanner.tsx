@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 import tankImg from '../assets/images/fueltank_banner.png';
 import rimsImg from '../assets/images/rimlight_banner.png';
@@ -18,6 +17,7 @@ interface Slide {
   cta: string;
   secondaryCta?: string;
   ctaPath: string;
+  productsPath: string;
   tagsTitle?: string;
   tags?: { label: string; path: string }[];
   alignRight?: boolean;
@@ -33,6 +33,7 @@ const slides: Slide[] = [
     subheading: 'Top-quality CD70 & CG125 fuel tanks built for performance and durability.',
     cta: 'Shop Tanks',
     ctaPath: '/products',
+    productsPath: '/products?search=Fuel%20Tanks',
     tagsTitle: 'Select Tank Model:',
     tags: [
       { label: 'Customize Fuel Tanks', path: '/products?search=Customize%20Fuel%20Tanks' },
@@ -54,6 +55,7 @@ Bike Accessories`,
     cta: "Shop Now",
     secondaryCta: "Explore Products",
     ctaPath: "/products",
+    productsPath: '/products?search=Rims',
     overlayFrom: "from-black/90",
     overlayTo: "to-red-950/40",
   },
@@ -65,6 +67,7 @@ Bike Accessories`,
     subheading: 'Enhance exhaust sound and performance with our premium silencer range.',
     cta: 'Shop All Silencers',
     ctaPath: '/products?category=silencers',
+    productsPath: '/products?category=silencers',
     tagsTitle: 'Select Silencer Model:',
     tags: [
       { label: 'Ahl3', path: '/products?search=Ahl3' },
@@ -83,57 +86,29 @@ Bike Accessories`,
     subheading: 'Give your motorcycle a fresh look with our wide range of accessories.',
     cta: 'Explore Now',
     ctaPath: '/products',
+    productsPath: '/products?search=Decoration',
     overlayFrom: 'from-black/60',
     overlayTo: 'to-transparent',
   },
 ];
 
-const AUTOPLAY_INTERVAL = 4000;
+const AUTOPLAY_INTERVAL = 5000;
 
 const HeroBanner = () => {
   const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [animating, setAnimating] = useState(false);
 
-  const goTo = useCallback((index: number) => {
-    if (animating) return;
-    setAnimating(true);
-    setCurrent(index);
-    setTimeout(() => setAnimating(false), 800);
-  }, [animating]);
-
-  const prev = useCallback(() => {
-    goTo((current - 1 + slides.length) % slides.length);
-  }, [current, goTo]);
-
-  const next = useCallback(() => {
-    goTo((current + 1) % slides.length);
-  }, [current, goTo]);
-
-  // Autoplay
   useEffect(() => {
-    if (isPaused) return;
-    const timer = setInterval(next, AUTOPLAY_INTERVAL);
+    const timer = setInterval(() => {
+      setCurrent((index) => (index + 1) % slides.length);
+    }, AUTOPLAY_INTERVAL);
     return () => clearInterval(timer);
-  }, [isPaused, next]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') prev();
-      if (e.key === 'ArrowRight') next();
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [prev, next]);
+  }, []);
 
   const slide = slides[current];
 
   return (
     <section
       className="hero-banner relative w-full overflow-hidden bg-black min-h-125 h-[clamp(500px,100vw,600px)] md:min-h-105 md:h-[clamp(420px,55vw,600px)]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
       aria-label="Hero banner"
     >
       {/* ── Slides ────────────────────────────────────────────────────── */}
@@ -145,14 +120,20 @@ const HeroBanner = () => {
           aria-hidden={i !== current}
         >
           {/* Background image */}
-          <img
-            src={s.image}
-            alt={""}
-            className="w-full h-full object-cover"
-            loading={i === 0 ? 'eager' : 'lazy'}
-          />
-          {/* Gradient overlay */}
-          <div className={`absolute inset-0 bg-gradient-to-r ${s.overlayFrom} ${s.overlayTo}`} />
+          <Link
+            to={s.productsPath}
+            aria-label={`View products related to ${s.heading.replace('\n', ' ')}`}
+            className="absolute inset-0 block"
+          >
+            <img
+              src={s.image}
+              alt={""}
+              className="w-full h-full object-cover"
+              loading={i === 0 ? 'eager' : 'lazy'}
+            />
+            {/* Gradient overlay */}
+            <div className={`absolute inset-0 bg-linear-to-r ${s.overlayFrom} ${s.overlayTo}`} />
+          </Link>
         </div>
       ))}
 
@@ -165,14 +146,14 @@ const HeroBanner = () => {
           style={{ animation: 'slideUp 0.6s ease forwards' }}
         >
           {/* Badge */}
-          <p className="mb-2.5 sm:mb-3 text-[10px] sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white">
+          {/* <p className="mb-2.5 sm:mb-3 text-[10px] sm:text-sm font-semibold uppercase tracking-[0.2em] sm:tracking-[0.25em] text-white">
             <span className="mr-2 text-red-600">//</span>
             {slide.badge}
             <span className="ml-2 text-red-600">//</span>
-          </p>
+          </p> */}
 
           {/* Heading */}
-          <h1 className="mb-3 sm:mb-5 text-[2rem] sm:text-4xl lg:text-6xl font-black uppercase italic leading-[0.92]">
+          {/* <h1 className="mb-3 sm:mb-5 text-[2rem] sm:text-4xl lg:text-6xl font-black uppercase italic leading-[0.92]">
             {slide.heading.split("\n").map((line, index) => (
               <span
                 key={index}
@@ -181,10 +162,10 @@ const HeroBanner = () => {
                 {line}
               </span>
             ))}
-          </h1>
+          </h1> */}
 
           {/* Features */}
-          {slide.subheading && (
+          {/* {slide.subheading && (
             <div className="mb-4 sm:mb-5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs sm:text-base text-white/90 justify-start max-w-[19rem]">
               {slide.subheading.split("|").map((item, index) => (
                 <span key={index}>
@@ -192,10 +173,10 @@ const HeroBanner = () => {
                 </span>
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Optional Box */}
-          {slide.boxTitle && (
+          {/* {slide.boxTitle && (
             <div className="mb-6 max-w-sm rounded-xl border border-white/30 bg-black/40 p-4 backdrop-blur-sm">
               <h3 className="text-xl font-bold uppercase">
                 {slide.boxTitle}
@@ -207,10 +188,10 @@ const HeroBanner = () => {
                 </p>
               )}
             </div>
-          )}
+          )} */}
 
           {/* Buttons */}
-          <div className="flex w-full flex-wrap items-center gap-2.5 sm:gap-4 justify-start">
+          {/* <div className="flex w-full flex-wrap items-center gap-2.5 sm:gap-4 justify-start">
             {slide.secondaryCta && (
               <Link
                 to={slide.ctaPath}
@@ -228,28 +209,23 @@ const HeroBanner = () => {
               {slide.cta}
               <FiArrowRight size={16} />
             </Link>
-          </div>
+          </div> */}
         </div>
 
-        {/* Right Side Content (Marquee Buttons Box) */}
         {slide.tags && slide.tags.length > 0 && (
-          <div
-            key={`right-${current}`}
-                className="w-[calc(100%-1.5rem)] md:w-auto max-w-xs sm:max-w-sm md:max-w-md overflow-hidden p-3 sm:p-4 rounded-2xl bg-black/55 border border-white/20 backdrop-blur-md shadow-2xl self-start md:self-center mt-0 md:mt-0"
-            style={{ animation: 'slideUp 0.6s ease forwards' }}
-          >
-            <p className="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-red-500 mb-2.5 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+          <div className="w-[calc(100%-1.5rem)] max-w-xs overflow-hidden rounded-2xl border border-white/20 bg-black/55 p-3 shadow-2xl backdrop-blur-md sm:max-w-sm md:max-w-md">
+            <p className="mb-2.5 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-widest text-red-500 sm:text-xs">
+              <span className="h-2 w-2 rounded-full bg-red-600" />
               {slide.tagsTitle || 'Select Model:'}
             </p>
 
-                <div className="overflow-x-auto scrollbar-hide w-full relative">
-              <div className="animate-marquee flex flex-row items-center gap-2.5">
-                {[...slide.tags, ...slide.tags].map((tag, idx) => (
+            <div className="w-full overflow-hidden">
+              <div className="animate-tags-marquee flex w-max flex-nowrap gap-2.5">
+                {[...slide.tags, ...slide.tags].map((tag, index) => (
                   <Link
-                    key={idx}
+                    key={`${tag.label}-${index}`}
                     to={tag.path}
-                        className="flex shrink-0 items-center justify-center px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#10354a] to-[#cf531f] hover:from-red-600 hover:to-red-700 border border-white/20 hover:border-white text-white font-extrabold text-[10px] sm:text-xs uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-105 active:scale-95 text-center whitespace-nowrap"
+                    className="flex shrink-0 items-center justify-center rounded-xl border border-white/20 bg-linear-to-r from-[#10354a] to-[#cf531f] px-3.5 py-2 text-center text-[10px] font-extrabold uppercase tracking-wider text-white transition-all duration-200 hover:scale-105 hover:from-red-600 hover:to-red-700 hover:border-white active:scale-95 sm:text-xs"
                   >
                     {tag.label}
                   </Link>
@@ -258,70 +234,16 @@ const HeroBanner = () => {
             </div>
           </div>
         )}
+
       </div>
 
-      {/* ── Prev / Next arrows ────────────────────────────────────────── */}
-      <button
-        onClick={prev}
-            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
-        aria-label="Previous slide"
-      >
-        <FiChevronLeft size={22} />
-      </button>
-      <button
-        onClick={next}
-            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-all hover:scale-110 backdrop-blur-sm"
-        aria-label="Next slide"
-      >
-        <FiChevronRight size={22} />
-      </button>
-
-      {/* ── Dot indicators ────────────────────────────────────────────── */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-        {slides.map((s, i) => (
-          <button
-            key={s.id}
-            onClick={() => goTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className={`transition-all rounded-full ${i === current
-              ? 'bg-white w-7 h-2.5'
-              : 'bg-white/50 hover:bg-white/80 w-2.5 h-2.5'
-              }`}
-          />
-        ))}
-      </div>
-
-      {/* ── Progress bar ──────────────────────────────────────────────── */}
-      {!isPaused && (
-        <div className="absolute bottom-0 left-0 z-20 h-0.5 bg-gradient-to-r from-[#10354a] to-[#cf531f]"
-          style={{
-            animation: `progressBar ${AUTOPLAY_INTERVAL}ms linear`,
-            animationIterationCount: 1,
-          }}
-        />
-      )}
-
-      {/* ── Keyframe styles injected inline ───────────────────────────── */}
       <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(24px); }
-          to   { opacity: 1; transform: translateY(0);    }
+        @keyframes tagsMarquee {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
         }
-        @keyframes progressBar {
-          from { width: 0%; }
-          to   { width: 100%; }
-        }
-        @keyframes marquee {
-          0% { transform: translateX(0%); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          display: flex;
-          width: max-content;
-          animation: marquee 14s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
+        .animate-tags-marquee {
+          animation: tagsMarquee 24s linear infinite;
         }
       `}</style>
     </section>
