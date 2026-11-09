@@ -127,9 +127,11 @@ const HeroBanner = () => {
           >
             <img
               src={s.image}
-              alt={""}
+              alt=""
               className="w-full h-full object-cover"
               loading={i === 0 ? 'eager' : 'lazy'}
+              decoding={i === 0 ? 'sync' : 'async'}
+              fetchPriority={i === 0 ? 'high' : 'low'}
             />
             {/* Gradient overlay */}
             <div className={`absolute inset-0 bg-linear-to-r ${s.overlayFrom} ${s.overlayTo}`} />

@@ -57,6 +57,31 @@ html {
   animation-play-state: paused;
 }
 
+/* ── Top announcement ticker ───────────────────────────────────────────── */
+@keyframes announce-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.announce-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: announce-marquee var(--announce-duration, 28s) linear infinite;
+}
+
+@media (max-width: 640px) {
+  .announce-marquee {
+    --announce-duration: 22s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .announce-marquee {
+    animation: none;
+  }
+}
+
 /* ── Skeleton shimmer animation ──────────────────────────────────────────── */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }

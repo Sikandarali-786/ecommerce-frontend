@@ -2,13 +2,24 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   FiShoppingCart, FiLogOut, FiMenu, FiX, FiHeart,
   FiPackage, FiChevronDown, FiSettings, FiSearch, FiUser, FiMapPin,
+  FiStar, FiShield, FiTruck,
 } from 'react-icons/fi';
+import { FaFire, FaRocket, FaHeart } from 'react-icons/fa';
 import { MdAdminPanelSettings } from 'react-icons/md';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { isAuthenticated, isAdmin, logout, getUser } from '../utils/auth';
 import { useCart } from '../hooks/useCart';
 import { useCategories } from '../hooks/useCategories';
 import logoImg from '../assets/images/logo-afzal-bikerz.png';
+
+const ANNOUNCEMENT_ITEMS: { icon: ReactNode; label: string }[] = [
+  { icon: <FaHeart className="text-red-300" size={13} />, label: 'Trusted Reviews' },
+  { icon: <FiShield size={14} />, label: 'Satisfaction Guaranteed' },
+  { icon: <FiStar className="text-amber-300" size={14} />, label: '4.9/5 Rating' },
+  { icon: <FaRocket className="text-sky-300" size={13} />, label: '1000+ Riders' },
+  { icon: <FaFire className="text-orange-300" size={13} />, label: 'Best Seller 2025' },
+  { icon: <FiTruck size={14} />, label: 'Fast Delivery' },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -118,6 +129,30 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
+      {/* ── Scrolling announcement ticker ─────────────────────────────── */}
+      <div
+        className="bg-[#8B0000] text-white overflow-hidden select-none"
+        aria-label="Store highlights"
+      >
+        <div className="announce-marquee py-2 sm:py-2.5">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex items-center shrink-0" aria-hidden={copy === 1}>
+              {ANNOUNCEMENT_ITEMS.map((item) => (
+                <span
+                  key={`${copy}-${item.label}`}
+                  className="inline-flex items-center gap-1.5 sm:gap-2 px-4 sm:px-7 text-[11px] sm:text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap"
+                >
+                  <span className="inline-flex items-center justify-center shrink-0 opacity-95">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── Top info bar ──────────────────────────────────────────────── */}
       <div className="bg-linear-to-r from-[#10354a] to-[#cf531f] text-white text-sm">
         <div className="mx-auto flex flex-row items-center justify-between gap-3 px-4 py-3 lg:px-6 xl:px-8">

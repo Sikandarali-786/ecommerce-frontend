@@ -28,20 +28,20 @@
   <meta name="twitter:description" content="Pakistan's #1 Motorcycle Parts Store." />
   <meta name="twitter:image" content="/favicon.svg" />
 
-  <!-- Fonts -->
+  <!-- Fonts (trimmed weights for faster mobile load) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
 
-  <!-- Splash Loader styles -->
-  <link rel="stylesheet" href="/src/styles/splash.css" />
+  <!-- Splash Loader styles (public asset — works in production) -->
+  <link rel="stylesheet" href="/splash.css" />
 </head>
 
 <body>
-  <!-- Splash Loader — hidden as soon as React mounts -->
+  <!-- Splash Loader — CSS spinner (avoid multi‑MB GIF on mobile) -->
   <div id="app-splash">
-    <img src="/src/assets/images/loader.gif" alt="Loading..." class="splash-gif" />
+    <div class="splash-spinner" aria-hidden="true"></div>
     <p class="splash-title">Afzal Bikerz Store</p>
     <p class="splash-sub">Pakistan's #1 Motorcycle Parts Store</p>
   </div>

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FiTruck, FiPhone, FiRefreshCw,
@@ -7,9 +8,10 @@ import { useSEO } from '../../hooks/useSEO';
 import { useCategories } from '../../hooks/useCategories';
 import { getImageUrl } from '../../utils/image';
 import HeroBanner from '../../components/HeroBanner';
-import DealZone from '../../components/DealZone';
-import TestimonialSection from '../../components/TestimonialSection';
-import VideoShowcase from '../../components/VideoShowcase';
+
+const DealZone = lazy(() => import('../../components/DealZone'));
+const TestimonialSection = lazy(() => import('../../components/TestimonialSection'));
+const VideoShowcase = lazy(() => import('../../components/VideoShowcase'));
 
 // ── Trust features strip ──────────────────────────────────────────────────────
 const features = [
@@ -136,9 +138,15 @@ const HomePage = () => {
         )}
       </section>
 
-      <VideoShowcase />
-      <DealZone />
-      <TestimonialSection />
+      <Suspense fallback={<div className="h-64 bg-slate-100 animate-pulse" />}>
+        <VideoShowcase />
+      </Suspense>
+      <Suspense fallback={<div className="h-64 bg-slate-100 animate-pulse" />}>
+        <DealZone />
+      </Suspense>
+      <Suspense fallback={<div className="h-48 bg-slate-100 animate-pulse" />}>
+        <TestimonialSection />
+      </Suspense>
 
     </div>
   );
